@@ -20,7 +20,7 @@ class HelloWorld extends React.Component {
     return (
       <div>
         <h1>Hello, {username}</h1>
-        <a href="#" onClick={::this._handleSignOut}>Sign out</a>
+        <a id="sign_out_link" href="#" onClick={::this._handleSignOut}>Sign out</a>
       </div>
     );
   }

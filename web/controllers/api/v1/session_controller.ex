@@ -1,7 +1,7 @@
 defmodule PhoenixSocial.SessionController do
   use PhoenixSocial.Web, :controller
 
-  alias PhoenixSocial.{Session, SessionView}
+  alias PhoenixSocial.Session
 
   plug :scrub_params, "session" when action in [:create]
 

@@ -35,10 +35,11 @@ class SignIn extends React.Component {
 
         {::this._renderError()}
 
-        <form onSubmit={::this._handleSubmit}>
+        <form id="sign_in_form" onSubmit={::this._handleSubmit}>
           <FormGroup>
             <FormControl
               ref="email"
+              name="email"
               type="email"
               placeholder="Email"
               required="true"  />
@@ -47,12 +48,15 @@ class SignIn extends React.Component {
           <FormGroup>
             <FormControl
               ref="password"
+              name="password"
               type="password"
               placeholder="Password"
               required="true" />
           </FormGroup>
 
-          <Button type="submit" bsStyle="primary">Sign in</Button>
+          <Button id="sign_in_button" type="submit" bsStyle="primary">
+            Sign in
+          </Button>
         </form>
 
         <hr />

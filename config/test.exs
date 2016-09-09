@@ -4,7 +4,8 @@ use Mix.Config
 # you can enable the server option below.
 config :phoenix_social, PhoenixSocial.Endpoint,
   http: [port: 4001],
-  server: false
+  server: true,
+  cache_static_lookup: false
 
 # Print only warnings and errors during test
 config :logger, level: :warn
@@ -17,3 +18,5 @@ config :phoenix_social, PhoenixSocial.Repo,
   database: "phoenix_social_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :hound, driver: "phantomjs"

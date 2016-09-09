@@ -34,10 +34,11 @@ class SignUp extends React.Component {
     return (
       <div>
         <h1>Sign up</h1>
-        <form onSubmit={::this._handleSubmit}>
+        <form id="sign_up_form" onSubmit={::this._handleSubmit}>
           <FormGroup errors={errors} field="first_name">
             <FormControl
               ref="firstName"
+              name="first_name"
               type="text"
               placeholder="First name"
               required="true" />
@@ -46,6 +47,7 @@ class SignUp extends React.Component {
           <FormGroup errors={errors} field="last_name">
             <FormControl
               ref="lastName"
+              name="last_name"
               type="text"
               placeholder="Last name"
               required="true" />
@@ -54,6 +56,7 @@ class SignUp extends React.Component {
           <FormGroup errors={errors} field="email">
             <FormControl
               ref="email"
+              name="email"
               type="email"
               placeholder="Email"
               required="true" />
@@ -62,6 +65,7 @@ class SignUp extends React.Component {
           <FormGroup errors={errors} field="password">
             <FormControl
               ref="password"
+              name="password"
               type="password"
               placeholder="Password"
               required="true" />
@@ -70,12 +74,15 @@ class SignUp extends React.Component {
           <FormGroup errors={errors} field="password_confirmation">
             <FormControl
               ref="passwordConfirmation"
+              name="password_confirmation"
               type="password"
               placeholder="Password confirmation"
               required="true" />
           </FormGroup>
 
-          <Button type="submit" bsStyle="primary">Sign up</Button>
+          <Button id="sign_up_button" type="submit" bsStyle="primary">
+            Sign up
+          </Button>
         </form>
 
         <hr />
