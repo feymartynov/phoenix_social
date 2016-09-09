@@ -10,10 +10,17 @@ defmodule PhoenixSocial.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug Guardian.Plug.VerifyHeader
+    plug Guardian.Plug.LoadResource
   end
 
   scope "/api", PhoenixSocial do
     pipe_through :api
+
+    scope "/v1" do
+      resources "/session", SessionController, only: [:show, :create, :delete], singleton: true
+      resources "/user", UserController, only: [:create, :show], singleton: true
+    end
   end
 
   scope "/", PhoenixSocial do

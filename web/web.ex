@@ -36,6 +36,8 @@ defmodule PhoenixSocial.Web do
 
       import PhoenixSocial.Router.Helpers
       import PhoenixSocial.Gettext
+
+      defp current_user(conn), do: Guardian.Plug.current_resource(conn)
     end
   end
 
@@ -52,6 +54,14 @@ defmodule PhoenixSocial.Web do
       import PhoenixSocial.Router.Helpers
       import PhoenixSocial.ErrorHelpers
       import PhoenixSocial.Gettext
+
+      def error_messages(changeset) do
+        Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
+          Enum.reduce(opts, msg, fn {key, value}, acc ->
+            String.replace(msg, "%{#{key}}", to_string(value))
+          end)
+        end)
+      end
     end
   end
 
