@@ -4,7 +4,7 @@ import {httpGet, httpPost, httpDelete} from '../utils';
 
 function setCurrentUser(dispatch, user) {
   dispatch({
-    type: Constants.SET_CURRENT_USER,
+    type: Constants.FETCH_CURRENT_USER,
     user: user
   });
 }
@@ -31,11 +31,11 @@ const Actions = {
   },
   signUp: userData => {
     return dispatch => {
-      httpPost('/api/v1/user', {user: userData})
+      httpPost('/api/v1/users', {user: userData})
         .then(data => {
           localStorage.setItem(Constants.AUTH_TOKEN_KEY, data.jwt);
           setCurrentUser(dispatch, data.user);
-          dispatch(push('/'));
+          dispatch(push(`/user${data.user.id}`));
         })
         .catch(error => {
           error.response.json()
@@ -61,7 +61,7 @@ const Actions = {
   },
   fetchCurrentUser: () => {
     return dispatch => {
-      httpGet('/api/v1/user')
+      httpGet('/api/v1/users/current')
         .then(data => setCurrentUser(dispatch, data.user))
         .catch(error => console.error(error));
     };

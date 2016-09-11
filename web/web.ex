@@ -23,6 +23,14 @@ defmodule PhoenixSocial.Web do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
+
+      def error_messages(changeset) do
+        Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
+          Enum.reduce(opts, msg, fn {key, value}, acc ->
+            String.replace(msg, "%{#{key}}", to_string(value))
+          end)
+        end)
+      end
     end
   end
 
@@ -54,14 +62,6 @@ defmodule PhoenixSocial.Web do
       import PhoenixSocial.Router.Helpers
       import PhoenixSocial.ErrorHelpers
       import PhoenixSocial.Gettext
-
-      def error_messages(changeset) do
-        Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
-          Enum.reduce(opts, msg, fn {key, value}, acc ->
-            String.replace(msg, "%{#{key}}", to_string(value))
-          end)
-        end)
-      end
     end
   end
 

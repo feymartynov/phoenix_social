@@ -8,7 +8,7 @@ const initialState = {
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
-    case Constants.SET_CURRENT_USER:
+    case Constants.FETCH_CURRENT_USER:
       return {...state, currentUser: action.user};
 
     case Constants.SIGN_IN_ERROR:

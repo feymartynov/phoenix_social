@@ -2,6 +2,6 @@ import React from 'react';
 
 export default class MainLayout extends React.Component {
     render() {
-        return (<div className="container">{this.props.children}</div>);
+        return (<div>{this.props.children}</div>);
     }
 }

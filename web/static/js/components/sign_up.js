@@ -32,7 +32,7 @@ class SignUp extends React.Component {
     const errors = this.props.signUpErrors;
 
     return (
-      <div>
+      <div className="container">
         <h1>Sign up</h1>
         <form id="sign_up_form" onSubmit={::this._handleSubmit}>
           <FormGroup errors={errors} field="first_name">

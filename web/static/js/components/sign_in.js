@@ -30,7 +30,7 @@ class SignIn extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="container">
         <h1>Sign in</h1>
 
         {::this._renderError()}

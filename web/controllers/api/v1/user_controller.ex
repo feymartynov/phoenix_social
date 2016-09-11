@@ -7,11 +7,20 @@ defmodule PhoenixSocial.UserController do
   plug :scrub_params, "user" when action in [:create]
   plug EnsureAuthenticated when action in [:show]
 
-  def show(conn, _params) do
-    conn
-    |> put_status(:ok)
-    |> render("show.json", user: current_user(conn))
+  def show(conn, %{"id" => id}) do
+    if user = find_user(conn, id) do
+      conn
+      |> put_status(:ok)
+      |> json(%{user: user})
+    else
+      conn
+      |> put_status(:not_found)
+      |> json(%{error: "User not found"})
+    end
   end
+
+  defp find_user(conn, "current"), do: current_user(conn)
+  defp find_user(_conn, id), do: Repo.get(User, id)
 
   def create(conn, %{"user" => user_params}) do
     changeset = User.changeset(%User{}, user_params)
@@ -22,11 +31,11 @@ defmodule PhoenixSocial.UserController do
 
         conn
         |> put_status(:created)
-        |> render("create.json", jwt: jwt, user: user)
+        |> json(%{jwt: jwt, user: user})
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render("error.json", changeset: changeset)
+        |> json(%{errors: User.error_messages(changeset)})
     end
   end
 end

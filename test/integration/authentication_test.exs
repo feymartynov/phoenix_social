@@ -29,6 +29,10 @@ defmodule PhoenixSocial.SessionTest do
     insert(:user) |> sign_in
 
     navigate_to "/"
+    find_element(:class, "navbar-toggle") |> click
+    :timer.sleep(100)
+    find_element(:id, "user_menu") |> click
+    :timer.sleep(100)
     find_element(:id, "sign_out_link") |> click
 
     assert find_element(:id, "sign_in_button")

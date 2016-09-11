@@ -5,8 +5,9 @@ import MainLayout from '../layouts/main';
 import SignIn from '../components/sign_in';
 import SignUp from '../components/sign_up';
 import Authenticated from '../containers/authenticated';
-import HelloWorld from '../components/hello_world';
+import AuthenticatedIndex from '../components/authenticated_index';
 import SessionActions from '../actions/session';
+import Profile from '../components/profile';
 
 export default function configRoutes(store) {
   const ensureAuthenticated = (_nextState, replace, callback) => {
@@ -28,7 +29,8 @@ export default function configRoutes(store) {
       <Route path="/sign_up" component={SignUp}/>
 
       <Route path="/" component={Authenticated} onEnter={ensureAuthenticated}>
-        <IndexRoute component={HelloWorld} />
+        <IndexRoute component={AuthenticatedIndex} />
+        <Route path="/user:id" component={Profile} />
       </Route>
     </Route>
   );
