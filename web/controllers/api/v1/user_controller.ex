@@ -19,7 +19,7 @@ defmodule PhoenixSocial.UserController do
     end
   end
 
-  defp find_user(conn, "current"), do: current_user(conn)
+  defp find_user(conn, "current"), do: conn.assigns[:current_user]
   defp find_user(_conn, id), do: Repo.get(User, id)
 
   def create(conn, %{"user" => user_params}) do

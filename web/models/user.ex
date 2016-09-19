@@ -10,6 +10,12 @@ defmodule PhoenixSocial.User do
     field :encrypted_password, :string
     field :password, :string, virtual: true
     timestamps
+    has_many :friendships, PhoenixSocial.Friendship, foreign_key: :user1_id
+    has_many :friends, through: [:friendships, :user2]
+  end
+
+  def full_name(user) do
+    [user.first_name, user.last_name] |> Enum.join(" ")
   end
 
   def changeset(struct, params \\ %{}) do

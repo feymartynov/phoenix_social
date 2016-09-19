@@ -45,7 +45,11 @@ defmodule PhoenixSocial.Web do
       import PhoenixSocial.Router.Helpers
       import PhoenixSocial.Gettext
 
-      defp current_user(conn), do: Guardian.Plug.current_resource(conn)
+      plug :set_current_user
+
+      defp set_current_user(conn, _params) do
+        assign(conn, :current_user, Guardian.Plug.current_resource(conn))
+      end
     end
   end
 

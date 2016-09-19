@@ -20,6 +20,7 @@ defmodule PhoenixSocial.Router do
     scope "/v1" do
       resources "/session", SessionController, only: [:show, :create, :delete], singleton: true
       resources "/users", UserController, only: [:create, :show]
+      resources "/friends", FriendController, only: [:index, :create, :delete]
     end
   end
 

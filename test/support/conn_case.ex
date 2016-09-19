@@ -26,6 +26,8 @@ defmodule PhoenixSocial.ConnCase do
       import Ecto.Query
 
       import PhoenixSocial.Router.Helpers
+      import PhoenixSocial.Factory
+      import PhoenixSocial.Support.ApiCall
 
       # The default endpoint for testing
       @endpoint PhoenixSocial.Endpoint
