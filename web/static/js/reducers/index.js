@@ -5,6 +5,6 @@ import profile from './profile';
 
 export default combineReducers({
   routing: routerReducer,
-  session: session,
-  profile: profile
+  session,
+  profile
 });

@@ -48,3 +48,7 @@ export function httpDelete(url) {
 export function setDocumentTitle(title) {
   document.title = `${title} | Phoenix Social`;
 }
+
+export function reduceReducers(...reducers) {
+  return (acc, current) => reducers.reduce((p, r) => r(p, current), acc);
+}

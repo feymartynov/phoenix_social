@@ -3,10 +3,7 @@ import Constants from '../constants';
 import {httpGet, httpPost, httpDelete} from '../utils';
 
 function setCurrentUser(dispatch, user) {
-  dispatch({
-    type: Constants.FETCH_CURRENT_USER,
-    user: user
-  });
+  dispatch({type: Constants.FETCH_CURRENT_USER, user});
 }
 
 const Actions = {

@@ -1,4 +1,7 @@
+import {combineReducers} from 'redux';
 import Constants from '../constants';
+import {reduceReducers} from '../utils';
+import currentUser from './session/current_user';
 
 const initialState = {
   currentUser: null,
@@ -6,7 +9,7 @@ const initialState = {
   signUpErrors: null
 };
 
-export default function reducer(state = initialState, action = {}) {
+function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case Constants.FETCH_CURRENT_USER:
       return {...state, currentUser: action.user};
@@ -24,3 +27,5 @@ export default function reducer(state = initialState, action = {}) {
       return state;
   }
 }
+
+export default reduceReducers(combineReducers({currentUser}), reducer);

@@ -1,7 +1,8 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import {setDocumentTitle} from '../../utils';
 
-export default class Loader extends React.Component {
+class Loader extends React.Component {
   _renderLoading() {
     return (<div>Loading&hellip;</div>);
   }
@@ -22,8 +23,11 @@ export default class Loader extends React.Component {
       setDocumentTitle("Error");
       return this._renderError();
     } else {
+      this.props.dispatch(this.props.action);
       setDocumentTitle("Loading");
       return this._renderLoading();
     }
   }
 }
+
+export default connect(() => ({}))(Loader);
