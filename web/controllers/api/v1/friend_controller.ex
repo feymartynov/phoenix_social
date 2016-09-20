@@ -15,7 +15,7 @@ defmodule PhoenixSocial.FriendController do
           user = Repo.get(User, user_id)
           add_to_friends(conn.assigns[:current_user], user)
         friendship.state != "confirmed" ->
-          ConfirmFriendship.call(friendship)
+          {:ok, _} = ConfirmFriendship.call(friendship)
           {:ok, "Friendship with #{User.full_name(friendship.user2)} confirmed"}
         true ->
           {:unprocessable_entity,
@@ -42,7 +42,7 @@ defmodule PhoenixSocial.FriendController do
 
     {status, result} =
       case friendship && RejectFriendship.call(friendship) do
-        {:ok, friendship} ->
+        {:ok, {friendship, _back_friendship}} ->
           {:ok, "#{User.full_name(friendship.user2)} deleted from friends"}
         {:error, error} ->
           {:unprocessable_entity, error}
