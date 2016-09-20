@@ -12,12 +12,12 @@ defmodule PhoenixSocial.Operations.RejectFriendship do
   end
 
   defp cancel_back_friendship(friendship) do
-    back = Friendship.back_friendship(friendship)
+    backward_friendship = Friendship.back_friendship(friendship)
 
-    if back && back.state == "pending" do
-      Friendship.toggle_state(back, "cancelled")
+    if backward_friendship && backward_friendship.state == "pending" do
+      Friendship.toggle_state(backward_friendship, "cancelled")
     else
-      {:ok, back}
+      {:ok, backward_friendship}
     end
   end
 end

@@ -6,24 +6,27 @@ defmodule PhoenixSocial.Operations.AddToFriends do
   end
   def call(current_user, user) do
     Repo.transaction fn ->
-      build_friendship(current_user, user) |> Repo.insert!
-      build_back_friendship(current_user, user) |> Repo.insert!
+      {:ok, friendship} = insert_friendship(current_user, user)
+      {:ok, back_friendship} = insert_back_friendship(current_user, user)
+      {friendship, back_friendship}
     end
   end
 
-  defp build_friendship(current_user, user) do
-    Ecto.build_assoc(
-      current_user,
-      :friendships,
-      user2: user,
-      state: "confirmed")
+  defp insert_friendship(current_user, user) do
+    Repo.insert(
+      Ecto.build_assoc(
+        current_user,
+        :friendships,
+        user2: user,
+        state: "confirmed"))
   end
 
-  defp build_back_friendship(current_user, user) do
-    Ecto.build_assoc(
-      user,
-      :friendships,
-      user2: current_user,
-      state: "pending")
+  defp insert_back_friendship(current_user, user) do
+    Repo.insert(
+      Ecto.build_assoc(
+        user,
+        :friendships,
+        user2: current_user,
+        state: "pending"))
   end
 end

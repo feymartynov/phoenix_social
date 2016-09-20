@@ -46,3 +46,7 @@ defimpl Poison.Encoder, for: PhoenixSocial.User do
     |> Poison.encode!
   end
 end
+
+defimpl String.Chars, for: PhoenixSocial.User do
+  def to_string(user), do: PhoenixSocial.User.full_name(user)
+end
