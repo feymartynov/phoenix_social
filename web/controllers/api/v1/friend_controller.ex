@@ -6,18 +6,6 @@ defmodule PhoenixSocial.FriendController do
 
   plug Guardian.Plug.EnsureAuthenticated
 
-  def index(conn, _params) do
-    friends =
-      conn.assigns[:current_user]
-      |> Ecto.assoc(:friendships)
-      |> Repo.all
-      |> Repo.preload(:user2)
-
-    conn
-    |> put_status(:ok)
-    |> json(%{friends: friends})
-  end
-
   def create(conn, %{"user_id" => user_id}) do
     friendship = find_friendship(conn, user_id)
 

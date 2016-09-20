@@ -1,8 +1,6 @@
 defmodule PhoenixSocial.User do
   use PhoenixSocial.Web, :model
 
-  @derive {Poison.Encoder, only: [:id, :first_name, :last_name, :email]}
-
   schema "users" do
     field :first_name, :string
     field :last_name, :string
@@ -37,5 +35,14 @@ defmodule PhoenixSocial.User do
       _ ->
         changeset
     end
+  end
+end
+
+defimpl Poison.Encoder, for: PhoenixSocial.User do
+  def encode(user, _options) do
+    user
+    |> Map.take([:id, :first_name, :last_name])
+    |> Map.put(:friends, user.friendships)
+    |> Poison.encode!
   end
 end

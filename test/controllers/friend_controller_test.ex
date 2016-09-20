@@ -2,9 +2,9 @@ defmodule PhoenixSocial.FriendControllerTest do
   use PhoenixSocial.ConnCase
 
   defp assert_has_friend(user, friend, expected_state) do
-    assert {200, json} = api_call(:get, "/friends", as: user)
+    assert {200, json} = api_call(:get, "/users/current", as: user)
 
-    friend_info = List.first(json["friends"])
+    friend_info = json["user"]["friends"] |> List.first
     assert friend_info["id"] == friend.id
     assert friend_info["friendship_state"] == expected_state
   end
