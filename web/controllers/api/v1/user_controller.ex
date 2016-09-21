@@ -8,11 +8,9 @@ defmodule PhoenixSocial.UserController do
   plug EnsureAuthenticated when action in [:show]
 
   def show(conn, %{"id" => id}) do
-    user =
-      find_user(conn, id)
-      |> Repo.preload(friendships: :user2)
+    if user = find_user(conn, id) do
+      user = user |> Repo.preload(friendships: :user2)
 
-    if user do
       conn
       |> put_status(:ok)
       |> json(%{user: user})
