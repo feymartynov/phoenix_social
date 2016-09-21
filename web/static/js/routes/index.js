@@ -32,8 +32,11 @@ export default function configRoutes(store) {
 
       <Route path="/" component={Authenticated} onEnter={ensureAuthenticated}>
         <IndexRoute component={AuthenticatedIndex} />
-        <Route path="/user:id" component={Profile} />
-        <Route path="/friends" component={Friends} />
+
+        <Route path="user:userId">
+          <IndexRoute component={Profile} />
+          <Route path="friends" component={Friends} />
+        </Route>
 
         <Route path="*" component={NotFound} />
       </Route>

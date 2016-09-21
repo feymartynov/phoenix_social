@@ -13,6 +13,8 @@ const Actions = {
           });
         })
         .catch(error => {
+          if (!error.response) throw error;
+
           error.response.json()
             .then(json => {
               dispatch({type: Constants.USER_FETCH_FAILURE});

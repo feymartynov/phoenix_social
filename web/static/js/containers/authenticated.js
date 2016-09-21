@@ -7,6 +7,7 @@ import Error from '../components/shared/error';
 class Authenticated extends React.Component {
   render() {
     if (!this.props.currentUser) return false;
+    const userSlug = `user${this.props.currentUser.id}`;
 
     return (
       <div>
@@ -15,14 +16,14 @@ class Authenticated extends React.Component {
           <aside className="col-md-2">
             <nav className="list-group">
               <Link
-                to={`/user${this.props.currentUser.id}`}
+                to={`/${userSlug}`}
                 className="list-group-item">
 
                 My profile
               </Link>
 
               <Link
-                to='/friends'
+                to={`/${userSlug}/friends`}
                 className="list-group-item">
 
                 My friends

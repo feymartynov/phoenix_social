@@ -47,9 +47,9 @@ class FriendshipToggler extends React.Component {
   }
 }
 
-const mapStateToProps = (store, ownProps) => ({
+const mapStateToProps = (state, ownProps) => ({
   user: ownProps.user,
-  currentUser: store.session.currentUser
+  currentUser: state.session.currentUser
 });
 
 export default connect(mapStateToProps)(FriendshipToggler);

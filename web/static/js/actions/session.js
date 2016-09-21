@@ -27,6 +27,8 @@ const Actions = {
           dispatch(push(`/user${data.user.id}`));
         })
         .catch(error => {
+          if (!error.response) throw error;
+
           error.response.json()
             .then(json => {
               dispatch({

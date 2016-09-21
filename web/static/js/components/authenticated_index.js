@@ -12,8 +12,8 @@ class AuthenticatedIndex extends React.Component {
   }
 }
 
-const mapStateToProps = store => ({
-  currentUser: store.session.currentUser
+const mapStateToProps = state => ({
+  currentUser: state.session.currentUser
 });
 
 export default connect(mapStateToProps)(AuthenticatedIndex);
