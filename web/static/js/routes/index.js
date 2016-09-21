@@ -9,6 +9,7 @@ import SignUp from '../components/sign_up';
 import Authenticated from '../containers/authenticated';
 import AuthenticatedIndex from '../components/authenticated_index';
 import Profile from '../components/profile';
+import Friends from '../components/friends';
 
 export default function configRoutes(store) {
   function ensureAuthenticated(_nextState, replace, callback) {
@@ -32,6 +33,7 @@ export default function configRoutes(store) {
       <Route path="/" component={Authenticated} onEnter={ensureAuthenticated}>
         <IndexRoute component={AuthenticatedIndex} />
         <Route path="/user:id" component={Profile} />
+        <Route path="/friends" component={Friends} />
 
         <Route path="*" component={NotFound} />
       </Route>

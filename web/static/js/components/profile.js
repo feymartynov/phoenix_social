@@ -3,8 +3,7 @@ import {connect} from 'react-redux';
 import {setDocumentTitle} from '../utils';
 import Actions from '../actions/profile';
 import Loader from '../components/shared/loader';
-import FriendshipToggler from '../components/profile/friendship_toggler';
-import FriendsList from '../components/profile/friends_list';
+import FriendshipToggler from './shared/friendship_toggler';
 
 class Profile extends React.Component {
   _renderProfile() {
@@ -17,7 +16,6 @@ class Profile extends React.Component {
       <div>
         <h1>{fullName}</h1>
         <FriendshipToggler user={this.props.user} />
-        <FriendsList friends={this.props.user.friends} />
       </div>
     );
   }

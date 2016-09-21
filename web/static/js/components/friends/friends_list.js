@@ -1,22 +1,20 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router';
+import FriendshipToggler from '../shared/friendship_toggler';
 
 class FriendsListItem extends React.Component {
   render() {
     const {friend} = this.props;
-    let label;
-
-    if (friend.friendship_state == "pending") {
-      label = (<span className="label label-warning">pending</span>);
-    }
 
     return (
-      <li>
-        <Link to={`/user${friend.id}`}>
-          {friend.first_name} {friend.last_name}
-        </Link>
-        &nbsp;{label}
+      <li className="list-group-item">
+        <h4>
+          <Link to={`/user${friend.id}`}>
+            {friend.first_name} {friend.last_name}
+          </Link>
+        </h4>
+        <FriendshipToggler user={friend} />
       </li>
     );
   }
@@ -30,12 +28,9 @@ export default class FriendsList extends React.Component {
     if (friends.length === 0) return false;
 
     return (
-      <div>
-        <h2>Friends</h2>
-        <ul>
-          {friends.map((friend, i) => <FriendsListItem key={i} friend={friend} />)}
-        </ul>
-      </div>
+      <ul className="list-group">
+        {friends.map((friend, i) => <FriendsListItem key={i} friend={friend} />)}
+      </ul>
     );
   }
 }

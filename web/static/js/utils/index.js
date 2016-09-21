@@ -47,6 +47,8 @@ export function httpDelete(url) {
 }
 
 export function handleFetchError(dispatch, error) {
+  if (!error.response) throw error;
+
   error.response.json()
     .then(json => dispatch(ErrorActions.raise(json.error)))
     .catch(error =>
