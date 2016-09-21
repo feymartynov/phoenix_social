@@ -19,7 +19,7 @@ class Header extends React.Component {
         <div className="container">
           <Navbar.Header>
             <Navbar.Brand>
-              <a href={'/user' + currentUser.id}>PhoenixSocial</a>
+              <Link to={'/user' + currentUser.id}>PhoenixSocial</Link>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>

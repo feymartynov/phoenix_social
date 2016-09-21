@@ -1,6 +1,6 @@
 import {push} from 'react-router-redux';
 import Constants from '../constants';
-import {httpGet, httpPost, httpDelete} from '../utils';
+import {httpGet, httpPost, httpDelete, handleFetchError} from '../utils';
 
 function setCurrentUser(dispatch, user) {
   dispatch({type: Constants.FETCH_CURRENT_USER, user});
@@ -15,15 +15,7 @@ const Actions = {
           setCurrentUser(dispatch, data.user);
           dispatch(push('/'));
         })
-        .catch(error => {
-          error.response.json()
-            .then(json => {
-              dispatch({
-                type: Constants.SIGN_IN_ERROR,
-                error: json.error
-              });
-            });
-        });
+        .catch(error => handleFetchError(dispatch, error));
     };
   },
   signUp: userData => {
@@ -38,7 +30,7 @@ const Actions = {
           error.response.json()
             .then(json => {
               dispatch({
-                type: Constants.SIGN_UP_ERRORS,
+                type: Constants.SIGN_UP_FAILURE,
                 errors: json.errors
               });
             });
@@ -53,14 +45,14 @@ const Actions = {
           dispatch(push('/sign_in'));
           dispatch({type: Constants.USER_SIGNED_OUT});
         })
-        .catch(error => console.error(error));
+        .catch(error => handleFetchError(dispatch, error));
     };
   },
   fetchCurrentUser: () => {
     return dispatch => {
       httpGet('/api/v1/users/current')
         .then(data => setCurrentUser(dispatch, data.user))
-        .catch(error => console.error(error));
+        .catch(error => handleFetchError(dispatch, error));
     };
   }
 };

@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import Header from '../components/shared/header';
+import Error from '../components/shared/error';
 
 class Authenticated extends React.Component {
   render() {
@@ -9,7 +10,10 @@ class Authenticated extends React.Component {
     return (
       <div>
         <Header />
-        <div className="container">{this.props.children}</div>
+        <div className="container">
+          <Error />
+          {this.props.children}
+        </div>
       </div>
     );
   }

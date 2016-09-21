@@ -15,8 +15,6 @@ class SignUp extends React.Component {
   _handleSubmit(e) {
     e.preventDefault();
 
-    console.log(this.refs);
-
     const userData = {
       first_name: ReactDOM.findDOMNode(this.refs.firstName).value,
       last_name: ReactDOM.findDOMNode(this.refs.lastName).value,
@@ -34,6 +32,7 @@ class SignUp extends React.Component {
     return (
       <div className="container">
         <h1>Sign up</h1>
+
         <form id="sign_up_form" onSubmit={::this._handleSubmit}>
           <FormGroup errors={errors} field="first_name">
             <FormControl

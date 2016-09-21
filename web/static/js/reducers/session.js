@@ -5,7 +5,6 @@ import currentUser from './session/current_user';
 
 const initialState = {
   currentUser: null,
-  signInError: null,
   signUpErrors: null
 };
 
@@ -14,10 +13,7 @@ function reducer(state = initialState, action = {}) {
     case Constants.FETCH_CURRENT_USER:
       return {...state, currentUser: action.user};
 
-    case Constants.SIGN_IN_ERROR:
-      return {...state, signInError: action.error};
-
-    case Constants.SIGN_UP_ERRORS:
+    case Constants.SIGN_UP_FAILURE:
       return {...state, signUpErrors: action.errors};
 
     case Constants.USER_SIGNED_OUT:

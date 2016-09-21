@@ -7,21 +7,12 @@ class Loader extends React.Component {
     return (<div>Loading&hellip;</div>);
   }
 
-  _renderError() {
-    return (
-      <div>
-        <h1>Error</h1>
-        <p className="lead">{this.props.error}</p>
-      </div>
-    );
-  }
-
   render() {
     if (this.props.loaded) {
       return this.props.onLoaded();
     } else if (this.props.error) {
       setDocumentTitle("Error");
-      return this._renderError();
+      return false;
     } else {
       this.props.dispatch(this.props.action);
       setDocumentTitle("Loading");

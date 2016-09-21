@@ -1,5 +1,6 @@
 import Constants from '../constants';
-import {httpGet, httpPost, httpDelete} from '../utils';
+import {httpGet, httpPost, httpDelete, handleFetchError} from '../utils';
+import ErrorActions from './error';
 
 const Actions = {
   fetchUser: (id) => {
@@ -14,12 +15,10 @@ const Actions = {
         .catch(error => {
           error.response.json()
             .then(json => {
-              dispatch({
-                type: Constants.USER_FETCH_FAILURE,
-                id,
-                error: json.error
-              });
-            });
+              dispatch({type: Constants.USER_FETCH_FAILURE});
+              dispatch(ErrorActions.raise(json.error));
+            })
+            .catch(error => console.error(error));
         });
     };
   },
@@ -33,15 +32,7 @@ const Actions = {
             back_friendship: json.back_friendship
           });
         })
-        .catch(error => {
-          error.response.json()
-            .then(json => {
-              dispatch({
-                type: Constants.USER_ADD_TO_FRIENDS_FAILURE,
-                error: json.error
-              });
-            });
-        });
+        .catch(error => handleFetchError(dispatch, error));
     };
   },
   removeFromFriends: (user) => {
@@ -54,15 +45,7 @@ const Actions = {
             back_friendship: json.back_friendship
           });
         })
-        .catch(error => {
-          error.response.json()
-            .then(json => {
-              dispatch({
-                type: Constants.USER_REMOVE_FROM_FRIENDS_FAILURE,
-                error: json
-              });
-            });
-        });
+        .catch(error => handleFetchError(dispatch, error));
     };
   }
 };

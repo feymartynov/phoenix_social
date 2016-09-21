@@ -2,6 +2,7 @@ import React from 'react';
 import fetch from 'isomorphic-fetch';
 import {polyfill} from 'es6-promise';
 import Constants from '../constants';
+import ErrorActions from '../actions/error';
 
 export function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
@@ -43,6 +44,15 @@ export function httpPost(url, data) {
 
 export function httpDelete(url) {
   return httpFetch(url, {method: 'delete'});
+}
+
+export function handleFetchError(dispatch, error) {
+  error.response.json()
+    .then(json => dispatch(ErrorActions.raise(json.error)))
+    .catch(error =>
+      console.error(
+        "Failed to decode JSON error response from the server",
+        error));
 }
 
 export function setDocumentTitle(title) {

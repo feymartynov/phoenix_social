@@ -5,6 +5,7 @@ import {Link} from 'react-router';
 import {FormGroup, FormControl, Button, Alert} from 'react-bootstrap';
 import {setDocumentTitle} from '../utils';
 import Actions from '../actions/session';
+import Error from './shared/error';
 
 class SignIn extends React.Component {
   componentDidMount() {
@@ -22,18 +23,11 @@ class SignIn extends React.Component {
     this.props.dispatch(Actions.signIn(sessionData));
   }
 
-  _renderError() {
-    return this.props.signInError && (
-      <Alert bsStyle="danger">{this.props.signInError}</Alert>
-    );
-  }
-
   render() {
     return (
       <div className="container">
         <h1>Sign in</h1>
-
-        {::this._renderError()}
+        <Error />
 
         <form id="sign_in_form" onSubmit={::this._handleSubmit}>
           <FormGroup>

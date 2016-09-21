@@ -38,7 +38,7 @@ class Profile extends React.Component {
 const mapStateToProps = (store, ownProps) => ({
   userId: parseInt(ownProps.params.id),
   user: store.profile.user,
-  error: store.profile.error,
+  error: store.error,
   currentUser: store.session.currentUser
 });
 
