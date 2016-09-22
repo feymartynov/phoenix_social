@@ -17,6 +17,13 @@ class Friends extends React.Component {
     this.state = {currentTabKey: null};
   }
 
+  _currentTabKey(tabs) {
+    if (this.state.currentTabKey) return this.state.currentTabKey;
+
+    const firstEnabledTab = tabs.find(tab => !tab.props.disabled);
+    if (firstEnabledTab) return firstEnabledTab.props.eventKey;
+  }
+
   _handleTabToggle(key) {
     this.setState({currentTabKey: key});
   }
@@ -48,23 +55,38 @@ class Friends extends React.Component {
       return this._renderTab(idx, title, friends);
     });
 
-    const currentTabKey =
-      this.state.currentTabKey ||
-      tabs.find(tab => !tab.props.disabled).props.eventKey;
+    let content;
 
-    return (
-      <div>
-        <h1>My friends</h1>
-
+    if (tabs.find(tab => !tab.props.disabled)) {
+      content = (
         <Tabs
-          activeKey={currentTabKey}
+          activeKey={this._currentTabKey(tabs)}
           onSelect={::this._handleTabToggle}
           id="friends_lists_tabs">
 
           {tabs}
         </Tabs>
+      );
+    } else {
+      content = <p className="lead">No friends :(</p>
+    }
+
+    return (
+      <div>
+        <h1>{this._renderTitle()}</h1>
+        {content}
       </div>
     );
+  }
+
+  _renderTitle() {
+    const {currentUser, user} = this.props;
+
+    if (currentUser.id === user.id) {
+      return "My friends";
+    } else {
+      return `Friends of ${user.first_name} ${user.last_name}`;
+    }
   }
 
   render() {
@@ -83,7 +105,8 @@ class Friends extends React.Component {
 const mapStateToProps = (state, ownProps) => ({
   userId: parseInt(ownProps.params.userId),
   user: state.profile.user,
-  error: state.error
+  error: state.error,
+  currentUser: state.session.currentUser
 });
 
 export default connect(mapStateToProps)(Friends);

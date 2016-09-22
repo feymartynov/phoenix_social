@@ -1,7 +1,7 @@
 defmodule PhoenixSocial.UserController do
   use PhoenixSocial.Web, :controller
 
-  alias PhoenixSocial.{Repo, User}
+  alias PhoenixSocial.{Repo, User, Friendship}
   alias Guardian.Plug.EnsureAuthenticated
 
   plug :scrub_params, "user" when action in [:create]
@@ -9,7 +9,7 @@ defmodule PhoenixSocial.UserController do
 
   def show(conn, %{"id" => id}) do
     if user = find_user(conn, id) do
-      user = user |> Repo.preload(friendships: :user2)
+      user = user |> preload_friendships(conn.assigns[:current_user])
 
       conn
       |> put_status(:ok)
@@ -23,6 +23,14 @@ defmodule PhoenixSocial.UserController do
 
   defp find_user(conn, "current"), do: conn.assigns[:current_user]
   defp find_user(_conn, id), do: Repo.get(User, id)
+
+  defp preload_friendships(user, user) do
+    Repo.preload(user, friendships: :user2)
+  end
+  defp preload_friendships(user, _) do
+    query = from f in Friendship, where: f.state == "confirmed"
+    Repo.preload(user, friendships: query)
+  end
 
   def create(conn, %{"user" => user_params}) do
     changeset = User.changeset(%User{}, user_params)

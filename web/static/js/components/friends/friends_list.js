@@ -21,9 +21,7 @@ class FriendsListItem extends React.Component {
 
 export default class FriendsList extends React.Component {
   render () {
-    const friends = this.props.friends.filter(friend =>
-      !["rejected", "cancelled"].includes(friend.friendship_state));
-
+    const {friends} = this.props;
     if (friends.length === 0) return false;
 
     return (
