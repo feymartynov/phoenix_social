@@ -28,6 +28,9 @@ defmodule PhoenixSocial.IntegrationCase do
       Ecto.Adapters.SQL.Sandbox.mode(PhoenixSocial.Repo, {:shared, self()})
     end
 
+    Hound.start_session
+    current_window_handle() |> set_window_size(1280, 1024)
+
     :ok
   end
 

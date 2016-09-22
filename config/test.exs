@@ -19,4 +19,4 @@ config :phoenix_social, PhoenixSocial.Repo,
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
-config :hound, driver: "phantomjs"
+config :hound, browser: "chrome"

@@ -21,23 +21,13 @@ defmodule PhoenixSocial.UserController do
     end
   end
 
-  defp find_user(conn, "current"), do: conn.assigns[:current_user]
-  defp find_user(_conn, id), do: Repo.get(User, id)
-
-  defp preload_friendships(user, user) do
-    Repo.preload(user, friendships: :user2)
-  end
-  defp preload_friendships(user, _) do
-    query = from f in Friendship, where: f.state == "confirmed"
-    Repo.preload(user, friendships: query)
-  end
-
   def create(conn, %{"user" => user_params}) do
     changeset = User.changeset(%User{}, user_params)
 
     case Repo.insert(changeset) do
       {:ok, user} ->
         {:ok, jwt, _full_claims} = Guardian.encode_and_sign(user, :token)
+        user = user |> preload_friendships(conn.assigns[:current_user])
 
         conn
         |> put_status(:created)
@@ -47,5 +37,16 @@ defmodule PhoenixSocial.UserController do
         |> put_status(:unprocessable_entity)
         |> json(%{errors: User.error_messages(changeset)})
     end
+  end
+
+  defp find_user(conn, "current"), do: conn.assigns[:current_user]
+  defp find_user(_conn, id), do: Repo.get(User, id)
+
+  defp preload_friendships(user, user) do
+    Repo.preload(user, friendships: :user2)
+  end
+  defp preload_friendships(user, _) do
+    query = from f in Friendship, where: f.state == "confirmed"
+    Repo.preload(user, friendships: query)
   end
 end

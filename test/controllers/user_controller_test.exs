@@ -1,4 +1,4 @@
-defmodule PhoenixSocial.FriendControllerTest do
+defmodule PhoenixSocial.UserControllerTest do
   use PhoenixSocial.ConnCase
 
   test "Show all friends for current user" do
