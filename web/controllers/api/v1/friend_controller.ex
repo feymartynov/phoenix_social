@@ -21,10 +21,10 @@ defmodule PhoenixSocial.FriendController do
   end
   defp confirm_friendship(conn, friendship) do
     case ConfirmFriendship.call(friendship) do
-      {:ok, {friendship, back_friendship}} ->
+      {:ok, friendships} ->
         conn
         |> put_status(:ok)
-        |> json(%{"friendship" => friendship, "back_friendship" => back_friendship})
+        |> json(show_friendships(friendships))
 
       {:error, error} ->
         conn
@@ -40,10 +40,10 @@ defmodule PhoenixSocial.FriendController do
   end
   defp add_friendship(conn, user) do
     case AddToFriends.call(conn.assigns[:current_user], user) do
-      {:ok, {friendship, back_friendship}} ->
+      {:ok, friendships} ->
         conn
         |> put_status(:created)
-        |> json(%{"friendship" => friendship, "back_friendship" => back_friendship})
+        |> json(show_friendships(friendships))
 
       {:error, error} ->
         conn
@@ -64,10 +64,10 @@ defmodule PhoenixSocial.FriendController do
 
   defp reject_friendship(conn, friendship) do
     case RejectFriendship.call(friendship) do
-      {:ok, {friendship, back_friendship}} ->
+      {:ok, friendships} ->
         conn
         |> put_status(:ok)
-        |> json(%{"friendship" => friendship, "back_friendship" => back_friendship})
+        |> json(show_friendships(friendships))
 
       {:error, error} ->
         conn
@@ -82,5 +82,10 @@ defmodule PhoenixSocial.FriendController do
     |> where(user2_id: ^user_id)
     |> preload(:user2)
     |> Repo.one
+  end
+
+  defp show_friendships({friendship, back_friendship}) do
+    %{"friendship" => friendship |> Repo.preload(:user2),
+      "back_friendship" => back_friendship |> Repo.preload(:user2)}
   end
 end

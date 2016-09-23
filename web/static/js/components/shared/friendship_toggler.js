@@ -16,7 +16,7 @@ class FriendshipToggler extends React.Component {
   _renderAddButton() {
     return (
       <button
-        className="btn btn-primary"
+        className="btn btn-primary btn-add-friend"
         onClick={::this._handleAddClick}>
         Add to friends
       </button>
@@ -26,7 +26,7 @@ class FriendshipToggler extends React.Component {
   _renderRemoveButton() {
     return (
       <button
-        className="btn btn-danger"
+        className="btn btn-danger btn-remove-friend"
         onClick={::this._handleRemoveClick}>
         Remove from friends
       </button>

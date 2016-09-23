@@ -28,17 +28,22 @@ class Friends extends React.Component {
     this.setState({currentTabKey: key});
   }
 
-  _renderTabTitle(title, badgeValue) {
+  _renderTabTitle(state, title, badgeValue) {
     if (badgeValue === 0) return title;
-    return <span>{title}&nbsp;<span className='badge'>{badgeValue}</span></span>;
+
+    return (
+      <span id={`friends_tab_${state}`}>
+        {title}&nbsp;<span className='badge'>{badgeValue}</span>
+      </span>
+    );
   }
 
-  _renderTab(index, title, friends) {
+  _renderTab(index, state, title, friends) {
     return (
       <Tab
         eventKey={index}
         key={index}
-        title={this._renderTabTitle(title, friends.length)}
+        title={this._renderTabTitle(state, title, friends.length)}
         disabled={friends.length === 0}>
 
         <br />
@@ -48,11 +53,11 @@ class Friends extends React.Component {
   }
 
   _renderFriends() {
-    const tabs = Friends.tabs.map(({state, title}, idx) => {
+    const tabs = Friends.tabs.map(({state, title}, index) => {
       const friends = this.props.user.friends
         .filter(f => f.friendship_state === state);
 
-      return this._renderTab(idx, title, friends);
+      return this._renderTab(index, state, title, friends);
     });
 
     let content;

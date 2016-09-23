@@ -17,14 +17,16 @@ class Authenticated extends React.Component {
             <nav className="list-group">
               <Link
                 to={`/${userSlug}`}
-                className="list-group-item">
+                className="list-group-item"
+                id="user_menu_profile_link">
 
                 My profile
               </Link>
 
               <Link
                 to={`/${userSlug}/friends`}
-                className="list-group-item">
+                className="list-group-item"
+                id="user_menu_friends_link">
 
                 My friends
               </Link>

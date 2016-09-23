@@ -1,23 +1,25 @@
 defmodule PhoenixSocial.Operations.RejectFriendship do
-  alias PhoenixSocial.{Repo, Friendship}
+  import PhoenixSocial.Friendship, only: [toggle_state: 2, back_friendship: 1]
+  alias PhoenixSocial.Repo
 
   def call(%{state: "rejected"}), do: {:error, "Already rejected"}
   def call(%{state: "cancelled"}), do: {:error, "Already cancelled"}
   def call(friendship) do
     Repo.transaction fn ->
-      {:ok, friendship} = Friendship.toggle_state(friendship, "rejected")
-      {:ok, back_friendship} = cancel_back_friendship(friendship)
+      {:ok, friendship} = friendship |> toggle_state("rejected")
+      {:ok, back_friendship} = friendship |> cancel_back
       {friendship, back_friendship}
     end
   end
 
-  defp cancel_back_friendship(friendship) do
-    backward_friendship = Friendship.back_friendship(friendship)
-
-    if backward_friendship && backward_friendship.state == "pending" do
-      Friendship.toggle_state(backward_friendship, "cancelled")
+  defp cancel_back(friendship) do
+    if back_friendship = back_friendship(friendship) do
+      back_friendship |> cancel
     else
-      {:ok, backward_friendship}
+      {:error, "Back friendship not found"}
     end
   end
+
+  defp cancel(%{state: "pending"} = f), do: f |> toggle_state("cancelled")
+  defp cancel(friendship), do: {:ok, friendship}
 end
