@@ -7,8 +7,8 @@ defmodule PhoenixSocial.UserControllerTest do
     insert(:friendship, user1: user, state: "pending")
 
     assert {200, json} = api_call(:get, "/users/#{user.id}", as: user)
-    assert length(json["user"]["friends"]) == 2
-    states = Enum.map(json["user"]["friends"], &(&1["friendship_state"]))
+    assert length(json["user"]["friendships"]) == 2
+    states = Enum.map(json["user"]["friendships"], &(&1["state"]))
     assert Enum.sort(states) == ["confirmed", "pending"]
   end
 
@@ -18,7 +18,7 @@ defmodule PhoenixSocial.UserControllerTest do
     insert(:friendship, user1: user, state: "pending")
 
     assert {200, json} = api_call(:get, "/users/#{user.id}", as: insert(:user))
-    assert length(json["user"]["friends"]) == 1
-    assert List.first(json["user"]["friends"])["friendship_state"] == "confirmed"
+    assert length(json["user"]["friendships"]) == 1
+    assert List.first(json["user"]["friendships"])["state"] == "confirmed"
   end
 end

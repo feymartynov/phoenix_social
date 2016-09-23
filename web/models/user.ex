@@ -38,15 +38,6 @@ defmodule PhoenixSocial.User do
   end
 end
 
-defimpl Poison.Encoder, for: PhoenixSocial.User do
-  def encode(user, _options) do
-    user
-    |> Map.take([:id, :first_name, :last_name])
-    |> Map.put(:friends, user.friendships)
-    |> Poison.encode!
-  end
-end
-
 defimpl String.Chars, for: PhoenixSocial.User do
   def to_string(user), do: PhoenixSocial.User.full_name(user)
 end

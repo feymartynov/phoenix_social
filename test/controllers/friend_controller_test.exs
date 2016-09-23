@@ -19,14 +19,14 @@ defmodule PhoenixSocial.FriendControllerTest do
   defp assert_has_friend(user, friend, expected_state) do
     assert {200, json} = api_call(:get, "/users/current", as: user)
 
-    friend_info = json["user"]["friends"] |> List.first
+    friend_info = json["user"]["friendships"] |> List.first
     assert friend_info["id"] == friend.id
-    assert friend_info["friendship_state"] == expected_state
+    assert friend_info["state"] == expected_state
   end
 
   defp assert_friendship_states(json, user, friend, forward_state, backward_state) do
-    assert json["friendship"]["friendship_state"] == forward_state
-    assert json["back_friendship"]["friendship_state"] == backward_state
+    assert json["friendship"]["state"] == forward_state
+    assert json["friendship"]["back_friendship"]["state"] == backward_state
     assert_has_friend(user, friend, forward_state)
     assert_has_friend(friend, user, backward_state)
   end
@@ -91,7 +91,7 @@ defmodule PhoenixSocial.FriendControllerTest do
 
     body = %{"user_id" => friend.id}
     assert {422, json} = api_call(:post, "/friends", body: body, as: user)
-    assert json["error"] == "John Doe has been already added to friends"
+    assert json["error"] == "Already confirmed"
   end
 
   test "Try adding an absent user to friends" do
