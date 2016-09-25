@@ -5,7 +5,6 @@ const Constants = {
 
   // Session
   AUTH_TOKEN_KEY: 'phoenixSocialAuthToken',
-  FETCH_CURRENT_USER: 'FETCH_CURRENT_USER',
   SIGN_UP_FAILURE: 'SIGN_UP_FAILURE',
   USER_SIGNED_OUT: 'USER_SIGNED_OUT',
 

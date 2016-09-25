@@ -27,7 +27,7 @@ class SignUp extends React.Component {
   }
 
   render() {
-    const errors = this.props.signUpErrors;
+    const {errors} = this.props;
 
     return (
       <div className="container">
@@ -94,5 +94,5 @@ class SignUp extends React.Component {
   }
 }
 
-const mapStateToProps = state => state.session;
+const mapStateToProps = state => state.signUp;
 export default connect(mapStateToProps)(SignUp);

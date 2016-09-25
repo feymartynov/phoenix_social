@@ -13,7 +13,7 @@ class AuthenticatedIndex extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  currentUser: state.session.currentUser
+  currentUser: state.users.find(user => user.current)
 });
 
 export default connect(mapStateToProps)(AuthenticatedIndex);

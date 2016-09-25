@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import Actions from '../../actions/profile';
+import Immutable from 'immutable';
+import Actions from '../../actions/user';
 
 class FriendshipToggler extends React.Component {
   _handleAddClick(e) {
@@ -34,22 +35,22 @@ class FriendshipToggler extends React.Component {
   }
 
   render() {
-    const {user, currentUser} = this.props;
-    if (user.id === currentUser.id) return false;
+    const {user, currentUser, friendships} = this.props;
 
-    const friend = currentUser.friends.find(friend => friend.id === user.id);
-
-    if (!friend || friend.friendship_state != "confirmed") {
-      return this._renderAddButton();
-    } else {
+    if (user.id === currentUser.id) {
+      return false;
+    } else if (friendships.get([currentUser.id, user.id]) === "confirmed") {
       return this._renderRemoveButton();
+    } else {
+      return this._renderAddButton();
     }
   }
 }
 
 const mapStateToProps = (state, ownProps) => ({
   user: ownProps.user,
-  currentUser: state.session.currentUser
+  currentUser: state.users.find(user => user.current),
+  friendships: state.friendships
 });
 
 export default connect(mapStateToProps)(FriendshipToggler);

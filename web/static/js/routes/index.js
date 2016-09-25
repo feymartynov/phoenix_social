@@ -13,7 +13,7 @@ import Friends from '../components/friends';
 
 export default function configRoutes(store) {
   function ensureAuthenticated(_nextState, replace, callback) {
-    const currentUser = store.getState().session.currentUser;
+    const currentUser = store.getState().users.find(user => user.current);
     const token = localStorage.getItem(Constants.AUTH_TOKEN_KEY);
 
     if (!currentUser && token) {

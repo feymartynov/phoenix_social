@@ -1,6 +1,6 @@
 import Constants from '../constants';
 
-export default function reducer(state = null, action = {}) {
+export default function reducer(error = null, action = {}) {
   switch (action.type) {
     case Constants.ERROR_RAISED:
       return action.error;
@@ -9,6 +9,6 @@ export default function reducer(state = null, action = {}) {
       return null;
 
     default:
-      return state;
+      return error;
   }
 }

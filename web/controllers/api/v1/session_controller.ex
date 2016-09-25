@@ -1,7 +1,7 @@
 defmodule PhoenixSocial.SessionController do
   use PhoenixSocial.Web, :controller
 
-  alias PhoenixSocial.Session
+  alias PhoenixSocial.{Session, UserView}
 
   plug :scrub_params, "session" when action in [:create]
 
@@ -9,7 +9,7 @@ defmodule PhoenixSocial.SessionController do
     case Session.authenticate(session_params) do
       {:ok, user} ->
         {:ok, jwt, _full_claims} = Guardian.encode_and_sign(user, :token)
-        user = user |> Repo.preload(:friendships)
+        user = UserView.render(user, as: user)
 
         conn
         |> put_status(:created)

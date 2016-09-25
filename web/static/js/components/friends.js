@@ -1,9 +1,10 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Tabs, Tab} from 'react-bootstrap';
+import {setDocumentTitle} from '../utils';
 import Loader from './shared/loader';
 import FriendsList from './friends/friends_list';
-import Actions from '../actions/profile';
+import Actions from '../actions/user';
 
 class Friends extends React.Component {
   static get tabs() {
@@ -53,9 +54,16 @@ class Friends extends React.Component {
   }
 
   _renderFriends() {
+    setDocumentTitle(this._renderTitle());
+
+    const {friendships, users} = this.props;
+
     const tabs = Friends.tabs.map(({state, title}, index) => {
-      const friends = this.props.user.friends
-        .filter(f => f.friendship_state === state);
+      const friends =
+        friendships
+          .filter(friendshipState => friendshipState === state)
+          .map((_, key) => users.find(user => user.id === key.friendId))
+          .toArray();
 
       return this._renderTab(index, state, title, friends);
     });
@@ -107,12 +115,28 @@ class Friends extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  userId: parseInt(ownProps.params.userId),
-  user: state.profile.user,
-  error: state.error,
-  currentUser: state.session.currentUser
-});
+function userFriendships(state, userId, currentUser) {
+  return (
+    state.friendships.map
+      .filter((friendshipState, key) =>
+        key.userId === userId &&
+          (friendshipState === "confirmed" || currentUser.id === userId))
+  );
+}
+
+function mapStateToProps(state, ownProps) {
+  const userId = parseInt(ownProps.params.userId);
+  const currentUser = state.users.find(user => user.current);
+
+  return {
+    userId: userId,
+    user: state.users.find(user => user.id === userId),
+    users: state.users,
+    friendships: userFriendships(state, userId, currentUser),
+    error: state.error,
+    currentUser: currentUser
+  };
+}
 
 export default connect(mapStateToProps)(Friends);
 

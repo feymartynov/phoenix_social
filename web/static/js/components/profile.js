@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router';
 import {setDocumentTitle} from '../utils';
-import Actions from '../actions/profile';
+import Actions from '../actions/user';
 import Loader from '../components/shared/loader';
 import FriendshipToggler from './shared/friendship_toggler';
 
@@ -53,9 +53,9 @@ class Profile extends React.Component {
 
 const mapStateToProps = (state, ownProps) => ({
   userId: parseInt(ownProps.params.userId),
-  user: state.profile.user,
+  user: state.users.find(user => user.id === parseInt(ownProps.params.userId)),
   error: state.error,
-  currentUser: state.session.currentUser
+  currentUser: state.users.find(user => user.current)
 });
 
 export default connect(mapStateToProps)(Profile);

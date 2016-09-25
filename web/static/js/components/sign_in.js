@@ -63,5 +63,4 @@ class SignIn extends React.Component {
   }
 }
 
-const mapStateToProps = state => state.session;
-export default connect(mapStateToProps)(SignIn);
+export default connect(() => ({}))(SignIn);

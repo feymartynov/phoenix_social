@@ -1,12 +1,14 @@
 import {combineReducers} from 'redux';
 import {routerReducer} from 'react-router-redux';
 import error from './error';
-import session from './session';
-import profile from './profile';
+import signUp from './sign_up';
+import users from './users';
+import friendships from './friendships';
 
 export default combineReducers({
   routing: routerReducer,
   error,
-  session,
-  profile
+  signUp,
+  users,
+  friendships
 });

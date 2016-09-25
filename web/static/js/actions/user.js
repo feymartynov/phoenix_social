@@ -17,7 +17,11 @@ const Actions = {
 
           error.response.json()
             .then(json => {
-              dispatch({type: Constants.USER_FETCH_FAILURE});
+              dispatch({
+                type: Constants.USER_FETCH_FAILURE,
+                id
+              });
+
               dispatch(ErrorActions.raise(json.error));
             })
             .catch(error => console.error(error));
