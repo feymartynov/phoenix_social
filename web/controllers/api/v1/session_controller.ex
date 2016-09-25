@@ -15,9 +15,7 @@ defmodule PhoenixSocial.SessionController do
         |> put_status(:created)
         |> json(%{jwt: jwt, user: user})
       :error ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{error: "Invalid email or password"})
+        conn |> respond_with_error("Ivalid email or password")
     end
   end
 

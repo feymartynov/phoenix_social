@@ -1,5 +1,6 @@
 defmodule PhoenixSocial.User do
   use PhoenixSocial.Web, :model
+  use Arc.Ecto.Schema
 
   schema "users" do
     field :first_name, :string
@@ -7,6 +8,7 @@ defmodule PhoenixSocial.User do
     field :email, :string
     field :encrypted_password, :string
     field :password, :string, virtual: true
+    field :avatar, PhoenixSocial.Avatar.Type
     timestamps
     has_many :friendships, PhoenixSocial.Friendship, foreign_key: :user1_id
     has_many :friends, through: [:friendships, :user2]
@@ -25,6 +27,17 @@ defmodule PhoenixSocial.User do
     |> validate_confirmation(:password)
     |> unique_constraint(:email, name: :users_lower_email_index)
     |> encrypt_password
+  end
+
+  def update_avatar(user, path) do
+    avatar =
+      if path do
+        %{filename: "user#{user.id}.jpg", path: path}
+      else
+        nil
+      end
+
+    cast_attachments(user, %{"avatar" => avatar}, [:avatar])
   end
 
   defp encrypt_password(changeset) do

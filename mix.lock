@@ -1,4 +1,6 @@
-%{"base64url": {:hex, :base64url, "0.0.1", "36a90125f5948e3afd7be97662a1504b934dd5dac78451ca6e9abf85a10286be", [:rebar], []},
+%{"arc": {:hex, :arc, "0.5.3", "2bc1b4ce8c1064ae12015f5612f3e3853d354859905bb34088b3579bf34a519d", [:mix], [{:ex_aws, "~> 0.4.10 or ~> 0.5.0", [hex: :ex_aws, optional: true]}, {:httpoison, "~> 0.7", [hex: :httpoison, optional: true]}, {:poison, "~> 1.2 or ~> 2.0", [hex: :poison, optional: true]}]},
+  "arc_ecto": {:hex, :arc_ecto, "0.4.4", "2ea481a546ceb79090e90984de1a423a1a8a04fe78c871ab05b09f1dffcf9e35", [:mix], [{:arc, "~> 0.5.3", [hex: :arc, optional: false]}, {:ecto, "~> 2.0", [hex: :ecto, optional: false]}]},
+  "base64url": {:hex, :base64url, "0.0.1", "36a90125f5948e3afd7be97662a1504b934dd5dac78451ca6e9abf85a10286be", [:rebar], []},
   "certifi": {:hex, :certifi, "0.4.0", "a7966efb868b179023618d29a407548f70c52466bf1849b9e8ebd0e34b7ea11f", [:rebar3], []},
   "comeonin": {:hex, :comeonin, "2.5.2", "bbad773af30a7632a63053014d5cfebf6df2c1ad114167b4db02f05b5c60901b", [:mix, :make, :make], []},
   "connection": {:hex, :connection, "1.0.4", "a1cae72211f0eef17705aaededacac3eb30e6625b04a6117c1b2db6ace7d5976", [:mix], []},

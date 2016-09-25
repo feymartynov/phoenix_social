@@ -50,6 +50,18 @@ defmodule PhoenixSocial.Web do
       defp set_current_user(conn, _params) do
         assign(conn, :current_user, Guardian.Plug.current_resource(conn))
       end
+
+      defp respond_with_error(conn, error) do
+        body =
+          cond do
+            is_map(error) || is_list(error) ->
+              %{"errors" => error}
+            true ->
+              %{"error" => error}
+          end
+
+        conn |> put_status(:unprocessable_entity) |> json(body)
+      end
     end
   end
 

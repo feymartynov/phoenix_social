@@ -1,8 +1,6 @@
 defmodule PhoenixSocial.Friendship do
   use PhoenixSocial.Web, :model
 
-  alias PhoenixSocial.Repo
-
   @primary_key false
   schema "friendships" do
     field :state, :string

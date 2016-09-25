@@ -19,7 +19,7 @@ defmodule PhoenixSocial.Mixfile do
   def application do
     [mod: {PhoenixSocial, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex]]
+                    :phoenix_ecto, :postgrex, :arc_ecto]]
   end
 
   # Specifies which paths to compile per environment.
@@ -40,6 +40,7 @@ defmodule PhoenixSocial.Mixfile do
      {:cowboy, "~> 1.0"},
      {:comeonin, "~> 2.0"},
      {:guardian, "~> 0.12.0"},
+     {:arc_ecto, "~> 0.4.4"},
      {:hound, "~> 1.0", only: :test},
      {:ex_machina, "~> 1.0", only: :test}]
   end

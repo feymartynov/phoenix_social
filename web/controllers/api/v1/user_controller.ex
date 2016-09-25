@@ -1,7 +1,7 @@
 defmodule PhoenixSocial.UserController do
   use PhoenixSocial.Web, :controller
 
-  alias PhoenixSocial.{Repo, User, Friendship, UserView}
+  alias PhoenixSocial.{Repo, User, UserView}
   alias Guardian.Plug.EnsureAuthenticated
 
   plug :scrub_params, "user" when action in [:create]

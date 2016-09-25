@@ -44,7 +44,7 @@ defmodule PhoenixSocial.FriendController do
         view = FriendshipView.render(friendship, back_friendship)
         conn |> put_status(opts[:ok_status]) |> json(%{"friendship" => view})
       {:error, error} ->
-        conn |> put_status(:unprocessable_entity) |> json(%{"error" => error})
+        conn |> respond_with_error(error)
     end
   end
 end

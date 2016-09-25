@@ -1,5 +1,5 @@
 defmodule PhoenixSocial.FriendshipView do
-  alias PhoenixSocial.{Repo, Friendship}
+  alias PhoenixSocial.Repo
 
   def render(friendship), do: render(friendship, nil)
   def render(friendship, nil) do

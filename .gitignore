@@ -20,4 +20,5 @@ erl_crash.dump
 /node_modules
 /priv/static/css/application.css
 /priv/static/js/application.js
+/priv/static/uploads
 /config/keys/*.pem
