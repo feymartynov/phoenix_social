@@ -22,6 +22,7 @@ defmodule PhoenixSocial.ModelCase do
       import Ecto.Changeset
       import Ecto.Query
       import PhoenixSocial.ModelCase
+      import PhoenixSocial.Factory
     end
   end
 

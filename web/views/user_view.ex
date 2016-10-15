@@ -8,7 +8,7 @@ defmodule PhoenixSocial.UserView do
 
     user
     |> Map.take([:id, :first_name, :last_name])
-    |> Map.put(:avatar, Avatar.urls({user.avatar, user}))
+    |> Map.put(:avatar, Avatar.public_urls({user.avatar, user}))
     |> Map.put(:friendships, render_friends(user))
   end
 

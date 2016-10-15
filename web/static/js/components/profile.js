@@ -4,16 +4,33 @@ import {Link} from 'react-router';
 import {setDocumentTitle} from '../utils';
 import Actions from '../actions/user';
 import Loader from '../components/shared/loader';
+import AvatarUploader from './profile/avatar_uploader';
 import FriendshipToggler from './shared/friendship_toggler';
 
 class Profile extends React.Component {
+  _renderOwnerLinks() {
+    const {currentUser, user} = this.props;
+    if (currentUser.id !== user.id) return false;
+
+    return (
+      <ul className="list-unstyled">
+        <li>
+          <AvatarUploader user={user} />
+        </li>
+      </ul>
+    )
+  }
+
   _renderVisitorLinks() {
     const {currentUser, user} = this.props;
     if (currentUser.id === user.id) return false;
 
     return (
-      <ul>
-        <li className="nav nav-pills">
+      <ul className="list-unstyled">
+        <li>
+          <FriendshipToggler user={user}/>
+        </li>
+        <li>
           <Link to={`/user${user.id}/friends`}>
             Friends of {user.first_name}
           </Link>
@@ -23,17 +40,25 @@ class Profile extends React.Component {
   }
 
   _renderProfile() {
-    const {first_name, last_name} = this.props.user;
-    const fullName = [first_name, last_name].join(' ');
+    const {user} = this.props;
+    const fullName = [user.first_name, user.last_name].join(' ');
+    const avatarSrc = user.avatar && user.avatar.big || '/images/default_avatar.png';
 
     setDocumentTitle(fullName);
 
     return (
       <div>
-        <h1>{fullName}</h1>
-        {this._renderVisitorLinks()}
-        <br />
-        <FriendshipToggler user={this.props.user}/>
+        <div className="col-sm-3">
+          <div>
+            <img className="img-responsive" src={avatarSrc} alt={fullName} />
+          </div>
+          <br />
+          {this._renderOwnerLinks()}
+          {this._renderVisitorLinks()}
+        </div>
+        <div className="col-sm-7">
+          <h1>{fullName}</h1>
+        </div>
       </div>
     );
   }

@@ -23,9 +23,9 @@ const defaultHeaders = {
   'Content-Type': 'application/json'
 };
 
-function httpFetch(url, options = {}) {
+export function httpFetch(url, options = {}) {
   const authToken = localStorage.getItem(Constants.AUTH_TOKEN_KEY);
-  const headers = {...defaultHeaders, Authorization: authToken};
+  const headers = {...(options.headers || defaultHeaders), Authorization: authToken};
 
   return (
     fetch(url, {...options, headers: headers})

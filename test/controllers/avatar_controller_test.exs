@@ -3,6 +3,7 @@ defmodule PhoenixSocial.AvatarControllerTest do
 
   test "Upload avatar" do
     user = insert(:user)
+    {:ok, jwt, _} = Guardian.encode_and_sign(user, :token)
 
     body = %{
       avatar: %Plug.Upload{
@@ -13,8 +14,16 @@ defmodule PhoenixSocial.AvatarControllerTest do
       File.rm_rf!("uploads/avatars/user#{user.id}")
     end
 
-    {201, json} = api_call(:post, "/avatar", body: body, as: user)
-    assert json["big"] =~ "uploads/avatars/user#{user.id}/user#{user.id}_big.jpg"
+    response =
+      build_conn
+      |> put_req_header("authorization", jwt)
+      |> post("/api/v1/avatar", body)
+
+    assert response.status == 201
+
+    json = Poison.decode!(response.resp_body)
+    expected_path = "/uploads/avatars/user#{user.id}/user#{user.id}_big.jpg"
+    assert json["user"]["avatar"]["big"] == expected_path
   end
 
   test "Remove avatar" do
@@ -27,7 +36,9 @@ defmodule PhoenixSocial.AvatarControllerTest do
       Path.dirname(avatar_path) |> File.rm_rf!
     end
 
-    assert {204, _} = api_call(:delete, "/avatar", as: user)
+    assert {200, json} = api_call(:delete, "/avatar", as: user)
+    assert json["user"]["avatar"] == nil
+
     assert !File.exists?(avatar_path)
     user = Repo.get(PhoenixSocial.User, user.id)
     assert is_nil(user.avatar)

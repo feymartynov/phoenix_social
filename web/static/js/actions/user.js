@@ -1,5 +1,5 @@
 import Constants from '../constants';
-import {httpGet, httpPost, httpDelete, handleFetchError} from '../utils';
+import {httpGet, httpPost, httpDelete, httpFetch, handleFetchError} from '../utils';
 import ErrorActions from './error';
 
 const Actions = {
@@ -49,6 +49,33 @@ const Actions = {
             type: Constants.USER_REMOVED_FROM_FRIENDS,
             friendship: json.friendship,
             back_friendship: json.back_friendship
+          });
+        })
+        .catch(error => handleFetchError(dispatch, error));
+    };
+  },
+  uploadAvatar: (file) => {
+    return dispatch => {
+      let body = new FormData();
+      body.append('avatar', file);
+
+      httpFetch('/api/v1/avatar', {method: 'post', headers: {}, body: body})
+        .then(json => {
+          dispatch({
+            type: Constants.USER_FETCHED,
+            user: json.user
+          });
+        })
+        .catch(error => handleFetchError(dispatch, error));
+    };
+  },
+  removeAvatar: () => {
+    return dispatch => {
+      httpDelete('/api/v1/avatar')
+        .then(json => {
+          dispatch({
+            type: Constants.USER_FETCHED,
+            user: json.user
           });
         })
         .catch(error => handleFetchError(dispatch, error));

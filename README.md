@@ -19,3 +19,4 @@ __Note:__ this instruction is for macOS only.
   * Run tests with `mix test`
 
   
+  
