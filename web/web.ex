@@ -62,6 +62,8 @@ defmodule PhoenixSocial.Web do
 
         conn |> put_status(:unprocessable_entity) |> json(body)
       end
+
+      defoverridable [respond_with_error: 2]
     end
   end
 

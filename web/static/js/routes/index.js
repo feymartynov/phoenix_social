@@ -34,7 +34,7 @@ export default function configRoutes(store) {
         <IndexRoute component={AuthenticatedIndex} />
 
         <Route path="user:userId">
-          <IndexRoute component={Profile} />
+          <IndexRoute component={Profile}/>
           <Route path="friends" component={Friends} />
         </Route>
 

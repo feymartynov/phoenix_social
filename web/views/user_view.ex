@@ -3,11 +3,16 @@ defmodule PhoenixSocial.UserView do
 
   alias PhoenixSocial.{Repo, Friendship, Avatar, FriendshipView}
 
+  @fields [
+    :id, :first_name, :last_name, :birthday, :gender, :marital_status, :city,
+    :languages, :occupation, :interests, :favourite_music, :favourite_movies,
+    :favourite_books, :favourite_games, :favourite_cites, :about]
+
   def render(user, opts \\ [as: nil]) do
     user = user |> preload_friendships(opts[:as])
 
     user
-    |> Map.take([:id, :first_name, :last_name])
+    |> Map.take(@fields)
     |> Map.put(:avatar, Avatar.public_urls({user.avatar, user}))
     |> Map.put(:friendships, render_friends(user))
   end

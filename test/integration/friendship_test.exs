@@ -52,6 +52,7 @@ defmodule PhoenixSocial.Integration.FriendshipTest do
 
     # confirm friendship
     find_element(:class, "btn-add-friend") |> click
+    :timer.sleep(500)
 
     # see confirmed friends tab active
     assert find_element(:css, "#friends_lists_tabs .active #friends_tab_confirmed")

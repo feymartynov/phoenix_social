@@ -1,5 +1,5 @@
 import Constants from '../constants';
-import {httpGet, httpPost, httpDelete, httpFetch, handleFetchError} from '../utils';
+import {httpGet, httpPost, httpPut, httpDelete, httpFetch, handleFetchError} from '../utils';
 import ErrorActions from './error';
 
 const Actions = {
@@ -76,6 +76,18 @@ const Actions = {
           dispatch({
             type: Constants.USER_FETCHED,
             user: json.user
+          });
+        })
+        .catch(error => handleFetchError(dispatch, error));
+    };
+  },
+  updateProfile: (changeset) => {
+    return dispatch => {
+      httpPut(`/api/v1/users/current`, {user: changeset})
+        .then(json => {
+          dispatch({
+            type: Constants.USER_FETCHED,
+            user: {...json.user, current: true}
           });
         })
         .catch(error => handleFetchError(dispatch, error));

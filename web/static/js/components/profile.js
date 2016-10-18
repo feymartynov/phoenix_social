@@ -6,11 +6,12 @@ import Actions from '../actions/user';
 import Loader from '../components/shared/loader';
 import AvatarUploader from './profile/avatar_uploader';
 import FriendshipToggler from './shared/friendship_toggler';
+import ProfileFields from './profile/profile_fields';
 
 class Profile extends React.Component {
   _renderOwnerLinks() {
-    const {currentUser, user} = this.props;
-    if (currentUser.id !== user.id) return false;
+    const {user, editable} = this.props;
+    if (!editable) return false;
 
     return (
       <ul className="list-unstyled">
@@ -22,8 +23,8 @@ class Profile extends React.Component {
   }
 
   _renderVisitorLinks() {
-    const {currentUser, user} = this.props;
-    if (currentUser.id === user.id) return false;
+    const {user, editable} = this.props;
+    if (editable) return false;
 
     return (
       <ul className="list-unstyled">
@@ -40,7 +41,7 @@ class Profile extends React.Component {
   }
 
   _renderProfile() {
-    const {user} = this.props;
+    const {user, editable} = this.props;
     const fullName = [user.first_name, user.last_name].join(' ');
     const avatarSrc = user.avatar && user.avatar.big || '/images/default_avatar.png';
 
@@ -58,6 +59,7 @@ class Profile extends React.Component {
         </div>
         <div className="col-sm-7">
           <h1>{fullName}</h1>
+          <ProfileFields user={user} editable={editable} />
         </div>
       </div>
     );
@@ -76,11 +78,17 @@ class Profile extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  userId: parseInt(ownProps.params.userId),
-  user: state.users.find(user => user.id === parseInt(ownProps.params.userId)),
-  error: state.error,
-  currentUser: state.users.find(user => user.current)
-});
+const mapStateToProps = (state, ownProps) => {
+  const userId = parseInt(ownProps.params.userId);
+  const user = state.users.find(user => user.id === userId);
+  const currentUser = state.users.find(user => user.current);
+
+  return {
+    userId: userId,
+    user: user,
+    error: state.error,
+    editable: currentUser.id === userId,
+  };
+};
 
 export default connect(mapStateToProps)(Profile);

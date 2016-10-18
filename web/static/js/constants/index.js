@@ -12,7 +12,22 @@ const Constants = {
   USER_FETCHED: 'USER_FETCHED',
   USER_FETCH_FAILURE: 'USER_FETCH_FAILURE',
   USER_ADDED_TO_FRIENDS: 'USER_ADDED_TO_FRIENDS',
-  USER_REMOVED_FROM_FRIENDS: 'USER_REMOVED_FROM_FRIENDS'
+  USER_REMOVED_FROM_FRIENDS: 'USER_REMOVED_FROM_FRIENDS',
+  PROFILE_FIELDS: {
+    birthday: 'Date of birth',
+    gender: 'Gender',
+    marital_status: 'Marital status',
+    city: 'City',
+    languages: 'Languages',
+    occupation: 'Occupation',
+    interests: 'Interests',
+    favourite_music: 'Favourite music',
+    favourite_movies: 'Favourite movies',
+    favourite_books: 'Favourite books',
+    favourite_games: 'Favourite games',
+    favourite_cites: 'Favourite cites',
+    about: 'About self'
+  }
 };
 
 export default Constants;

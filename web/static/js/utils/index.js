@@ -42,6 +42,10 @@ export function httpPost(url, data) {
   return httpFetch(url, {method: 'post', body: JSON.stringify(data)});
 }
 
+export function httpPut(url, data) {
+  return httpFetch(url, {method: 'put', body: JSON.stringify(data)});
+}
+
 export function httpDelete(url) {
   return httpFetch(url, {method: 'delete'});
 }
