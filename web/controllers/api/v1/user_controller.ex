@@ -1,5 +1,6 @@
 defmodule PhoenixSocial.UserController do
   use PhoenixSocial.Web, :controller
+  use PhoenixSocial.SharedPlugs
 
   alias PhoenixSocial.{Repo, User, UserView}
   alias Guardian.Plug.EnsureAuthenticated
@@ -24,7 +25,8 @@ defmodule PhoenixSocial.UserController do
         view = UserView.render(user, as: conn.assigns[:current_user])
         conn |> put_status(:created) |> json(%{jwt: jwt, user: view})
       {:error, changeset} ->
-        conn |> respond_with_error(changeset)
+        error = User.error_messages(changeset)
+        conn |> respond_with_error(error)
     end
   end
 
@@ -36,21 +38,8 @@ defmodule PhoenixSocial.UserController do
         user_view = UserView.render(user, as: conn.assigns[:current_user])
         conn |> put_status(:ok) |> json(%{user: user_view})
       {:error, changeset} ->
-        conn |> respond_with_error(changeset)
-    end
-  end
-
-  defp find_user(conn, _) do
-    cond do
-      conn.params["id"] == "current" ->
-        conn |> assign(:user, conn.assigns[:current_user])
-      user = Repo.get(User, conn.params["id"]) ->
-        conn |> assign(:user, user)
-      true ->
-        conn
-        |> put_status(:not_found)
-        |> json(%{error: "User not found"})
-        |> halt
+        error = User.error_messages(changeset)
+        conn |> respond_with_error(error)
     end
   end
 
@@ -60,11 +49,5 @@ defmodule PhoenixSocial.UserController do
     else
       conn |> put_status(:forbidden) |> json(%{error: "Forbidden"}) |> halt
     end
-  end
-
-  defp respond_with_error(conn, changeset) do
-    conn
-    |> put_status(:unprocessable_entity)
-    |> json(%{error: User.error_messages(changeset)})
   end
 end

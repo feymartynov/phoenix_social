@@ -1,11 +1,13 @@
 defmodule PhoenixSocial.PostController do
   use PhoenixSocial.Web, :controller
+  use PhoenixSocial.SharedPlugs
 
   alias PhoenixSocial.{Repo, Post, PostView}
   alias PhoenixSocial.PostController.{IndexParams}
 
   plug Guardian.Plug.EnsureAuthenticated
   plug :scrub_params, "post" when action in [:create, :update]
+  plug :find_user when action in [:index]
   plug :find_post when action in [:update, :delete]
   plug :validate_index_params when action in [:index]
 
@@ -30,7 +32,7 @@ defmodule PhoenixSocial.PostController do
 
   defp index_query(conn) do
     from Post,
-      where: [user_id: ^conn.assigns[:current_user].id],
+      where: [user_id: ^conn.assigns[:user].id],
       order_by: [desc: :inserted_at],
       offset: ^conn.assigns[:validated_params].offset,
       limit: ^conn.assigns[:validated_params].limit
@@ -47,7 +49,8 @@ defmodule PhoenixSocial.PostController do
         post_view = PostView.render(post)
         conn |> put_status(:created) |> json(%{post: post_view})
       {:error, changeset} ->
-        conn |> respond_with_error(changeset)
+        error = Post.error_messages(changeset)
+        conn |> respond_with_error(error)
     end
   end
 
@@ -58,7 +61,8 @@ defmodule PhoenixSocial.PostController do
       {:ok, post} ->
         conn |> put_status(:ok) |> json(%{post: PostView.render(post)})
       {:error, changeset} ->
-        conn |> respond_with_error(changeset)
+        error = Post.error_messages(changeset)
+        conn |> respond_with_error(error)
     end
   end
 
@@ -67,7 +71,8 @@ defmodule PhoenixSocial.PostController do
       {:ok, _} ->
         conn |> put_status(:ok) |> json(%{result: :ok})
       {:error, changeset} ->
-        conn |> respond_with_error(changeset)
+        error = Post.error_messages(changeset)
+        conn |> respond_with_error(error)
     end
   end
 
@@ -89,11 +94,5 @@ defmodule PhoenixSocial.PostController do
         conn
         |> assign(:post, post)
     end
-  end
-
-  defp respond_with_error(conn, changeset) do
-    conn
-    |> put_status(:unprocessable_entity)
-    |> json(%{error: Post.error_messages(changeset)})
   end
 end

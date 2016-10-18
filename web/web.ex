@@ -54,8 +54,6 @@ defmodule PhoenixSocial.Web do
       defp respond_with_error(conn, error) do
         conn |> put_status(:unprocessable_entity) |> json(%{error: error})
       end
-
-      defoverridable [respond_with_error: 2]
     end
   end
 
