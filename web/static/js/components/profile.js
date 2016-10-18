@@ -7,6 +7,7 @@ import Loader from '../components/shared/loader';
 import AvatarUploader from './profile/avatar_uploader';
 import FriendshipToggler from './shared/friendship_toggler';
 import ProfileFields from './profile/profile_fields';
+import Wall from './profile/wall';
 
 class Profile extends React.Component {
   _renderOwnerLinks() {
@@ -48,7 +49,7 @@ class Profile extends React.Component {
     setDocumentTitle(fullName);
 
     return (
-      <div>
+      <div className="row">
         <div className="col-sm-3">
           <div>
             <img className="img-responsive" src={avatarSrc} alt={fullName} />
@@ -60,6 +61,7 @@ class Profile extends React.Component {
         <div className="col-sm-7">
           <h1>{fullName}</h1>
           <ProfileFields user={user} editable={editable} />
+          <Wall user={user} />
         </div>
       </div>
     );

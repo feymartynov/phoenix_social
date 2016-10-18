@@ -2,7 +2,7 @@ defmodule PhoenixSocial.Integration.ProfileTest do
   use PhoenixSocial.IntegrationCase
 
   @tag :integration
-  test "See users' profile fields" do
+  test "See user's profile fields" do
     insert(:user) |> sign_in
 
     user = insert(:user, city: "Moscow", occupation: "dvlpr")

@@ -68,3 +68,15 @@ export function setDocumentTitle(title) {
 export function reduceReducers(...reducers) {
   return (acc, current) => reducers.reduce((p, r) => r(p, current), acc);
 }
+
+export function nl2br(str) {
+  const newlineRegex = /(\r\n|\n\r|\r|\n)/g;
+
+  return str.split(newlineRegex).map(function (line, index) {
+    if (line.match(newlineRegex)) {
+      return React.createElement('br', {key: index});
+    } else {
+      return line;
+    }
+  });
+}
