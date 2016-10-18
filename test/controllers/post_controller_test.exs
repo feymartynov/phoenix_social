@@ -6,7 +6,7 @@ defmodule PhoenixSocial.PostControllerTest do
     posts = insert_list(2, :post, user: user)
     _unrelated_post = insert(:post)
 
-    assert {200, json} = api_call(:get, "/posts", as: user)
+    assert {200, json} = api_call(:get, "/users/#{user.id}/posts", as: user)
 
     ids = Enum.map(json["posts"], &(&1["id"]))
     expected_ids = Enum.map(posts, &(&1.id)) |> Enum.reverse
@@ -17,11 +17,26 @@ defmodule PhoenixSocial.PostControllerTest do
     assert texts == expected_texts
   end
 
+  test "List another user's posts" do
+    user = insert(:user)
+    _unrelated_post = insert(:post, user: user)
+
+    other_user = insert(:user)
+    posts = insert_list(2, :post, user: other_user)
+
+    url = "/users/#{other_user.id}/posts"
+    assert {200, json} = api_call(:get, url, as: user)
+
+    ids = Enum.map(json["posts"], &(&1["id"]))
+    expected_ids = Enum.map(posts, &(&1.id)) |> Enum.reverse
+    assert ids == expected_ids
+  end
+
   test "List posts with pagination" do
     user = insert(:user)
     posts = insert_list(3, :post, user: user)
 
-    url = "/posts?offset=1&limit=1"
+    url = "/users/#{user.id}/posts?offset=1&limit=1"
     assert {200, json} = api_call(:get, url, as: user)
     assert json["posts"] |> length == 1
 
@@ -30,22 +45,30 @@ defmodule PhoenixSocial.PostControllerTest do
   end
 
   test "Trying to specify a big limit" do
-    assert {422, json} = api_call(:get, "/posts?limit=1000", as: insert(:user))
+    user = insert(:user)
+    url = "/users/#{user.id}/posts?limit=1000"
+    assert {422, json} = api_call(:get, url, as: user)
     assert json["error"]["limit"] |> List.first == "must be less than or equal to 100"
   end
 
   test "Trying to specify a zero limit" do
-    assert {422, json} = api_call(:get, "/posts?limit=0", as: insert(:user))
+    user = insert(:user)
+    url = "/users/#{user.id}/posts?limit=0"
+    assert {422, json} = api_call(:get, url, as: user)
     assert json["error"]["limit"] |> List.first == "must be greater than or equal to 1"
   end
 
   test "Trying to specify wrong limit" do
-    assert {422, json} = api_call(:get, "/posts?limit=abcd", as: insert(:user))
+    user = insert(:user)
+    url = "/users/#{user.id}/posts?limit=abcd"
+    assert {422, json} = api_call(:get, url, as: user)
     assert json["error"]["limit"] |> List.first == "is invalid"
   end
 
   test "Trying to specify wrong offset" do
-    assert {422, json} = api_call(:get, "/posts?offset=-5", as: insert(:user))
+    user = insert(:user)
+    url = "/users/#{user.id}/posts?offset=-5"
+    assert {422, json} = api_call(:get, url, as: user)
     assert json["error"]["offset"] |> List.first == "must be greater than or equal to 0"
   end
 
