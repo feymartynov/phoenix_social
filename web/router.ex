@@ -22,6 +22,7 @@ defmodule PhoenixSocial.Router do
       resources "/users", UserController, only: [:create, :show, :update]
       resources "/friends", FriendController, only: [:create, :delete]
       resources "/avatar", AvatarController, only: [:create, :delete], singleton: true
+      resources "/posts", PostController, only: [:index, :create, :update, :delete]
     end
   end
 

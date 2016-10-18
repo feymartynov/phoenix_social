@@ -4,10 +4,10 @@ defmodule PhoenixSocial.UserController do
   alias PhoenixSocial.{Repo, User, UserView}
   alias Guardian.Plug.EnsureAuthenticated
 
+  plug EnsureAuthenticated when action in [:show, :update]
   plug :scrub_params, "user" when action in [:create, :update]
   plug :find_user when action in [:show, :update]
   plug :restrict_current_user when action in [:update]
-  plug EnsureAuthenticated when action in [:show, :update]
 
   def show(conn, _params) do
     user = conn.assigns[:user]
@@ -58,10 +58,7 @@ defmodule PhoenixSocial.UserController do
     if conn.assigns[:user] == conn.assigns[:current_user] do
       conn
     else
-      conn
-      |> put_status(:unauthorized)
-      |> json(%{error: "Unauthorized"})
-      |> halt
+      conn |> put_status(:forbidden) |> json(%{error: "Forbidden"}) |> halt
     end
   end
 

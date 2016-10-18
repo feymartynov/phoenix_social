@@ -52,15 +52,7 @@ defmodule PhoenixSocial.Web do
       end
 
       defp respond_with_error(conn, error) do
-        body =
-          cond do
-            is_map(error) || is_list(error) ->
-              %{"errors" => error}
-            true ->
-              %{"error" => error}
-          end
-
-        conn |> put_status(:unprocessable_entity) |> json(body)
+        conn |> put_status(:unprocessable_entity) |> json(%{error: error})
       end
 
       defoverridable [respond_with_error: 2]

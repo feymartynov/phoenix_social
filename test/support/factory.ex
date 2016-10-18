@@ -15,4 +15,10 @@ defmodule PhoenixSocial.Factory do
       user2: build(:user),
       state: "confirmed"}
   end
+
+  def post_factory do
+    %PhoenixSocial.Post{
+      user: build(:user),
+      text: sequence(:text, &"post ##{&1}")}
+  end
 end

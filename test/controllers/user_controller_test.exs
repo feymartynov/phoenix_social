@@ -51,8 +51,8 @@ defmodule PhoenixSocial.UserControllerTest do
     {user, other_user} = {insert(:user), insert(:user)}
     url = "/users/#{user.id}"
     body = %{"user" => %{"city" => "Moscow"}}
-    assert {401, json} = api_call(:put, url, body: body, as: other_user)
-    assert json["error"] == "Unauthorized"
+    assert {403, json} = api_call(:put, url, body: body, as: other_user)
+    assert json["error"] == "Forbidden"
   end
 
   test "Show all friends for current user" do
@@ -77,7 +77,7 @@ defmodule PhoenixSocial.UserControllerTest do
   end
 
   test "Trying to show not found user" do
-    assert {404, json} = api_call(:get, "/users/0123")
+    assert {404, json} = api_call(:get, "/users/0123", as: insert(:user))
     assert json["error"] == "User not found"
   end
 end
