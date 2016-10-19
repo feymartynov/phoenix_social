@@ -1,38 +1,35 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import Loader from '../../shared/loader';
+import InfiniteScroll from 'redux-infinite-scroll';
 import Actions from '../../../actions/posts';
 import Post from './post';
 
 class PostsList extends React.Component {
-  _renderPostsList() {
-    const posts =
-      this.props.posts.map(post =>
-        <Post key={`post_${post.id}`}
-              post={post}
-              user={this.props.user} />
-      );
-
-    return <ul className="list-unstyled list-group">{posts}</ul>;
+  _loadPosts() {
+    const {dispatch, user, posts} = this.props;
+    dispatch(Actions.fetchWall(user, posts.length));
   }
 
   render() {
-    const {user, posts, error} = this.props;
+    const posts =
+      this.props.posts.map(post =>
+        <Post key={`post_${post.id}`} post={post} user={this.props.user} />
+      );
 
     return (
-      <Loader
-        action={Actions.fetchWall(user)}
-        onLoaded={::this._renderPostsList}
-        loaded={posts}
-        error={error}/>
-    )
+      <InfiniteScroll
+        items={posts}
+        loadMore={::this._loadPosts}
+        elementIsScrollable={false}
+        holderType="ul"
+        className="list-unstyled list-group"/>
+    );
   }
 }
 
 const mapStateToProps = (state, ownProps) => ({
   user: ownProps.user,
-  error: state.error,
-  posts: state.walls.get(ownProps.user.id)
+  posts: state.walls.get(ownProps.user.id).toArray(),
 });
 
 export default connect(mapStateToProps)(PostsList);

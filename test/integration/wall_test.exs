@@ -4,13 +4,27 @@ defmodule PhoenixSocial.Integration.WallTest do
   @tag :integration
   test "See user's wall" do
     user = insert(:user) |> sign_in
-    posts = insert_list(3, :post, user: user)
+    posts = insert_list(15, :post, user: user)
 
     navigate_to "/user#{user.id}"
     wall = find_element(:id, "wall")
 
+    # should see only 10 posts
+    lis = wall |> find_all_within_element(:css, "li[data-post-id]")
+    assert lis |> length == 10
+
+    # scroll to the bottom of the page
+    execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+    # older posts should now appear
+    lis = wall |> find_all_within_element(:css, "li[data-post-id]")
+    assert lis |> length == 15
+
+    # there should be all posts' texts
     for post <- posts do
-      assert wall |> inner_text =~ post.text
+      selector = "li[data-post-id='#{post.id}']"
+      post_li = wall |> find_within_element(:css, selector)
+      assert post_li |> inner_text =~ post.text
     end
   end
 

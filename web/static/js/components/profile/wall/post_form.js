@@ -27,6 +27,7 @@ class PostForm extends React.Component {
     e.preventDefault();
     const text = this._getText();
     this.props.dispatch(Actions.createPost(text));
+    this.setState({formOpen: false});
   }
 
   _renderClosed() {

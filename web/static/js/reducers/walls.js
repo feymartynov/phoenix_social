@@ -11,17 +11,13 @@ class Registry {
   }
 
   get(userId) {
-    return this.map.get(userId);
+    return this.map.get(userId) || Immutable.List([]);
   }
 
-  set(userId, posts) {
-    return this._setWall(userId, Immutable.List(posts));
-  }
-
-  add(post) {
-    const wall = this.map.get(post.user_id);
-    const updatedWall = wall.unshift(post);
-    return this._setWall(post.user_id, updatedWall);
+  add(userId, posts) {
+    const wall = this.map.get(userId) || Immutable.List([]);
+    const updatedWall = wall.concat(posts).sortBy(p => -Date.parse(p.inserted_at));
+    return this._setWall(userId, updatedWall);
   }
 
   update(post) {
@@ -41,10 +37,10 @@ class Registry {
 export default function reducer(walls = new Registry, action = {}) {
   switch (action.type) {
     case Constants.WALL_FETCHED:
-      return walls.set(action.user.id, action.posts);
+      return walls.add(action.user.id, action.posts);
 
     case Constants.POST_CREATED:
-      return walls.add(action.post);
+      return walls.add(action.post.user_id, [action.post]);
 
     case Constants.POST_UPDATED:
       return walls.update(action.post);

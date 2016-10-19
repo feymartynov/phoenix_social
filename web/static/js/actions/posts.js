@@ -2,12 +2,14 @@ import Constants from '../constants';
 import {httpGet, httpPost, httpPut, httpDelete, handleFetchError} from '../utils';
 
 const Actions = {
-  fetchWall: (user, offset = 0, limit = 100) => {
+  fetchWall: (user, offset = 0, limit = 10) => {
     return dispatch => {
       const params = `offset=${offset}&limit=${limit}`;
 
       httpGet(`/api/v1/users/${user.id}/posts?${params}`)
         .then(json => {
+          if (json.posts.length === 0) return;
+
           dispatch({
             type: Constants.WALL_FETCHED,
             user: user,
