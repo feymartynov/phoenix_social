@@ -1,5 +1,5 @@
 import Constants from '../constants';
-import {httpGet, httpPost, handleFetchError} from '../utils';
+import {httpGet, httpPost, httpPut, httpDelete, handleFetchError} from '../utils';
 
 const Actions = {
   fetchWall: (user, offset = 0, limit = 100) => {
@@ -24,6 +24,30 @@ const Actions = {
           dispatch({
             type: Constants.POST_CREATED,
             post: json.post
+          });
+        })
+        .catch(error => handleFetchError(dispatch, error));
+    };
+  },
+  editPost: (post, text) => {
+    return dispatch => {
+      httpPut(`/api/v1/posts/${post.id}`, {post: {text: text}})
+        .then(json => {
+          dispatch({
+            type: Constants.POST_UPDATED,
+            post: json.post
+          });
+        })
+        .catch(error => handleFetchError(dispatch, error));
+    };
+  },
+  deletePost: (post) => {
+    return dispatch => {
+      httpDelete(`/api/v1/posts/${post.id}`)
+        .then(() => {
+          dispatch({
+            type: Constants.POST_DELETED,
+            post: post
           });
         })
         .catch(error => handleFetchError(dispatch, error));

@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import PostForm from './wall/post_form';
-import PostsList from './wall/post_list';
+import PostsList from './wall/posts_list';
 
 class Wall extends React.Component {
   render() {

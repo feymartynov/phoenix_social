@@ -13,8 +13,6 @@ const Constants = {
   USER_FETCH_FAILURE: 'USER_FETCH_FAILURE',
   USER_ADDED_TO_FRIENDS: 'USER_ADDED_TO_FRIENDS',
   USER_REMOVED_FROM_FRIENDS: 'USER_REMOVED_FROM_FRIENDS',
-  WALL_FETCHED: 'WALL_FETCHED',
-  POST_CREATED: 'POST_CREATED',
   PROFILE_FIELDS: {
     birthday: 'Date of birth',
     gender: 'Gender',
@@ -29,7 +27,13 @@ const Constants = {
     favourite_games: 'Favourite games',
     favourite_cites: 'Favourite cites',
     about: 'About self'
-  }
+  },
+
+  // Posts
+  WALL_FETCHED: 'WALL_FETCHED',
+  POST_CREATED: 'POST_CREATED',
+  POST_UPDATED: 'POST_UPDATED',
+  POST_DELETED: 'POST_DELETED'
 };
 
 export default Constants;

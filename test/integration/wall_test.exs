@@ -37,4 +37,56 @@ defmodule PhoenixSocial.Integration.WallTest do
     posts_list = wall |> find_within_element(:css, "ul")
     assert posts_list |> inner_text =~ "hello world"
   end
+
+  @tag :integration
+  test "Editing a post" do
+    post = insert(:post, text: "Edit me")
+    post.user |> sign_in
+
+    navigate_to "/user#{post.user.id}"
+    post_li = find_element(:css, "#wall li[data-post-id='#{post.id}']")
+
+    assert post_li |> inner_text =~ "Edit me"
+
+    post_li
+    |> find_within_element(:class, "btn-edit-post")
+    |> click
+
+    edit_form = post_li |> find_within_element(:class, "post-edit-form")
+
+    edit_form
+    |> find_within_element(:css, "textarea[name=text]")
+    |> fill_field("Edited")
+
+    edit_form
+    |> find_within_element(:class, "btn-send-post")
+    |> click
+
+    assert {:error, _} = post_li |> search_within_element(:class, "post-edit-form", 0)
+    assert post_li |> inner_text =~ "Edited"
+
+    refresh_page
+    assert find_element(:id, "wall") |> inner_text =~ "Edited"
+  end
+
+  @tag :integration
+  test "Deleting a post" do
+    post = insert(:post, text: "Delete me")
+    post.user |> sign_in
+
+    navigate_to "/user#{post.user.id}"
+    post_li = find_element(:css, "#wall li[data-post-id='#{post.id}']")
+
+    assert post_li |> inner_text =~ "Delete me"
+
+    post_li
+    |> find_within_element(:class, "btn-delete-post")
+    |> click
+
+    assert !(find_element(:id, "wall") |> inner_text =~ "Delete me")
+    assert {:error, _} = search_element(:css, "#wall li[data-post-id='#{post.id}']", 0)
+
+    refresh_page
+    assert !(find_element(:id, "wall") |> inner_text =~ "Delete me")
+  end
 end

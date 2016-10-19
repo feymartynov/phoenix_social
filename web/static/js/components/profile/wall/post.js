@@ -1,0 +1,76 @@
+import React from 'react';
+import {connect} from 'react-redux';
+import {nl2br} from '../../../utils';
+import Actions from '../../../actions/posts';
+import PostEditForm from './post_edit_form';
+
+class Post extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {editing: false};
+  }
+
+  _handleEdit(e) {
+    e.preventDefault();
+    this.setState({editing: true});
+  }
+
+  _handleCancelEdit() {
+    this.setState({editing: false});
+  }
+
+  _handleDelete(e) {
+    e.preventDefault();
+    this.props.dispatch(Actions.deletePost(this.props.post));
+  }
+
+  _renderControls() {
+    return (
+      <span className="small">
+        <button onClick={::this._handleEdit} className="btn-link btn-edit-post">edit</button>
+        <button onClick={::this._handleDelete} className="btn-link btn-delete-post">delete</button>
+      </span>
+    );
+  }
+
+  _renderContent() {
+    if (this.state.editing) {
+      return (
+        <PostEditForm
+          post={this.props.post}
+          onDone={::this._handleCancelEdit} />
+      );
+    } else {
+      return <article>{nl2br(this.props.post.text)}</article>;
+    }
+  }
+
+  render() {
+    const {post, user, editable} = this.props;
+    const date = new Date(post.inserted_at).toLocaleString();
+    const controls = editable ? this._renderControls() : false;
+
+    return (
+      <li key={`post_${post.id}`} className="list-group-item" data-post-id={post.id}>
+        <div>
+          <strong>{user.first_name} {user.last_name}</strong>
+        </div>
+        <div>
+          <time dateTime={post.inserted_at} className="small text-muted">
+            {date}
+          </time>
+          {controls}
+        </div>
+        {this._renderContent()}
+      </li>
+    );
+  }
+}
+
+const mapStateToProps = (state, ownProps) => ({
+  post: ownProps.post,
+  user: ownProps.user,
+  editable: state.users.find(user => user.current).id === ownProps.post.user_id,
+});
+
+export default connect(mapStateToProps)(Post);

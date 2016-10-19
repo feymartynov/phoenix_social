@@ -1,23 +1,18 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {nl2br} from '../../../utils';
 import Loader from '../../shared/loader';
 import Actions from '../../../actions/posts';
+import Post from './post';
 
 class PostsList extends React.Component {
-  _renderPost(post) {
-    const date = new Date(post.inserted_at).toLocaleString();
-
-    return (
-      <li key={`post_${post.id}`} className="list-group-item">
-        <time dateTime={post.inserted_at} className="text-muted">{date}</time>
-        <article>{nl2br(post.text)}</article>
-      </li>
-    );
-  }
-
   _renderPostsList() {
-    const posts = this.props.posts.map(this._renderPost);
+    const posts =
+      this.props.posts.map(post =>
+        <Post key={`post_${post.id}`}
+              post={post}
+              user={this.props.user} />
+      );
+
     return <ul className="list-unstyled list-group">{posts}</ul>;
   }
 
