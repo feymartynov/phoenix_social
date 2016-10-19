@@ -4,6 +4,7 @@ defmodule PhoenixSocial.PostController do
 
   alias PhoenixSocial.{Repo, Post, PostView}
   alias PhoenixSocial.PostController.{IndexParams}
+  alias PhoenixSocial.Operations.{CreatePost}
 
   plug Guardian.Plug.EnsureAuthenticated
   plug :scrub_params, "post" when action in [:create, :update]
@@ -38,15 +39,11 @@ defmodule PhoenixSocial.PostController do
       limit: ^conn.assigns[:validated_params].limit
   end
 
-  def create(conn, %{"post" => post_params}) do
-    post =
-      %Post{
-        author: conn.assigns[:current_user],
-        user: conn.assigns[:user]}
+  def create(conn, %{"post" => %{"text" => text}}) do
+    user = conn.assigns[:user]
+    author = conn.assigns[:current_user]
 
-    changeset = Post.changeset(post, post_params)
-
-    case Repo.insert(changeset) do
+    case CreatePost.call(user, author, text) do
       {:ok, post} ->
         post_view = PostView.render(post)
         conn |> put_status(:created) |> json(%{post: post_view})

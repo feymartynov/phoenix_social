@@ -25,4 +25,12 @@ defmodule PhoenixSocial.Friendship do
     |> validate_required([:state])
     |> unique_constraint(:user2, name: :friendships_user1_id_user2_id_index)
   end
+
+  def friend_of?(user2, user1) do
+    query =
+      from __MODULE__,
+      where: [user1_id: ^user1.id, user2_id: ^user2.id, state: "confirmed"]
+
+    !!PhoenixSocial.Repo.one(query)
+  end
 end

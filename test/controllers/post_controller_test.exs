@@ -90,6 +90,39 @@ defmodule PhoenixSocial.PostControllerTest do
     assert json["error"]["text"] |> List.first == "can't be blank"
   end
 
+  test "Allow posting to friend's wall" do
+    user = insert(:user)
+    friend = insert(:user)
+    insert(:friendship, user1: user, user2: friend, state: "confirmed")
+    insert(:friendship, user1: friend, user2: user, state: "confirmed")
+
+    url = "/users/#{friend.id}/posts"
+    body = %{"post" => %{"text" => "Hello world"}}
+    assert {201, _} = api_call(:post, url, body: body, as: user)
+  end
+
+  test "Reject posting to non-friend's wall" do
+    user = insert(:user)
+    other_user = insert(:user, first_name: "Elvis", last_name: "Presley")
+
+    url = "/users/#{other_user.id}/posts"
+    body = %{"post" => %{"text" => "Hello world"}}
+    assert {422, json} = api_call(:post, url, body: body, as: user)
+    assert json["error"]["author"] == ["is not a friend of Elvis Presley"]
+  end
+
+  test "Reject posting to the wall when rejected by a friend" do
+    user = insert(:user)
+    friend = insert(:user, first_name: "Elvis", last_name: "Presley")
+    insert(:friendship, user1: user, user2: friend, state: "confirmed")
+    insert(:friendship, user1: friend, user2: user, state: "rejected")
+
+    url = "/users/#{friend.id}/posts"
+    body = %{"post" => %{"text" => "Hello world"}}
+    assert {422, json} = api_call(:post, url, body: body, as: user)
+    assert json["error"]["author"] == ["is not a friend of Elvis Presley"]
+  end
+
   test "Update a post" do
     user = insert(:user)
     post = insert(:post, text: "old text", user: user, author: user)
