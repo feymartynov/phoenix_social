@@ -19,6 +19,7 @@ defmodule PhoenixSocial.Factory do
   def post_factory do
     %PhoenixSocial.Post{
       user: build(:user),
+      author: build(:user),
       text: sequence(:text, &"post ##{&1}")}
   end
 end

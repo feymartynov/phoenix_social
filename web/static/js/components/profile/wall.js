@@ -6,7 +6,7 @@ import PostsList from './wall/posts_list';
 class Wall extends React.Component {
   render() {
     const {user, editable} = this.props;
-    const postForm = editable ? <PostForm /> : false;
+    const postForm = editable ? <PostForm user={user} /> : false;
 
     return (
       <div id="wall">

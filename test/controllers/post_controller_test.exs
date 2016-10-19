@@ -3,7 +3,7 @@ defmodule PhoenixSocial.PostControllerTest do
 
   test "List user's posts'" do
     user = insert(:user)
-    posts = insert_list(2, :post, user: user)
+    posts = insert_list(2, :post, user: user, author: user)
     _unrelated_post = insert(:post)
 
     assert {200, json} = api_call(:get, "/users/#{user.id}/posts", as: user)
@@ -19,7 +19,7 @@ defmodule PhoenixSocial.PostControllerTest do
 
   test "List another user's posts" do
     user = insert(:user)
-    _unrelated_post = insert(:post, user: user)
+    _unrelated_post = insert(:post, user: user, author: user)
 
     other_user = insert(:user)
     posts = insert_list(2, :post, user: other_user)
@@ -34,7 +34,7 @@ defmodule PhoenixSocial.PostControllerTest do
 
   test "List posts with pagination" do
     user = insert(:user)
-    posts = insert_list(3, :post, user: user)
+    posts = insert_list(3, :post, user: user, author: user)
 
     url = "/users/#{user.id}/posts?offset=1&limit=1"
     assert {200, json} = api_call(:get, url, as: user)
@@ -74,32 +74,37 @@ defmodule PhoenixSocial.PostControllerTest do
 
   test "Create a post" do
     user = insert(:user)
+    url = "/users/#{user.id}/posts"
     body = %{"post" => %{"text" => "Hello world"}}
-    assert {201, json} = api_call(:post, "/posts", body: body, as: user)
+    assert {201, json} = api_call(:post, url, body: body, as: user)
     assert json["post"]["text"] == "Hello world"
     assert json["post"]["user_id"] == user.id
+    assert json["post"]["author"]["id"] == user.id
   end
 
   test "Trying to create a post with wrong params" do
     user = insert(:user)
+    url = "/users/#{user.id}/posts"
     body = %{"post" => %{"text" => ""}}
-    assert {422, json} = api_call(:post, "/posts", body: body, as: user)
+    assert {422, json} = api_call(:post, url, body: body, as: user)
     assert json["error"]["text"] |> List.first == "can't be blank"
   end
 
   test "Update a post" do
-    post = insert(:post, text: "old text")
+    user = insert(:user)
+    post = insert(:post, text: "old text", user: user, author: user)
     url = "/posts/#{post.id}"
     body = %{"post" => %{"text" => "new text"}}
-    assert {200, json} = api_call(:put, url, body: body, as: post.user)
+    assert {200, json} = api_call(:put, url, body: body, as: user)
     assert json["post"]["text"] == "new text"
   end
 
   test "Trying to update a post with wrong params" do
-    post = insert(:post, text: "old text")
+    user = insert(:user)
+    post = insert(:post, text: "old text", user: user, author: user)
     url = "/posts/#{post.id}"
     body = %{"post" => %{"text" => ""}}
-    assert {422, json} = api_call(:put, url, body: body, as: post.user)
+    assert {422, json} = api_call(:put, url, body: body, as: user)
     assert json["error"]["text"] |> List.first == "can't be blank"
   end
 
@@ -112,9 +117,10 @@ defmodule PhoenixSocial.PostControllerTest do
   end
 
   test "Delete a post" do
-    post = insert(:post)
+    user = insert(:user)
+    post = insert(:post, user: user, author: user)
     url = "/posts/#{post.id}"
-    assert {200, json} = api_call(:delete, url, as: post.user)
+    assert {200, json} = api_call(:delete, url, as: user)
     assert json["result"] == "ok"
   end
 

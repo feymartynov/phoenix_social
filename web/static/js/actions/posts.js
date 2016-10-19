@@ -19,9 +19,9 @@ const Actions = {
         .catch(error => handleFetchError(dispatch, error));
     };
   },
-  createPost: (text) => {
+  createPost: (user, text) => {
     return dispatch => {
-      httpPost('/api/v1/posts', {post: {text: text}})
+      httpPost(`/api/v1/users/${user.id}/posts`, {post: {text: text}})
         .then(json => {
           dispatch({
             type: Constants.POST_CREATED,

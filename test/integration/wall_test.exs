@@ -4,7 +4,7 @@ defmodule PhoenixSocial.Integration.WallTest do
   @tag :integration
   test "See user's wall" do
     user = insert(:user) |> sign_in
-    posts = insert_list(15, :post, user: user)
+    posts = insert_list(15, :post, user: user, author: user)
 
     navigate_to "/user#{user.id}"
     wall = find_element(:id, "wall")
@@ -54,8 +54,8 @@ defmodule PhoenixSocial.Integration.WallTest do
 
   @tag :integration
   test "Editing a post" do
-    post = insert(:post, text: "Edit me")
-    post.user |> sign_in
+    user = insert(:user) |> sign_in
+    post = insert(:post, text: "Edit me", user: user, author: user)
 
     navigate_to "/user#{post.user.id}"
     post_li = find_element(:css, "#wall li[data-post-id='#{post.id}']")
@@ -85,8 +85,8 @@ defmodule PhoenixSocial.Integration.WallTest do
 
   @tag :integration
   test "Deleting a post" do
-    post = insert(:post, text: "Delete me")
-    post.user |> sign_in
+    user = insert(:user) |> sign_in
+    post = insert(:post, text: "Delete me", user: user, author: user)
 
     navigate_to "/user#{post.user.id}"
     post_li = find_element(:css, "#wall li[data-post-id='#{post.id}']")

@@ -26,7 +26,7 @@ class PostForm extends React.Component {
   _handleSubmit(e) {
     e.preventDefault();
     const text = this._getText();
-    this.props.dispatch(Actions.createPost(text));
+    this.props.dispatch(Actions.createPost(this.props.user, text));
     this.setState({formOpen: false});
   }
 
@@ -34,7 +34,7 @@ class PostForm extends React.Component {
     return (
       <form onFocus={::this._handleOpen}>
         <FormGroup>
-          <FormControl type="text" placeholder="How is it going?"/>
+          <FormControl type="text" placeholder="What's up?"/>
         </FormGroup>
       </form>
     );

@@ -7,7 +7,7 @@ defmodule PhoenixSocial.PostController do
 
   plug Guardian.Plug.EnsureAuthenticated
   plug :scrub_params, "post" when action in [:create, :update]
-  plug :find_user when action in [:index]
+  plug :find_user when action in [:index, :create]
   plug :find_post when action in [:update, :delete]
   plug :validate_index_params when action in [:index]
 
@@ -39,10 +39,12 @@ defmodule PhoenixSocial.PostController do
   end
 
   def create(conn, %{"post" => post_params}) do
-    changeset =
-      Post.changeset(
-        %Post{user: conn.assigns[:current_user]},
-        post_params)
+    post =
+      %Post{
+        author: conn.assigns[:current_user],
+        user: conn.assigns[:user]}
+
+    changeset = Post.changeset(post, post_params)
 
     case Repo.insert(changeset) do
       {:ok, post} ->

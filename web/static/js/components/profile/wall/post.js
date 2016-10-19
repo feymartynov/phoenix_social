@@ -46,14 +46,14 @@ class Post extends React.Component {
   }
 
   render() {
-    const {post, user, editable} = this.props;
+    const {post, editable} = this.props;
     const date = new Date(post.inserted_at).toLocaleString();
     const controls = editable ? this._renderControls() : false;
 
     return (
       <li key={`post_${post.id}`} className="list-group-item" data-post-id={post.id}>
         <div>
-          <strong>{user.first_name} {user.last_name}</strong>
+          <strong>{post.author.first_name} {post.author.last_name}</strong>
         </div>
         <div>
           <time dateTime={post.inserted_at} className="small text-muted">
@@ -69,8 +69,7 @@ class Post extends React.Component {
 
 const mapStateToProps = (state, ownProps) => ({
   post: ownProps.post,
-  user: ownProps.user,
-  editable: state.users.find(user => user.current).id === ownProps.post.user_id,
+  editable: state.users.find(user => user.current).id === ownProps.post.author.id,
 });
 
 export default connect(mapStateToProps)(Post);

@@ -13,7 +13,7 @@ class PostsList extends React.Component {
   render() {
     const posts =
       this.props.posts.map(post =>
-        <Post key={`post_${post.id}`} post={post} user={this.props.user} />
+        <Post key={`post_${post.id}`} post={post} />
       );
 
     return (
