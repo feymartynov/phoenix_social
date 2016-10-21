@@ -4,10 +4,17 @@ import PostForm from './wall/post_form';
 import PostsList from './wall/posts_list';
 
 class Wall extends React.Component {
-  render() {
+  _allowPostForm() {
     const {user, currentUser} = this.props;
-    const allowPostForm = user.id === currentUser.id;
-    const postForm = allowPostForm ? <PostForm user={user}/> : false;
+    if (user.id === currentUser.id) return true;
+
+    const friendship = currentUser.friends.get(user.id);
+    return friendship && friendship.state === 'confirmed';
+  }
+
+  render() {
+    const {user} = this.props;
+    const postForm = this._allowPostForm() ? <PostForm user={user}/> : false;
 
     return (
       <div id="wall">

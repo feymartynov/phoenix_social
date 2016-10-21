@@ -54,6 +54,54 @@ defmodule PhoenixSocial.Integration.WallTest do
   end
 
   @tag :integration
+  test "Make a post on a friend's wall" do
+    user = insert(:user, first_name: "John", last_name: "Lennon") |> sign_in
+    friend = insert(:user, first_name: "Elvis", last_name: "Presley")
+    insert(:friendship, user1: user, user2: friend, state: "confirmed")
+    insert(:friendship, user1: friend, user2: user, state: "confirmed")
+
+    navigate_to "/user#{friend.id}"
+    wall = find_element(:id, "wall")
+
+    # expand post form
+    wall
+    |> find_within_element(:css, "input[type=text]")
+    |> click
+
+    wall
+    |> find_within_element(:css, "textarea[name=text]")
+    |> fill_field("hello world")
+
+    wall
+    |> find_within_element(:class, "btn-send-post")
+    |> click
+
+    posts_list = wall |> find_within_element(:css, "ul")
+    assert posts_list |> inner_text =~ "John Lennon"
+    assert posts_list |> inner_text =~ "hello world"
+  end
+
+  @tag :integration
+  test "Read someone's wall" do
+    insert(:user) |> sign_in
+    other_user = insert(:user)
+    author = insert(:user, first_name: "John", last_name: "Lennon")
+    insert(:post, user: other_user, author: author, text: "hello world")
+
+    navigate_to "/user#{other_user.id}"
+    wall = find_element(:id, "wall")
+
+    # should not see post form
+    assert(
+      {:error, _} =
+        wall |> search_within_element(:css, "input[type=text]", 1))
+
+    posts_list = wall |> find_within_element(:css, "ul")
+    assert posts_list |> inner_text =~ "John Lennon"
+    assert posts_list |> inner_text =~ "hello world"
+  end
+
+  @tag :integration
   test "Editing a post" do
     user = insert(:user) |> sign_in
     post = insert(:post, text: "Edit me", user: user, author: user)
