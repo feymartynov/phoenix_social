@@ -42,7 +42,7 @@ class Header extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  currentUser: state.users.find(user => user.current)
+  currentUser: state.users.getCurrentUser()
 });
 
 export default connect(mapStateToProps)(Header);

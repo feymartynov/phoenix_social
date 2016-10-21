@@ -53,25 +53,9 @@ class Friends extends React.Component {
     );
   }
 
-  _renderFriends() {
-    setDocumentTitle(this._renderTitle());
-
-    const {friendships, users} = this.props;
-
-    const tabs = Friends.tabs.map(({state, title}, index) => {
-      const friends =
-        friendships
-          .filter(friendshipState => friendshipState === state)
-          .map((_, key) => users.find(user => user.id === key.friendId))
-          .toArray();
-
-      return this._renderTab(index, state, title, friends);
-    });
-
-    let content;
-
+  _renderTabs(tabs) {
     if (tabs.find(tab => !tab.props.disabled)) {
-      content = (
+      return (
         <Tabs
           activeKey={this._currentTabKey(tabs)}
           onSelect={::this._handleTabToggle}
@@ -81,13 +65,24 @@ class Friends extends React.Component {
         </Tabs>
       );
     } else {
-      content = <p className="lead">No friends :(</p>
+      return <p className="lead">No friends :(</p>;
     }
+  }
+
+  _renderFriends() {
+    const {user} = this.props;
+    const title = this._renderTitle();
+    setDocumentTitle(title);
+
+    const tabs = Friends.tabs.map(({state, title}, index) => {
+      const friends = user.friends.filter(f => f.state === state).toArray();
+      return this._renderTab(index, state, title, friends);
+    });
 
     return (
       <div>
-        <h1>{this._renderTitle()}</h1>
-        {content}
+        <h1>{title}</h1>
+        {this._renderTabs(tabs)}
       </div>
     );
   }
@@ -115,26 +110,14 @@ class Friends extends React.Component {
   }
 }
 
-function userFriendships(state, userId, currentUser) {
-  return (
-    state.friendships.map
-      .filter((friendshipState, key) =>
-        key.userId === userId &&
-          (friendshipState === "confirmed" || currentUser.id === userId))
-  );
-}
-
 function mapStateToProps(state, ownProps) {
   const userId = parseInt(ownProps.params.userId);
-  const currentUser = state.users.find(user => user.current);
 
   return {
     userId: userId,
-    user: state.users.find(user => user.id === userId),
-    users: state.users,
-    friendships: userFriendships(state, userId, currentUser),
-    error: state.error,
-    currentUser: currentUser
+    user: state.users.get(userId),
+    currentUser: state.users.getCurrentUser(),
+    error: state.error
   };
 }
 

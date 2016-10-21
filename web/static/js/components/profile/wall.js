@@ -5,13 +5,14 @@ import PostsList from './wall/posts_list';
 
 class Wall extends React.Component {
   render() {
-    const {user, editable} = this.props;
-    const postForm = editable ? <PostForm user={user} /> : false;
+    const {user, currentUser} = this.props;
+    const allowPostForm = user.id === currentUser.id;
+    const postForm = allowPostForm ? <PostForm user={user}/> : false;
 
     return (
       <div id="wall">
         {postForm}
-        <PostsList user={user} />
+        <PostsList user={user}/>
       </div>
     );
   }
@@ -19,7 +20,7 @@ class Wall extends React.Component {
 
 const mapStateToProps = (state, ownProps) => ({
   user: ownProps.user,
-  editable: state.users.find(user => user.current).id == ownProps.user.id
+  currentUser: state.users.getCurrentUser()
 });
 
 export default connect(mapStateToProps)(Wall);

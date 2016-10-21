@@ -2,22 +2,63 @@ import Immutable from 'immutable';
 import _ from 'lodash';
 import Constants from '../constants';
 
-export default function reducer(users = Immutable.Map({}), action = {}) {
+class UsersRegistry {
+  constructor(map = Immutable.Map({})) {
+    this.map = map;
+  }
+
+  _setEntry(entry) {
+    return new UsersRegistry(this.map.set(entry.id, entry));
+  }
+
+  _buildFriendsMap(friendships) {
+    return friendships.reduce((acc, friendship) => {
+      return acc.set(friendship.id, friendship);
+    }, Immutable.Map({}));
+  }
+
+  set(user, isCurrent = null) {
+    const entry = {
+      ..._.omit(user, 'friendships'),
+      friends: this._buildFriendsMap(user.friendships),
+      current: isCurrent === null ? user.current : isCurrent
+    };
+
+    return this._setEntry(entry);
+  }
+
+  setFriendship(user, friendship) {
+    const updatedFriends = user.friends.set(friendship.id, friendship);
+    return this._setEntry({...user, friends: updatedFriends});
+  }
+
+  delete(id) {
+    return new UsersRegistry(this.map.delete(id));
+  }
+
+  get(id) {
+    return this.map.get(id);
+  }
+
+  getCurrentUser() {
+    return this.map.find(user => user.current);
+  }
+}
+
+export default function reducer(users = new UsersRegistry, action = {}) {
   switch (action.type) {
     case Constants.USER_FETCHED:
-      const user = _.omit(action.user, 'friendships');
-
-      const friends =
-        action.user.friendships
-          .map(friend => _.omit(friend, 'state'));
-
-      return friends.concat(user).reduce((acc, u) => acc.set(u.id, u), users);
+      return users.set(action.user, action.current);
 
     case Constants.USER_FETCH_FAILURE:
-      return users.delete(action.user.id);
+      return users.delete(action.id);
 
     case Constants.USER_SIGNED_OUT:
-      return users.set(action.user.id, action.user.delete('current'));
+      return users.set(action.user, false);
+
+    case Constants.USER_ADDED_TO_FRIENDS:
+    case Constants.USER_REMOVED_FROM_FRIENDS:
+      return users.setFriendship(users.getCurrentUser(), action.friendship);
 
     default:
       return users;

@@ -25,8 +25,8 @@ class PostForm extends React.Component {
 
   _handleSubmit(e) {
     e.preventDefault();
-    const text = this._getText();
-    this.props.dispatch(Actions.createPost(this.props.user, text));
+    const {dispatch, user} = this.props;
+    dispatch(Actions.createPost(user, this._getText()));
     this.setState({formOpen: false});
   }
 

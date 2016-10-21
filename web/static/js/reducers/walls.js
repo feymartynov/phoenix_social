@@ -1,13 +1,13 @@
 import Immutable from 'immutable';
 import Constants from '../constants';
 
-class Registry {
+class WallsRegistry {
   constructor(map = Immutable.Map({})) {
     this.map = map;
   }
 
   _setWall(userId, posts) {
-    return new Registry(this.map.set(userId, posts));
+    return new WallsRegistry(this.map.set(userId, posts));
   }
 
   get(userId) {
@@ -34,7 +34,7 @@ class Registry {
   }
 }
 
-export default function reducer(walls = new Registry, action = {}) {
+export default function reducer(walls = new WallsRegistry, action = {}) {
   switch (action.type) {
     case Constants.WALL_FETCHED:
       return walls.add(action.user.id, action.posts);

@@ -69,7 +69,7 @@ class Post extends React.Component {
 
 const mapStateToProps = (state, ownProps) => ({
   post: ownProps.post,
-  editable: state.users.find(user => user.current).id === ownProps.post.author.id,
+  editable: state.users.getCurrentUser().id === ownProps.post.author.id
 });
 
 export default connect(mapStateToProps)(Post);

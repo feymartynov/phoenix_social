@@ -17,7 +17,7 @@ class Profile extends React.Component {
     return (
       <ul className="list-unstyled">
         <li>
-          <AvatarUploader user={user} />
+          <AvatarUploader user={user}/>
         </li>
       </ul>
     )
@@ -52,7 +52,7 @@ class Profile extends React.Component {
       <div className="row">
         <div className="col-sm-3">
           <div>
-            <img className="img-responsive" src={avatarSrc} alt={fullName} />
+            <img className="img-responsive" src={avatarSrc} alt={fullName}/>
           </div>
           <br />
           {this._renderOwnerLinks()}
@@ -60,8 +60,8 @@ class Profile extends React.Component {
         </div>
         <div className="col-sm-7">
           <h1>{fullName}</h1>
-          <ProfileFields user={user} editable={editable} />
-          <Wall user={user} />
+          <ProfileFields user={user} editable={editable}/>
+          <Wall user={user}/>
         </div>
       </div>
     );
@@ -74,16 +74,16 @@ class Profile extends React.Component {
       <Loader
         action={Actions.fetchUser(userId)}
         onLoaded={::this._renderProfile}
-        loaded={user && user.id === userId}
+        loaded={user}
         error={error}/>
     );
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+function mapStateToProps(state, ownProps) {
   const userId = parseInt(ownProps.params.userId);
-  const user = state.users.find(user => user.id === userId);
-  const currentUser = state.users.find(user => user.current);
+  const currentUser = state.users.getCurrentUser()
+  const user = state.users.get(userId);
 
   return {
     userId: userId,
@@ -91,6 +91,6 @@ const mapStateToProps = (state, ownProps) => {
     error: state.error,
     editable: currentUser.id === userId,
   };
-};
+}
 
 export default connect(mapStateToProps)(Profile);

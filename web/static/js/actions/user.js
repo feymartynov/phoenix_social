@@ -23,8 +23,7 @@ const Actions = {
               });
 
               dispatch(ErrorActions.raise(json.error));
-            })
-            .catch(error => console.error(error));
+            });
         });
     };
   },
@@ -87,7 +86,8 @@ const Actions = {
         .then(json => {
           dispatch({
             type: Constants.USER_FETCHED,
-            user: {...json.user, current: true}
+            current: true,
+            user
           });
         })
         .catch(error => handleFetchError(dispatch, error));

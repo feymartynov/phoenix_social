@@ -3,8 +3,9 @@ import {connect} from 'react-redux';
 import {setDocumentTitle} from '../../utils';
 
 class Loader extends React.Component {
-  _renderLoading() {
-    return (<div>Loading&hellip;</div>);
+  componentDidMount() {
+    const {loaded, action, dispatch} = this.props;
+    if (!loaded) dispatch(action);
   }
 
   render() {
@@ -14,9 +15,8 @@ class Loader extends React.Component {
       setDocumentTitle("Error");
       return false;
     } else {
-      this.props.dispatch(this.props.action);
       setDocumentTitle("Loading");
-      return this._renderLoading();
+      return <div>Loading&hellip;</div>;
     }
   }
 }

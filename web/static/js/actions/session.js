@@ -5,7 +5,8 @@ import {httpGet, httpPost, httpDelete, handleFetchError} from '../utils';
 function setCurrentUser(dispatch, user) {
   dispatch({
     type: Constants.USER_FETCHED,
-    user: {...user, current: true}
+    current: true,
+    user
   });
 }
 
