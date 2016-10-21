@@ -9,7 +9,7 @@ function join(dest) {
 }
 
 function web(dest) {
-  return join('web/static/' + dest);
+  return join('frontend/' + dest);
 }
 
 var config = module.exports = {

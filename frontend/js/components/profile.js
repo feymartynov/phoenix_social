@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router';
 import {setDocumentTitle} from '../utils';
 import Actions from '../actions/user';
-import Loader from '../components/shared/loader';
+import Loader from './shared/loader';
 import AvatarUploader from './profile/avatar_uploader';
 import FriendshipToggler from './shared/friendship_toggler';
 import ProfileFields from './profile/profile_fields';
