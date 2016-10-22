@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {nl2br} from '../../../utils';
 import Actions from '../../../actions/posts';
+import Avatar from '../../shared/avatar';
 import PostEditForm from './post_edit_form';
 
 class Post extends React.Component {
@@ -53,6 +54,9 @@ class Post extends React.Component {
     return (
       <li key={`post_${post.id}`} className="list-group-item" data-post-id={post.id}>
         <div>
+          <div className="pull-left" style={{marginRight: '0.5em'}}>
+            <Avatar user={post.author} version="thumb"/>
+          </div>
           <strong>{post.author.first_name} {post.author.last_name}</strong>
         </div>
         <div>
@@ -61,6 +65,7 @@ class Post extends React.Component {
           </time>
           {controls}
         </div>
+        <div className="clearfix" style={{marginBottom: '0.5em'}}/>
         {this._renderContent()}
       </li>
     );

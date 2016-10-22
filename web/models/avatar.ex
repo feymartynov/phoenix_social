@@ -2,7 +2,7 @@ defmodule PhoenixSocial.Avatar do
   use Arc.Definition
   use Arc.Ecto.Definition
 
-  @versions [:big]
+  @versions [:big, :medium, :thumb]
   @extension_whitelist ~w(.jpg .jpeg .gif .png)
   @static_root "priv/static"
 
@@ -16,6 +16,20 @@ defmodule PhoenixSocial.Avatar do
   def transform(:big, _) do
     im_options = """
       -thumbnail 200x300^ -gravity center -extent 200x300 -format jpg
+    """
+
+    {:convert, im_options, :jpg}
+  end
+  def transform(:medium, _) do
+    im_options = """
+      -thumbnail 80x80^ -gravity center -extent 80x80 -format jpg
+    """
+
+    {:convert, im_options, :jpg}
+  end
+  def transform(:thumb, _) do
+    im_options = """
+      -thumbnail 50x50^ -gravity center -extent 50x50 -format jpg
     """
 
     {:convert, im_options, :jpg}

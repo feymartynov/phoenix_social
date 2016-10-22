@@ -15,7 +15,7 @@ defmodule PhoenixSocial.Integration.WallTest do
 
     # scroll to the bottom of the page
     execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    :timer.sleep(1000)
+    :timer.sleep(1500) # FIXME: doesn't wait for update
 
     # older posts should now appear
     lis = wall |> find_all_within_element(:css, "li[data-post-id]")

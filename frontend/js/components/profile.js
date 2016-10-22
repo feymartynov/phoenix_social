@@ -4,6 +4,7 @@ import {Link} from 'react-router';
 import {setDocumentTitle} from '../utils';
 import Actions from '../actions/user';
 import Loader from './shared/loader';
+import Avatar from './shared/avatar';
 import AvatarUploader from './profile/avatar_uploader';
 import FriendshipToggler from './shared/friendship_toggler';
 import ProfileFields from './profile/profile_fields';
@@ -43,16 +44,14 @@ class Profile extends React.Component {
 
   _renderProfile() {
     const {user, editable} = this.props;
-    const fullName = [user.first_name, user.last_name].join(' ');
-    const avatarSrc = user.avatar && user.avatar.big || '/images/default_avatar.png';
-
+    const fullName = `${user.first_name} ${user.last_name}`.trim();
     setDocumentTitle(fullName);
 
     return (
       <div className="row">
         <div className="col-sm-3">
           <div>
-            <img className="img-responsive" src={avatarSrc} alt={fullName}/>
+            <Avatar user={user} version="big"/>
           </div>
           <br />
           {this._renderOwnerLinks()}

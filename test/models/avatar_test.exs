@@ -9,7 +9,13 @@ defmodule PhoenixSocial.AvatarTest do
 
   test "URLs", %{user: user} do
     urls = Avatar.public_urls({%{file_name: "user123.jpg?101010"}, user})
-    assert urls == %{big: "/uploads/avatars/user123/user123_big.jpg?101010"}
+
+    expected_urls = %{
+      big: "/uploads/avatars/user123/user123_big.jpg?101010",
+      medium: "/uploads/avatars/user123/user123_medium.jpg?101010",
+      thumb: "/uploads/avatars/user123/user123_thumb.jpg?101010"}
+
+    assert urls == expected_urls
   end
 
   test "Storage directory", %{user: user} do
