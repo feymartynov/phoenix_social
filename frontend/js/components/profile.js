@@ -85,7 +85,7 @@ class Profile extends React.Component {
 
 function mapStateToProps(state, ownProps) {
   const userId = parseInt(ownProps.params.userId);
-  const currentUser = state.users.getCurrentUser()
+  const currentUser = state.users.getCurrentUser();
   const user = state.users.get(userId);
 
   return {

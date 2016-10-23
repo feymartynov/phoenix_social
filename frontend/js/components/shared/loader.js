@@ -3,9 +3,17 @@ import {connect} from 'react-redux';
 import {setDocumentTitle} from '../../utils';
 
 class Loader extends React.Component {
-  componentDidMount() {
+  _load() {
     const {loaded, action, dispatch} = this.props;
     if (!loaded) dispatch(action);
+  }
+
+  componentDidMount() {
+    this._load();
+  }
+
+  componentDidUpdate() {
+    this._load();
   }
 
   render() {
