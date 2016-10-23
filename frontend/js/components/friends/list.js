@@ -11,7 +11,10 @@ class Friend extends React.Component {
     return (
       <li className="list-group-item">
         <div className="pull-left" style={{marginRight: '1em'}}>
-          <Avatar user={friend} version="medium"/>
+          <Avatar
+            user={friend}
+            version="medium"
+            className="img-responsive img-circle"/>
         </div>
 
         <h4>
@@ -26,14 +29,15 @@ class Friend extends React.Component {
 }
 
 export default class List extends React.Component {
+  _renderFriends() {
+    return this.props.friends.map((friend, idx) =>
+      <Friend key={`friend_${idx}`} friend={friend} />
+    );
+  }
+
   render () {
     const {friends} = this.props;
     if (friends.length === 0) return false;
-
-    return (
-      <ul className="list-group">
-        {friends.map((friend, i) => <Friend key={i} friend={friend} />)}
-      </ul>
-    );
+    return <ul className="list-group">{this._renderFriends()}</ul>;
   }
 }

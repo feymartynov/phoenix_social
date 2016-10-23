@@ -40,9 +40,10 @@ export default class Tabs extends React.Component {
 
       const disabled = friends.length === 0;
       const title = disabled ? name : this._renderTitle(state, name, friends);
+      const key = `friends_tab_${index}`;
 
       return (
-        <Tab key={index} eventKey={index} title={title} disabled={disabled}>
+        <Tab key={key} eventKey={index} title={title} disabled={disabled}>
           <br />
           <List friends={friends}/>
         </Tab>

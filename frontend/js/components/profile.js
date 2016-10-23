@@ -7,6 +7,7 @@ import Loader from './shared/loader';
 import Avatar from './shared/avatar';
 import AvatarUploader from './profile/avatar_uploader';
 import FriendshipToggler from './shared/friendship_toggler';
+import Friends from './profile/friends';
 import ProfileFields from './profile/profile_fields';
 import Wall from './profile/wall';
 
@@ -42,6 +43,13 @@ class Profile extends React.Component {
     );
   }
 
+  _renderFriends() {
+    const {user} = this.props;
+    const friends = user.friends.filter(f => f.state === "confirmed");
+    const title = <Link to={`/user${user.id}/friends`}>Friends</Link>;
+    return <Friends friends={friends.toArray()} title={title}/>;
+  }
+
   _renderProfile() {
     const {user, editable} = this.props;
     const fullName = `${user.first_name} ${user.last_name}`.trim();
@@ -51,11 +59,12 @@ class Profile extends React.Component {
       <div className="row">
         <div className="col-sm-3">
           <div>
-            <Avatar user={user} version="big"/>
+            <Avatar user={user} version="big" className="img-responsive"/>
           </div>
           <br />
           {this._renderOwnerLinks()}
           {this._renderVisitorLinks()}
+          {this._renderFriends()}
         </div>
         <div className="col-sm-7">
           <h1>{fullName}</h1>

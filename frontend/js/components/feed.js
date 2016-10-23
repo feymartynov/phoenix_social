@@ -19,7 +19,7 @@ class Feed extends React.Component {
     if (!this.props.feed) return [];
 
     return this.props.feed.posts.map(post =>
-      <Post key={post.id} post={post} editable={false} deletable={false}/>
+      <Post key={`feed_post_${post.id}`} post={post}/>
     );
   }
 

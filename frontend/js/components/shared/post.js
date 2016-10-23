@@ -87,7 +87,10 @@ class Post extends React.Component {
       <li key={`post_${post.id}`} className="list-group-item" data-post-id={post.id}>
         <div>
           <div className="pull-left" style={{marginRight: '0.5em'}}>
-            <Avatar user={post.author} version="thumb"/>
+            <Avatar
+              user={post.author}
+              version="thumb"
+              className="img-responsive img-circle"/>
           </div>
           <strong>{post.author.first_name} {post.author.last_name}</strong>
         </div>
