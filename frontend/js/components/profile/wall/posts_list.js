@@ -20,7 +20,7 @@ class PostsList extends React.Component {
 
       return (
         <Post
-          key={post.id}
+          key={`post_${post.id}`}
           post={post}
           editable={editable}
           deletable={deletable}/>
