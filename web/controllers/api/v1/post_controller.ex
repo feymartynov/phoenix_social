@@ -3,40 +3,23 @@ defmodule PhoenixSocial.PostController do
   use PhoenixSocial.SharedPlugs
 
   alias PhoenixSocial.{Repo, Post, PostView}
-  alias PhoenixSocial.PostController.{IndexParams}
-  alias PhoenixSocial.Operations.{CreatePost}
+  alias PhoenixSocial.Params.Pagination
+  alias PhoenixSocial.Queries.Wall
+  alias PhoenixSocial.Operations.CreatePost
 
   plug Guardian.Plug.EnsureAuthenticated
+  plug Pagination, :pagination when action in [:index]
   plug :scrub_params, "post" when action in [:create, :update]
   plug :find_user when action in [:index, :create]
   plug :find_post when action in [:update, :delete]
-  plug :validate_index_params when action in [:index]
 
   def index(conn, _params) do
-    posts = conn |> index_query |> Repo.all |> Enum.map(&PostView.render/1)
+    posts =
+      conn.assigns[:user]
+      |> Wall.posts(conn.assigns[:pagination])
+      |> Enum.map(&PostView.render/1)
+
     conn |> put_status(:ok) |> json(%{posts: posts})
-  end
-
-  defp validate_index_params(conn, _) do
-    changeset = IndexParams.changeset(%IndexParams{}, conn.params)
-
-    if changeset.valid? do
-      validated_params = Map.merge(%IndexParams{}, changeset.changes)
-      conn |> assign(:validated_params, validated_params)
-    else
-      conn
-      |> put_status(:unprocessable_entity)
-      |> json(%{error: Post.error_messages(changeset)})
-      |> halt
-    end
-  end
-
-  defp index_query(conn) do
-    from Post,
-      where: [user_id: ^conn.assigns[:user].id],
-      order_by: [desc: :inserted_at],
-      offset: ^conn.assigns[:validated_params].offset,
-      limit: ^conn.assigns[:validated_params].limit
   end
 
   def create(conn, %{"post" => %{"text" => text}}) do
@@ -84,14 +67,14 @@ defmodule PhoenixSocial.PostController do
         |> put_status(:not_found)
         |> json(%{error: "Post not found"})
         |> halt
-      post.user_id != conn.assigns[:current_user].id ->
+      conn.assigns[:current_user].id in [post.user_id, post.author_id] ->
+        conn
+        |> assign(:post, post)
+      true ->
         conn
         |> put_status(:forbidden)
         |> json(%{error: "Forbidden"})
         |> halt
-      true ->
-        conn
-        |> assign(:post, post)
     end
   end
 end

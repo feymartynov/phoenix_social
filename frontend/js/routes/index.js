@@ -10,6 +10,7 @@ import Authenticated from '../containers/authenticated';
 import AuthenticatedIndex from '../components/authenticated_index';
 import Profile from '../components/profile';
 import Friends from '../components/friends';
+import Feed from '../components/feed';
 
 export default function configRoutes(store) {
   function ensureAuthenticated(_nextState, replace, callback) {
@@ -31,14 +32,15 @@ export default function configRoutes(store) {
       <Route path="/sign_up" component={SignUp}/>
 
       <Route path="/" component={Authenticated} onEnter={ensureAuthenticated}>
-        <IndexRoute component={AuthenticatedIndex} />
+        <IndexRoute component={AuthenticatedIndex}/>
 
         <Route path="user:userId">
           <IndexRoute component={Profile}/>
-          <Route path="friends" component={Friends} />
+          <Route path="friends" component={Friends}/>
         </Route>
 
-        <Route path="*" component={NotFound} />
+        <Route path="feed" component={Feed}/>
+        <Route path="*" component={NotFound}/>
       </Route>
     </Route>
   );

@@ -163,4 +163,12 @@ defmodule PhoenixSocial.PostControllerTest do
     assert {403, json} = api_call(:delete, url, as: insert(:user))
     assert json["error"] == "Forbidden"
   end
+
+  test "Delete someone else's post on own wall" do
+    user = insert(:user)
+    post = insert(:post, user: user)
+    url = "/posts/#{post.id}"
+    assert {200, json} = api_call(:delete, url, as: user)
+    assert json["result"] == "ok"
+  end
 end

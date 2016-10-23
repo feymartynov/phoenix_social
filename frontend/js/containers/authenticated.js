@@ -24,6 +24,14 @@ class Authenticated extends React.Component {
               </Link>
 
               <Link
+                to="/feed"
+                className="list-group-item"
+                id="user_menu_feed_link">
+
+                My newsfeed
+              </Link>
+
+              <Link
                 to={`/${userSlug}/friends`}
                 className="list-group-item"
                 id="user_menu_friends_link">

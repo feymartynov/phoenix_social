@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import InfiniteScroll from 'redux-infinite-scroll';
 import Actions from '../../../actions/posts';
-import Post from './post';
+import Post from '../../shared/post';
 
 class PostsList extends React.Component {
   _loadPosts() {
@@ -10,15 +10,28 @@ class PostsList extends React.Component {
     dispatch(Actions.fetchWall(user, posts.length));
   }
 
-  render() {
-    const posts =
-      this.props.posts.map(post =>
-        <Post key={`post_${post.id}`} post={post} />
-      );
+  _renderPosts() {
+    const {currentUser} = this.props;
 
+    return this.props.posts.map(post => {
+      const editable = currentUser.id === post.author.id;
+      const authorizedUsersIds = [post.user_id, post.author.id];
+      const deletable = authorizedUsersIds.includes(currentUser.id);
+
+      return (
+        <Post
+          key={post.id}
+          post={post}
+          editable={editable}
+          deletable={deletable}/>
+      );
+    });
+  }
+
+  render() {
     return (
       <InfiniteScroll
-        items={posts}
+        items={this._renderPosts()}
         loadMore={::this._loadPosts}
         elementIsScrollable={false}
         holderType="ul"
@@ -29,7 +42,8 @@ class PostsList extends React.Component {
 
 const mapStateToProps = (state, ownProps) => ({
   user: ownProps.user,
-  posts: state.walls.get(ownProps.user.id).toArray(),
+  currentUser: state.users.getCurrentUser(),
+  posts: state.walls.get(ownProps.user.id).toArray()
 });
 
 export default connect(mapStateToProps)(PostsList);

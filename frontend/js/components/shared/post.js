@@ -1,9 +1,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {nl2br} from '../../../utils';
-import Actions from '../../../actions/posts';
-import Avatar from '../../shared/avatar';
-import PostEditForm from './post_edit_form';
+import {nl2br} from '../../utils';
+import Actions from '../../actions/posts';
+import Avatar from './avatar';
+import PostEditForm from '../profile/wall/post_edit_form';
 
 class Post extends React.Component {
   constructor(props) {
@@ -25,13 +25,46 @@ class Post extends React.Component {
     this.props.dispatch(Actions.deletePost(this.props.post));
   }
 
-  _renderControls() {
+  _renderEditButton() {
+    if (!this.props.editable) return false;
+
     return (
-      <span className="small">
-        <button onClick={::this._handleEdit} className="btn-link btn-edit-post">edit</button>
-        <button onClick={::this._handleDelete} className="btn-link btn-delete-post">delete</button>
-      </span>
+      <button
+        className="btn-link btn-edit-post"
+        onClick={::this._handleEdit}>
+
+        edit
+      </button>
     );
+  }
+
+  _renderDeleteButton() {
+    if (!this.props.deletable) return false;
+
+    return (
+      <button
+        className="btn-link btn-delete-post"
+        onClick={::this._handleDelete}>
+
+        delete
+      </button>
+    );
+  }
+
+  _renderControls() {
+    const editButton = this._renderEditButton();
+    const deleteButton = this._renderDeleteButton();
+
+    if (editButton || deleteButton) {
+      return (
+        <span className="small">
+          {editButton}
+          {deleteButton}
+        </span>
+      );
+    } else {
+      return false;
+    }
   }
 
   _renderContent() {
@@ -47,9 +80,8 @@ class Post extends React.Component {
   }
 
   render() {
-    const {post, editable} = this.props;
+    const {post} = this.props;
     const date = new Date(post.inserted_at).toLocaleString();
-    const controls = editable ? this._renderControls() : false;
 
     return (
       <li key={`post_${post.id}`} className="list-group-item" data-post-id={post.id}>
@@ -63,7 +95,7 @@ class Post extends React.Component {
           <time dateTime={post.inserted_at} className="small text-muted">
             {date}
           </time>
-          {controls}
+          {this._renderControls()}
         </div>
         <div className="clearfix" style={{marginBottom: '0.5em'}}/>
         {this._renderContent()}
@@ -72,9 +104,4 @@ class Post extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  post: ownProps.post,
-  editable: state.users.getCurrentUser().id === ownProps.post.author.id
-});
-
-export default connect(mapStateToProps)(Post);
+export default connect(() => ({}))(Post);

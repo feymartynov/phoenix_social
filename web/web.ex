@@ -24,6 +24,8 @@ defmodule PhoenixSocial.Web do
       import Ecto.Changeset
       import Ecto.Query
 
+      use Timex.Ecto.Timestamps
+
       def error_messages(changeset) do
         Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
           Enum.reduce(opts, msg, fn {key, value}, acc ->
@@ -31,6 +33,43 @@ defmodule PhoenixSocial.Web do
           end)
         end)
       end
+    end
+  end
+
+  def params do
+    quote do
+      import Plug.Conn
+      use PhoenixSocial.Web, :model
+      use Phoenix.Controller
+
+      def init(options), do: options
+
+      def call(conn, key) do
+        changeset = __MODULE__.changeset(struct(__MODULE__), conn.params)
+
+        if changeset.valid? do
+          validated_params = Map.merge(struct(__MODULE__), changeset.changes)
+          conn |> assign(key, validated_params)
+        else
+          conn
+          |> put_status(:unprocessable_entity)
+          |> json(%{error: __MODULE__.error_messages(changeset)})
+          |> halt
+        end
+      end
+    end
+  end
+
+  def query do
+    quote do
+      use Ecto.Schema
+
+      import Ecto
+      import Ecto.Query
+
+      use Timex.Ecto.Timestamps
+
+      alias PhoenixSocial.Repo
     end
   end
 

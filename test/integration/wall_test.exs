@@ -133,7 +133,7 @@ defmodule PhoenixSocial.Integration.WallTest do
   end
 
   @tag :integration
-  test "Deleting a post" do
+  test "Deleting own post" do
     user = insert(:user) |> sign_in
     post = insert(:post, text: "Delete me", user: user, author: user)
 

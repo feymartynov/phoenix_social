@@ -1,5 +1,5 @@
-defmodule PhoenixSocial.PostController.IndexParams do
-  use PhoenixSocial.Web, :model
+defmodule PhoenixSocial.Params.Pagination do
+  use PhoenixSocial.Web, :params
 
   embedded_schema do
     field :offset, :integer, default: 0
