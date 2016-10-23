@@ -34,11 +34,6 @@ class Profile extends React.Component {
         <li>
           <FriendshipToggler user={user}/>
         </li>
-        <li>
-          <Link to={`/user${user.id}/friends`}>
-            Friends of {user.first_name}
-          </Link>
-        </li>
       </ul>
     );
   }
