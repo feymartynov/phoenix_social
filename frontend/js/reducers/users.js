@@ -43,6 +43,10 @@ class UsersRegistry {
   getCurrentUser() {
     return this.map.find(user => user.current);
   }
+
+  unsetCurrentFlag() {
+    return this._setEntry({...this.getCurrentUser(), current: false});
+  }
 }
 
 export default function reducer(users = new UsersRegistry, action = {}) {
@@ -54,7 +58,7 @@ export default function reducer(users = new UsersRegistry, action = {}) {
       return users.delete(action.id);
 
     case Constants.USER_SIGNED_OUT:
-      return users.set(action.user, false);
+      return users.unsetCurrentFlag();
 
     case Constants.USER_ADDED_TO_FRIENDS:
     case Constants.USER_REMOVED_FROM_FRIENDS:
