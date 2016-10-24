@@ -1,14 +1,15 @@
 defmodule PhoenixSocial.Operations.AddToFriends do
   alias PhoenixSocial.Repo
 
-  def call(user, user) do
-    {:error, "Impossible to add oneself to friends"}
-  end
   def call(current_user, user) do
-    Repo.transaction fn ->
-      {:ok, friendship} = insert_friendship(current_user, user)
-      {:ok, back_friendship} = insert_back_friendship(current_user, user)
-      {friendship, back_friendship}
+    if current_user.id == user.id do
+      {:error, "Impossible to add oneself to friends"}
+    else
+      Repo.transaction fn ->
+        {:ok, friendship} = insert_friendship(current_user, user)
+        {:ok, back_friendship} = insert_back_friendship(current_user, user)
+        {friendship, back_friendship}
+      end
     end
   end
 

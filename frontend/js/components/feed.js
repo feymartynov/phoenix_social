@@ -7,18 +7,25 @@ import Post from './shared/post';
 
 class Feed extends React.Component {
   componentDidMount() {
+    const {dispatch, socket} = this.props;
+    dispatch(Actions.connectToChannel(socket));
     setDocumentTitle('My newsfeed');
   }
 
+  componentWillUnmount() {
+    const {dispatch, channel} = this.props;
+    dispatch(Actions.reset(channel));
+  }
+
   _loadPosts() {
-    const {dispatch, feed} = this.props;
-    dispatch(Actions.fetchFeed(feed.posts.length));
+    const {dispatch, posts} = this.props;
+    dispatch(Actions.fetchFeed(posts.length));
   }
 
   _renderPosts() {
-    if (!this.props.feed) return [];
+    if (!this.props.posts) return [];
 
-    return this.props.feed.posts.map(post =>
+    return this.props.posts.map(post =>
       <Post key={`feed_post_${post.id}`} post={post}/>
     );
   }
@@ -38,7 +45,9 @@ class Feed extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  feed: state.feed
+  socket: state.socket,
+  channel: state.feed.channel,
+  posts: state.feed.posts.toArray()
 });
 
 export default connect(mapStateToProps)(Feed);

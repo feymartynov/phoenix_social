@@ -25,6 +25,7 @@ defmodule PhoenixSocial.ChannelCase do
       import Ecto.Changeset
       import Ecto.Query
 
+      import PhoenixSocial.Factory
 
       # The default endpoint for testing
       @endpoint PhoenixSocial.Endpoint

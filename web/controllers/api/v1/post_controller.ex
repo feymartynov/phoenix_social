@@ -2,7 +2,7 @@ defmodule PhoenixSocial.PostController do
   use PhoenixSocial.Web, :controller
   use PhoenixSocial.SharedPlugs
 
-  alias PhoenixSocial.{Repo, Post, PostView}
+  alias PhoenixSocial.{Repo, Post, PostView, FeedChannel}
   alias PhoenixSocial.Params.Pagination
   alias PhoenixSocial.Queries.Wall
   alias PhoenixSocial.Operations.CreatePost
@@ -41,6 +41,7 @@ defmodule PhoenixSocial.PostController do
 
     case Repo.update(changeset) do
       {:ok, post} ->
+        FeedChannel.notify(post, "edited")
         conn |> put_status(:ok) |> json(%{post: PostView.render(post)})
       {:error, changeset} ->
         error = Post.error_messages(changeset)
@@ -51,6 +52,7 @@ defmodule PhoenixSocial.PostController do
   def delete(conn, _params) do
     case Repo.delete(conn.assigns[:post]) do
       {:ok, _} ->
+        FeedChannel.notify(conn.assigns[:post], "deleted")
         conn |> put_status(:ok) |> json(%{result: :ok})
       {:error, changeset} ->
         error = Post.error_messages(changeset)

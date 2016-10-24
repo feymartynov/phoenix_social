@@ -2,6 +2,7 @@ import {IndexRoute, Route} from 'react-router';
 import React from 'react';
 import Constants from '../constants';
 import SessionActions from '../actions/session';
+import SocketActions from '../actions/socket';
 import MainLayout from '../layouts/main';
 import NotFound from '../components/not_found';
 import SignIn from '../components/sign_in';
@@ -19,6 +20,7 @@ export default function configRoutes(store) {
 
     if (!currentUser && token) {
       store.dispatch(SessionActions.fetchCurrentUser());
+      store.dispatch(SocketActions.connect());
     } else if (!token) {
       replace('/sign_in');
     }
