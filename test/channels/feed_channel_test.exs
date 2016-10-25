@@ -36,6 +36,6 @@ defmodule PhoenixSocial.FeedChannelTest do
     post = insert(:post, user: user, author: user)
     post |> FeedChannel.notify("deleted")
     id = post.id
-    assert_push "post:deleted", %{id: id}
+    assert_push "post:deleted", %{id: ^id}
   end
 end

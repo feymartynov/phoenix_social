@@ -7,7 +7,7 @@ defmodule PhoenixSocial.Queries.Wall do
     query =
       from Post,
         where: [user_id: ^user.id],
-        order_by: [desc: :inserted_at],
+        order_by: [desc: :id],
         offset: ^pagination.offset,
         limit: ^pagination.limit,
         preload: [:author]

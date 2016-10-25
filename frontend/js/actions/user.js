@@ -5,7 +5,7 @@ import ErrorActions from './error';
 const Actions = {
   fetchUser: (id) => {
     return dispatch => {
-      httpGet(`/api/v1/users/${id}`)
+      return httpGet(`/api/v1/users/${id}`)
         .then(data => {
           dispatch({
             type: Constants.USER_FETCHED,
@@ -29,7 +29,7 @@ const Actions = {
   },
   addToFriends: (user) => {
     return dispatch => {
-      httpPost('/api/v1/friends', {user_id: user.id})
+      return httpPost('/api/v1/friends', {user_id: user.id})
         .then(json => {
           dispatch({
             type: Constants.USER_ADDED_TO_FRIENDS,
@@ -42,7 +42,7 @@ const Actions = {
   },
   removeFromFriends: (user) => {
     return dispatch => {
-      httpDelete(`/api/v1/friends/${user.id}`)
+      return httpDelete(`/api/v1/friends/${user.id}`)
         .then(json => {
           dispatch({
             type: Constants.USER_REMOVED_FROM_FRIENDS,
@@ -58,7 +58,7 @@ const Actions = {
       let body = new FormData();
       body.append('avatar', file);
 
-      httpFetch('/api/v1/avatar', {method: 'post', headers: {}, body: body})
+      return httpFetch('/api/v1/avatar', {method: 'post', headers: {}, body: body})
         .then(json => {
           dispatch({
             type: Constants.USER_FETCHED,
@@ -70,7 +70,7 @@ const Actions = {
   },
   removeAvatar: () => {
     return dispatch => {
-      httpDelete('/api/v1/avatar')
+      return httpDelete('/api/v1/avatar')
         .then(json => {
           dispatch({
             type: Constants.USER_FETCHED,
@@ -82,12 +82,12 @@ const Actions = {
   },
   updateProfile: (changeset) => {
     return dispatch => {
-      httpPut(`/api/v1/users/current`, {user: changeset})
+      return httpPut(`/api/v1/users/current`, {user: changeset})
         .then(json => {
           dispatch({
             type: Constants.USER_FETCHED,
             current: true,
-            user
+            user: json.user
           });
         })
         .catch(error => handleFetchError(dispatch, error));

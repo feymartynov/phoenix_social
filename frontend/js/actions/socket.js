@@ -9,7 +9,7 @@ const Actions = {
 
       socket.connect();
 
-      dispatch({
+      return dispatch({
         type: Constants.SOCKET_CONNECTED,
         socket
       });

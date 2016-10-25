@@ -3,7 +3,7 @@ import Constants from '../constants';
 import {httpGet, httpPost, httpDelete, handleFetchError} from '../utils';
 
 function setCurrentUser(dispatch, user) {
-  dispatch({
+  return dispatch({
     type: Constants.USER_FETCHED,
     current: true,
     user
@@ -13,7 +13,7 @@ function setCurrentUser(dispatch, user) {
 const Actions = {
   signIn: (sessionData) => {
     return dispatch => {
-      httpPost('/api/v1/session', {session: sessionData})
+      return httpPost('/api/v1/session', {session: sessionData})
         .then(data => {
           localStorage.setItem(Constants.AUTH_TOKEN_KEY, data.jwt);
           setCurrentUser(dispatch, data.user);
@@ -24,7 +24,7 @@ const Actions = {
   },
   signUp: userData => {
     return dispatch => {
-      httpPost('/api/v1/users', {user: userData})
+      return httpPost('/api/v1/users', {user: userData})
         .then(data => {
           localStorage.setItem(Constants.AUTH_TOKEN_KEY, data.jwt);
           setCurrentUser(dispatch, data.user);
@@ -45,7 +45,7 @@ const Actions = {
   },
   signOut: () => {
     return dispatch => {
-      httpDelete('/api/v1/session')
+      return httpDelete('/api/v1/session')
         .then(() => {
           localStorage.removeItem(Constants.AUTH_TOKEN_KEY);
           dispatch(push('/sign_in'));
@@ -56,7 +56,7 @@ const Actions = {
   },
   fetchCurrentUser: () => {
     return dispatch => {
-      httpGet('/api/v1/users/current')
+      return httpGet('/api/v1/users/current')
         .then(data => setCurrentUser(dispatch, data.user))
         .catch(error => handleFetchError(dispatch, error));
     };

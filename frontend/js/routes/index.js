@@ -7,24 +7,16 @@ import MainLayout from '../layouts/main';
 import NotFound from '../components/not_found';
 import SignIn from '../components/sign_in';
 import SignUp from '../components/sign_up';
-import Authenticated from '../containers/authenticated';
+import Authenticated from '../components/authenticated';
 import AuthenticatedIndex from '../components/authenticated_index';
 import Profile from '../components/profile';
 import Friends from '../components/friends';
 import Feed from '../components/feed';
 
-export default function configRoutes(store) {
+export default function configRoutes(_store) {
   function ensureAuthenticated(_nextState, replace, callback) {
-    const currentUser = store.getState().users.getCurrentUser()
     const token = localStorage.getItem(Constants.AUTH_TOKEN_KEY);
-
-    if (!currentUser && token) {
-      store.dispatch(SessionActions.fetchCurrentUser());
-      store.dispatch(SocketActions.connect());
-    } else if (!token) {
-      replace('/sign_in');
-    }
-
+    if (!token) replace('/sign_in');
     callback();
   }
 

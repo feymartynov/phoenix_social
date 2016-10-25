@@ -7,13 +7,13 @@ import Post from '../../shared/post';
 class PostsList extends React.Component {
   _loadPosts() {
     const {dispatch, user, posts} = this.props;
-    dispatch(Actions.fetchWall(user, posts.length));
+    dispatch(Actions.fetchWall(user, posts.size));
   }
 
   _renderPosts() {
     const {currentUser} = this.props;
 
-    return this.props.posts.map(post => {
+    return this.props.posts.toArray().map(post => {
       const editable = currentUser.id === post.author.id;
       const authorizedUsersIds = [post.user_id, post.author.id];
       const deletable = authorizedUsersIds.includes(currentUser.id);
@@ -43,7 +43,7 @@ class PostsList extends React.Component {
 const mapStateToProps = (state, ownProps) => ({
   user: ownProps.user,
   currentUser: state.users.getCurrentUser(),
-  posts: state.walls.get(ownProps.user.id).toArray()
+  posts: state.walls.get(ownProps.user.id)
 });
 
 export default connect(mapStateToProps)(PostsList);

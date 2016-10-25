@@ -14,6 +14,7 @@ defmodule PhoenixSocial do
       supervisor(PhoenixSocial.Endpoint, []),
       # Start your own worker by calling: PhoenixSocial.Worker.start_link(arg1, arg2, arg3)
       # worker(PhoenixSocial.Worker, [arg1, arg2, arg3]),
+      supervisor(PhoenixSocial.Presence, []),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

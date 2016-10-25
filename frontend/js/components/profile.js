@@ -8,6 +8,7 @@ import Avatar from './shared/avatar';
 import AvatarUploader from './profile/avatar_uploader';
 import FriendshipToggler from './shared/friendship_toggler';
 import Friends from './profile/friends';
+import OnlineFriends from './profile/online_friends';
 import ProfileFields from './profile/profile_fields';
 import Wall from './profile/wall';
 
@@ -42,7 +43,7 @@ class Profile extends React.Component {
     const {user} = this.props;
     const friends = user.friends.filter(f => f.state === "confirmed");
     const title = <Link to={`/user${user.id}/friends`}>Friends</Link>;
-    return <Friends friends={friends.toArray()} title={title}/>;
+    return <Friends friends={friends.toArray()} title={title} id="sample_friends"/>;
   }
 
   _renderProfile() {
@@ -60,6 +61,7 @@ class Profile extends React.Component {
           {this._renderOwnerLinks()}
           {this._renderVisitorLinks()}
           {this._renderFriends()}
+          <OnlineFriends user={user}/>
         </div>
         <div className="col-sm-7">
           <h1>{fullName}</h1>

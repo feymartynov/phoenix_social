@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import {browserHistory} from 'react-router';
 import {syncHistoryWithStore} from 'react-router-redux';
 import configureStore from './store';
-import Root from './containers/root';
+import Root from './components/root';
 
 const store = configureStore(browserHistory);
 const history = syncHistoryWithStore(browserHistory, store);

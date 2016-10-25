@@ -27,7 +27,8 @@ class UsersRegistry {
     return this._setEntry(entry);
   }
 
-  setFriendship(user, friendship) {
+  setFriendship(friendship) {
+    const user = this.getCurrentUser();
     const updatedFriends = user.friends.set(friendship.id, friendship);
     return this._setEntry({...user, friends: updatedFriends});
   }
@@ -62,7 +63,7 @@ export default function reducer(users = new UsersRegistry, action = {}) {
 
     case Constants.USER_ADDED_TO_FRIENDS:
     case Constants.USER_REMOVED_FROM_FRIENDS:
-      return users.setFriendship(users.getCurrentUser(), action.friendship);
+      return users.setFriendship(action.friendship);
 
     default:
       return users;

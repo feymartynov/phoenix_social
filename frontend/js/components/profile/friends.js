@@ -30,7 +30,7 @@ export default class Friends extends React.Component {
     if (this.props.friends.length == 0) return false;
 
     return (
-      <div className="panel panel-default">
+      <div className="panel panel-default" id={this.props.id}>
         <div className="panel-body">
           <h5>
             {this.props.title}&nbsp;
