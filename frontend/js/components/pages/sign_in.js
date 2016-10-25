@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 import {Link} from 'react-router';
 import {FormGroup, FormControl, Button, Alert} from 'react-bootstrap';
-import {setDocumentTitle} from '../utils';
-import Actions from '../actions/session';
-import Error from './shared/error';
+import {setDocumentTitle} from '../../utils';
+import Actions from '../../actions/session';
+import Error from '../shared/error';
 
 class SignIn extends React.Component {
   componentDidMount() {

@@ -1,8 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {setDocumentTitle} from '../utils';
-import Loader from './shared/loader';
-import Actions from '../actions/user';
+import {setDocumentTitle} from '../../utils';
+import Loader from '../shared/loader';
+import Actions from '../../actions/user';
 import Tabs from './friends/tabs';
 
 class Friends extends React.Component {

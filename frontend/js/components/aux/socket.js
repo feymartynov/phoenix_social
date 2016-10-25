@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import Actions from '../actions/socket';
+import Actions from '../../actions/socket';
 
 class Socket extends React.Component {
   componentDidMount() {

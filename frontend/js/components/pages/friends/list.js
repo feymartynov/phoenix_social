@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router';
-import Avatar from '../shared/avatar';
-import FriendshipToggler from '../shared/friendship_toggler';
+import Avatar from '../../shared/avatar';
+import FriendshipToggler from '../../shared/friendship_toggler';
 
 class Friend extends React.Component {
   render() {

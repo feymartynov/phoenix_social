@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Nav, NavItem, NavDropdown, MenuItem, Navbar} from 'react-bootstrap';
 import {Link} from 'react-router';
-import Actions from '../actions/session';
+import Actions from '../../../actions/session';
 
 class Header extends React.Component {
   _handleSignOut(e) {

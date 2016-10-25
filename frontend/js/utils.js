@@ -1,8 +1,8 @@
 import React from 'react';
 import fetch from 'isomorphic-fetch';
 import {polyfill} from 'es6-promise';
-import Constants from '../constants';
-import ErrorActions from '../actions/error';
+import Constants from './constants';
+import ErrorActions from './actions/error';
 
 export function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {

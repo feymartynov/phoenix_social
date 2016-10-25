@@ -1,14 +1,14 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import Loader from './shared/loader';
-import Header from './header';
-import Sidebar from './sidebar';
-import Error from './shared/error';
-import Socket from './socket';
-import Presence from './presence';
-import SessionActions from '../actions/session';
+import Loader from '../shared/loader';
+import Header from './authenticated_layout/header';
+import Sidebar from './authenticated_layout/sidebar';
+import Error from '../shared/error';
+import Socket from '../aux/socket';
+import Presence from '../aux/presence';
+import SessionActions from '../../actions/session';
 
-class Authenticated extends React.Component {
+class AuthenticatedLayout extends React.Component {
   _renderLayout() {
     return (
       <div>
@@ -44,4 +44,4 @@ const mapStateToProps = state => ({
   presence: state.presence
 });
 
-export default connect(mapStateToProps)(Authenticated);
+export default connect(mapStateToProps)(AuthenticatedLayout);

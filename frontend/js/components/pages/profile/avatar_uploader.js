@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 import {Modal, Button, FormGroup, FormControl} from 'react-bootstrap';
-import Actions from '../../actions/user';
+import Actions from '../../../actions/user';
 
 class AvatarUploader extends React.Component {
   constructor(props) {

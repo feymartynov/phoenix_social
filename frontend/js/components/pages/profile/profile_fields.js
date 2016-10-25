@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import Constants from '../../constants';
-import Actions from '../../actions/user';
+import Constants from '../../../constants';
+import Actions from '../../../actions/user';
 
 class ProfileFields extends React.Component {
   _handleContentEdit(e) {

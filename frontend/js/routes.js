@@ -1,17 +1,15 @@
 import {IndexRoute, Route} from 'react-router';
 import React from 'react';
-import Constants from '../constants';
-import SessionActions from '../actions/session';
-import SocketActions from '../actions/socket';
-import MainLayout from '../layouts/main';
-import NotFound from '../components/not_found';
-import SignIn from '../components/sign_in';
-import SignUp from '../components/sign_up';
-import Authenticated from '../components/authenticated';
-import AuthenticatedIndex from '../components/authenticated_index';
-import Profile from '../components/profile';
-import Friends from '../components/friends';
-import Feed from '../components/feed';
+import Constants from './constants';
+import MainLayout from './components/layouts/main_layout';
+import NotFound from './components/pages/not_found';
+import SignIn from './components/pages/sign_in';
+import SignUp from './components/pages/sign_up';
+import AuthenticatedLayout from './components/layouts/authenticated_layout';
+import AuthenticatedIndexRedirect from './components/aux/authenticated_index_redirect';
+import Profile from './components/pages/profile';
+import Friends from './components/pages/friends';
+import Feed from './components/pages/feed';
 
 export default function configRoutes(_store) {
   function ensureAuthenticated(_nextState, replace, callback) {
@@ -25,8 +23,8 @@ export default function configRoutes(_store) {
       <Route path="/sign_in" component={SignIn}/>
       <Route path="/sign_up" component={SignUp}/>
 
-      <Route path="/" component={Authenticated} onEnter={ensureAuthenticated}>
-        <IndexRoute component={AuthenticatedIndex}/>
+      <Route path="/" component={AuthenticatedLayout} onEnter={ensureAuthenticated}>
+        <IndexRoute component={AuthenticatedIndexRedirect}/>
 
         <Route path="user:userId">
           <IndexRoute component={Profile}/>

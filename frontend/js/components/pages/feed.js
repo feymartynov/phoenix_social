@@ -1,9 +1,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import InfiniteScroll from 'redux-infinite-scroll';
-import {setDocumentTitle} from '../utils';
-import Actions from '../actions/feed';
-import Post from './shared/post';
+import {setDocumentTitle} from '../../utils';
+import Actions from '../../actions/feed';
+import Post from '../shared/post';
 
 class Feed extends React.Component {
   componentDidMount() {

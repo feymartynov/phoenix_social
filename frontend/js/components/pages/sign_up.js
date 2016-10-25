@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 import {Link} from 'react-router';
 import {FormControl, Button} from 'react-bootstrap';
-import FormGroup from './shared/validated_form_group';
-import {setDocumentTitle} from '../utils';
-import Actions from '../actions/session';
+import FormGroup from '../shared/validated_form_group';
+import {setDocumentTitle} from '../../utils';
+import Actions from '../../actions/session';
 
 class SignUp extends React.Component {
   componentDidMount() {

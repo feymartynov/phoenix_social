@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {nl2br} from '../../utils';
 import Actions from '../../actions/posts';
 import Avatar from './avatar';
-import PostEditForm from '../profile/wall/post_edit_form';
+import PostEditForm from './post_edit_form';
 
 class Post extends React.Component {
   constructor(props) {

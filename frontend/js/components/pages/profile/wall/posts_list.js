@@ -1,8 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import InfiniteScroll from 'redux-infinite-scroll';
-import Actions from '../../../actions/posts';
-import Post from '../../shared/post';
+import Actions from '../../../../actions/posts';
+import Post from '../../../shared/post';
 
 class PostsList extends React.Component {
   _loadPosts() {

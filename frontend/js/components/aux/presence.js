@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import Actions from '../actions/presence';
+import Actions from '../../actions/presence';
 
 class Presence extends React.Component {
   componentDidMount() {

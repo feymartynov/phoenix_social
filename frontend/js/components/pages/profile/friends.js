@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import {Link} from 'react-router';
-import Avatar from '../shared/avatar';
+import Avatar from '../../shared/avatar';
 
 class Friend extends React.Component {
   render() {

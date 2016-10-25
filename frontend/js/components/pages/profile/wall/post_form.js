@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 import {Button, FormGroup, FormControl} from 'react-bootstrap';
-import Actions from '../../../actions/posts';
+import Actions from '../../../../actions/posts';
 
 class PostForm extends React.Component {
   constructor(props) {
