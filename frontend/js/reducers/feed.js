@@ -6,15 +6,19 @@ const initialState = {
   channel: null
 };
 
+function wrap(post) {
+  return {...post, comments: Immutable.List(post.comments)};
+}
+
 function addOrSetPost(posts, post, addEnd = 'tail') {
   const idx = posts.findIndex(p => p.id === post.id);
 
   if (idx !== -1) {
-    return posts.set(idx, post);
+    return posts.set(idx, wrap(post));
   } else if (addEnd == 'head') {
-    return posts.unshift(post);
+    return posts.unshift(wrap(post));
   } else {
-    return posts.push(post);
+    return posts.push(wrap(post));
   }
 }
 
@@ -26,6 +30,15 @@ function deletePost(posts, id) {
   } else {
     return posts;
   }
+}
+
+function updateComments(feed, postId, callback) {
+  const idx = feed.posts.findIndex(p => p.id === postId);
+  if (idx === -1) return feed;
+  const post = feed.posts.get(idx);
+  const updatedComments = callback(post.comments);
+  const updatedPost = {...post, comments: updatedComments};
+  return {...feed, posts: feed.posts.set(idx, updatedPost)};
 }
 
 export default function reducer(feed = initialState, action = {}) {
@@ -45,6 +58,23 @@ export default function reducer(feed = initialState, action = {}) {
 
     case Constants.FEED_RESET:
       return initialState;
+
+    case Constants.COMMENT_CREATED:
+      return updateComments(feed, action.comment.post_id, comments =>
+        comments.push(action.comment)
+      );
+
+    case Constants.COMMENT_UPDATED:
+      return updateComments(feed, action.comment.post_id, comments =>
+        comments.set(
+          comments.findIndex(c => c.id === action.comment.id),
+          action.comment)
+      );
+
+    case Constants.COMMENT_DELETED:
+      return updateComments(feed, action.comment.post_id, comments =>
+        comments.remove(comments.findIndex(c => c.id === action.comment.id))
+      );
 
     default:
       return feed;

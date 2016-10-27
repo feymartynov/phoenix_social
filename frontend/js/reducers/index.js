@@ -4,8 +4,9 @@ import socket from './socket';
 import presence from './presence';
 import error from './error';
 import signUp from './sign_up';
-import users from './users';
-import walls from './walls';
+import currentUser from './current_user';
+import profile from './profile';
+import wall from './wall';
 import feed from './feed';
 
 export default combineReducers({
@@ -14,7 +15,8 @@ export default combineReducers({
   error,
   presence,
   signUp,
-  users,
-  walls,
+  currentUser,
+  profile,
+  wall,
   feed
 });

@@ -39,7 +39,7 @@ class Sidebar extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  currentUser: state.users.getCurrentUser()
+  currentUser: state.currentUser
 });
 
 export default connect(mapStateToProps)(Sidebar);

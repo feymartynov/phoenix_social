@@ -1,9 +1,13 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {nl2br} from '../../utils';
-import Actions from '../../actions/posts';
+import PostActions from '../../actions/posts';
+import CommentActions from '../../actions/comments';
 import Avatar from './avatar';
-import PostEditForm from './post_edit_form';
+import Controls from './post/controls';
+import EditForm from './post/edit_form';
+import Comment from './post/comment';
+import CreateForm from './post/create_form';
 
 class Post extends React.Component {
   constructor(props) {
@@ -16,95 +20,103 @@ class Post extends React.Component {
     this.setState({editing: true});
   }
 
-  _handleCancelEdit() {
+  _handleEditSubmit(text) {
+    const {dispatch, post} = this.props;
+    dispatch(PostActions.edit(post, text));
+  }
+
+  _handleEditDone() {
     this.setState({editing: false});
   }
 
   _handleDelete(e) {
     e.preventDefault();
-    this.props.dispatch(Actions.deletePost(this.props.post));
+    this.props.dispatch(PostActions.delete(this.props.post));
   }
 
-  _renderEditButton() {
-    if (!this.props.editable) return false;
-
-    return (
-      <button
-        className="btn-link btn-edit-post"
-        onClick={::this._handleEdit}>
-
-        edit
-      </button>
-    );
-  }
-
-  _renderDeleteButton() {
-    if (!this.props.deletable) return false;
-
-    return (
-      <button
-        className="btn-link btn-delete-post"
-        onClick={::this._handleDelete}>
-
-        delete
-      </button>
-    );
-  }
-
-  _renderControls() {
-    const editButton = this._renderEditButton();
-    const deleteButton = this._renderDeleteButton();
-
-    if (editButton || deleteButton) {
-      return (
-        <span className="small">
-          {editButton}
-          {deleteButton}
-        </span>
-      );
-    } else {
-      return false;
-    }
+  _handleCommentSubmit(text) {
+    const {dispatch, post} = this.props;
+    dispatch(CommentActions.create(post, text));
   }
 
   _renderContent() {
     if (this.state.editing) {
       return (
-        <PostEditForm
-          post={this.props.post}
-          onDone={::this._handleCancelEdit} />
+        <EditForm
+          className="post-edit-form"
+          text={this.props.post.text}
+          onSubmit={::this._handleEditSubmit}
+          onDone={::this._handleEditDone} />
       );
     } else {
       return <article>{nl2br(this.props.post.text)}</article>;
     }
   }
 
+  _renderComments() {
+    const {post, currentUser} = this.props;
+    if (!post.comments || post.comments.size === 0) return false;
+
+    const comments = post.comments.map(comment =>
+      <Comment
+        key={`comment_${comment.id}`}
+        comment={comment}
+        editable={currentUser.id === comment.author.id}
+        deletable={[comment.author.id, post.user_id].includes(currentUser.id)}/>
+    );
+
+    return <ul className="list-unstyled comments-list">{comments}</ul>;
+  }
+
   render() {
-    const {post} = this.props;
+    const {post, editable, deletable} = this.props;
     const date = new Date(post.inserted_at).toLocaleString();
+    const onEdit = editable ? ::this._handleEdit : false;
+    const onDelete = deletable ? ::this._handleDelete : false;
 
     return (
-      <li key={`post_${post.id}`} className="list-group-item" data-post-id={post.id}>
-        <div>
-          <div className="pull-left" style={{marginRight: '0.5em'}}>
-            <Avatar
-              user={post.author}
-              version="thumb"
-              className="img-responsive img-circle"/>
+      <li key={`post_${post.id}`} data-post-id={post.id} style={{marginBottom: '1em'}}>
+        <div className="list-group-item">
+          <div>
+            <div className="pull-left" style={{marginRight: '0.5em'}}>
+              <Avatar
+                user={post.author}
+                version="thumb"
+                className="img-responsive img-circle"/>
+            </div>
+
+            <strong>{post.author.first_name} {post.author.last_name}</strong>
           </div>
-          <strong>{post.author.first_name} {post.author.last_name}</strong>
+
+          <div>
+            <time dateTime={post.inserted_at} className="small text-muted">
+              {date}
+            </time>
+
+            <Controls onEdit={onEdit} onDelete={onDelete} />
+          </div>
+
+          <div className="clearfix" style={{marginBottom: '0.5em'}}/>
+          {this._renderContent()}
         </div>
-        <div>
-          <time dateTime={post.inserted_at} className="small text-muted">
-            {date}
-          </time>
-          {this._renderControls()}
+
+        <div className="list-group-item" style={{paddingLeft: '2em'}}>
+          {this._renderComments()}
+
+          <div className="comment-form" style={{marginTop: '1em'}}>
+            <CreateForm
+              post={post}
+              onSubmit={::this._handleCommentSubmit}
+              placeholder="Add comment"/>
+          </div>
         </div>
-        <div className="clearfix" style={{marginBottom: '0.5em'}}/>
-        {this._renderContent()}
       </li>
     );
   }
 }
 
-export default connect(() => ({}))(Post);
+const mapStateToProps = state => ({
+  currentUser: state.currentUser
+});
+
+export default connect(mapStateToProps)(Post);

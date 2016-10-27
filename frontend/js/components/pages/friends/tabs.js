@@ -14,7 +14,11 @@ export default class Tabs extends React.Component {
   }
 
   _getActiveTabKey(tabs) {
-    if (this.state.currentTabKey) return this.state.currentTabKey;
+    const {currentTabKey} = this.state;
+
+    if (currentTabKey && !tabs[currentTabKey].props.disabled) {
+      return currentTabKey;
+    }
 
     const firstEnabledTab = tabs.find(tab => !tab.props.disabled);
     if (firstEnabledTab) return firstEnabledTab.props.eventKey;

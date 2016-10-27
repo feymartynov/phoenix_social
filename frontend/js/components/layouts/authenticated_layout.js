@@ -6,7 +6,7 @@ import Sidebar from './authenticated_layout/sidebar';
 import Error from '../shared/error';
 import Socket from '../aux/socket';
 import Presence from '../aux/presence';
-import SessionActions from '../../actions/session';
+import CurrentUserActions from '../../actions/current_user';
 
 class AuthenticatedLayout extends React.Component {
   _renderLayout() {
@@ -30,7 +30,7 @@ class AuthenticatedLayout extends React.Component {
   render() {
     return (
       <Loader
-        action={SessionActions.fetchCurrentUser()}
+        action={CurrentUserActions.fetch()}
         onLoaded={::this._renderLayout}
         loaded={this.props.currentUser}
         error={this.props.error}/>
@@ -39,7 +39,7 @@ class AuthenticatedLayout extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  currentUser: state.users.getCurrentUser(),
+  currentUser: state.currentUser,
   error: state.error,
   presence: state.presence
 });

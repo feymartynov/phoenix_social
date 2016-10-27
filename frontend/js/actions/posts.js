@@ -19,7 +19,12 @@ const Actions = {
         .catch(error => handleFetchError(dispatch, error));
     };
   },
-  createPost: (user, text) => {
+  resetWall: () => {
+    return dispatch => {
+      dispatch({type: Constants.WALL_RESET});
+    };
+  },
+  create: (user, text) => {
     return dispatch => {
       httpPost(`/api/v1/users/${user.id}/posts`, {post: {text: text}})
         .then(json => {
@@ -31,7 +36,7 @@ const Actions = {
         .catch(error => handleFetchError(dispatch, error));
     };
   },
-  editPost: (post, text) => {
+  edit: (post, text) => {
     return dispatch => {
       httpPut(`/api/v1/posts/${post.id}`, {post: {text: text}})
         .then(json => {
@@ -43,13 +48,13 @@ const Actions = {
         .catch(error => handleFetchError(dispatch, error));
     };
   },
-  deletePost: (post) => {
+  delete: (post) => {
     return dispatch => {
       httpDelete(`/api/v1/posts/${post.id}`)
         .then(() => {
           dispatch({
             type: Constants.POST_DELETED,
-            post: post
+            post
           });
         })
         .catch(error => handleFetchError(dispatch, error));

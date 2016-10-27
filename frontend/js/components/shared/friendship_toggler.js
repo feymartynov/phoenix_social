@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import Actions from '../../actions/user';
+import Actions from '../../actions/friendships';
 
 class FriendshipToggler extends React.Component {
   _handleAddClick(e) {
@@ -49,7 +49,7 @@ class FriendshipToggler extends React.Component {
 
 const mapStateToProps = (state, ownProps) => ({
   user: ownProps.user,
-  currentUser: state.users.getCurrentUser()
+  currentUser: state.currentUser
 });
 
 export default connect(mapStateToProps)(FriendshipToggler);

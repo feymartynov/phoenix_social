@@ -1,35 +1,30 @@
 import {push} from 'react-router-redux';
 import Constants from '../constants';
-import {httpGet, httpPost, httpDelete, handleFetchError} from '../utils';
+import {httpPost, httpDelete, handleFetchError} from '../utils';
 
-function setCurrentUser(dispatch, user) {
-  return dispatch({
-    type: Constants.USER_FETCHED,
-    current: true,
-    user
+function setCurrentUser(dispatch, data) {
+  localStorage.setItem(Constants.AUTH_TOKEN_KEY, data.jwt);
+
+  dispatch({
+    type: Constants.CURRENT_USER_FETCHED,
+    user: data.user
   });
+
+  dispatch(push(`/user${data.user.id}`));
 }
 
 const Actions = {
   signIn: (sessionData) => {
     return dispatch => {
       return httpPost('/api/v1/session', {session: sessionData})
-        .then(data => {
-          localStorage.setItem(Constants.AUTH_TOKEN_KEY, data.jwt);
-          setCurrentUser(dispatch, data.user);
-          dispatch(push('/'));
-        })
+        .then(data => setCurrentUser(dispatch, data))
         .catch(error => handleFetchError(dispatch, error));
     };
   },
   signUp: userData => {
     return dispatch => {
       return httpPost('/api/v1/users', {user: userData})
-        .then(data => {
-          localStorage.setItem(Constants.AUTH_TOKEN_KEY, data.jwt);
-          setCurrentUser(dispatch, data.user);
-          dispatch(push(`/user${data.user.id}`));
-        })
+        .then(data => setCurrentUser(dispatch, data))
         .catch(error => {
           if (!error.response) throw error;
 
@@ -49,15 +44,8 @@ const Actions = {
         .then(() => {
           localStorage.removeItem(Constants.AUTH_TOKEN_KEY);
           dispatch(push('/sign_in'));
-          dispatch({type: Constants.USER_SIGNED_OUT});
+          dispatch({type: Constants.CURRENT_USER_RESET});
         })
-        .catch(error => handleFetchError(dispatch, error));
-    };
-  },
-  fetchCurrentUser: () => {
-    return dispatch => {
-      return httpGet('/api/v1/users/current')
-        .then(data => setCurrentUser(dispatch, data.user))
         .catch(error => handleFetchError(dispatch, error));
     };
   }

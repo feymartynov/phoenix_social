@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router';
 import {setDocumentTitle} from '../../utils';
-import Actions from '../../actions/user';
+import Actions from '../../actions/profile';
 import Loader from '../shared/loader';
 import Avatar from '../shared/avatar';
 import AvatarUploader from './profile/avatar_uploader';
@@ -77,25 +77,19 @@ class Profile extends React.Component {
 
     return (
       <Loader
-        action={Actions.fetchUser(userId)}
+        action={Actions.fetch(userId)}
         onLoaded={::this._renderProfile}
-        loaded={user}
+        loaded={user && user.id == userId}
         error={error}/>
     );
   }
 }
 
-function mapStateToProps(state, ownProps) {
-  const userId = parseInt(ownProps.params.userId);
-  const currentUser = state.users.getCurrentUser();
-  const user = state.users.get(userId);
-
-  return {
-    userId: userId,
-    user: user,
-    error: state.error,
-    editable: currentUser.id === userId,
-  };
-}
+const mapStateToProps = (state, ownProps) => ({
+  userId: parseInt(ownProps.params.userId),
+  user: state.profile,
+  editable: state.profile && state.currentUser.id === state.profile.id,
+  error: state.error
+});
 
 export default connect(mapStateToProps)(Profile);

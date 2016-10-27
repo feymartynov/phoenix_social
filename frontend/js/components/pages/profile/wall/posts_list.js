@@ -5,6 +5,10 @@ import Actions from '../../../../actions/posts';
 import Post from '../../../shared/post';
 
 class PostsList extends React.Component {
+  componentWillUnmount() {
+    this.props.dispatch(Actions.resetWall());
+  }
+
   _loadPosts() {
     const {dispatch, user, posts} = this.props;
     dispatch(Actions.fetchWall(user, posts.size));
@@ -35,15 +39,15 @@ class PostsList extends React.Component {
         loadMore={::this._loadPosts}
         elementIsScrollable={false}
         holderType="ul"
-        className="list-unstyled list-group"/>
+        className="list-unstyled"/>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => ({
   user: ownProps.user,
-  currentUser: state.users.getCurrentUser(),
-  posts: state.walls.get(ownProps.user.id)
+  currentUser: state.currentUser,
+  posts: state.wall
 });
 
 export default connect(mapStateToProps)(PostsList);

@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import Constants from '../../../constants';
-import Actions from '../../../actions/user';
+import Actions from '../../../actions/CURRENT_user';
 
 class ProfileFields extends React.Component {
   _handleContentEdit(e) {
@@ -9,7 +9,7 @@ class ProfileFields extends React.Component {
       [e.target.getAttribute('data-field')]: e.target.innerText
     };
 
-    this.props.dispatch(Actions.updateProfile(changeset));
+    this.props.dispatch(Actions.update(changeset));
   }
 
   _renderField(field, label) {

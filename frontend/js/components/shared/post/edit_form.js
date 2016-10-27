@@ -1,15 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {connect} from 'react-redux';
 import {Button, FormGroup, FormControl} from 'react-bootstrap';
-import Actions from '../../actions/posts';
 
-class PostEditForm extends React.Component {
+export default class EditForm extends React.Component {
   _handleSubmit(e) {
     e.preventDefault();
-    const {dispatch, post} = this.props;
     const text = ReactDOM.findDOMNode(this.refs.text).value;
-    dispatch(Actions.editPost(post, text));
+    this.props.onSubmit(text);
     this.props.onDone();
   }
 
@@ -20,7 +17,7 @@ class PostEditForm extends React.Component {
 
   render() {
     return (
-      <form onSubmit={::this._handleSubmit} className="post-edit-form">
+      <form onSubmit={::this._handleSubmit} className={this.props.className}>
         <FormGroup>
           <FormControl
             componentClass="textarea"
@@ -28,17 +25,17 @@ class PostEditForm extends React.Component {
             name="text"
             rows="3"
             autoFocus={true}
-            defaultValue={this.props.post.text}/>
+            defaultValue={this.props.text}/>
         </FormGroup>
         <FormGroup className="pull-right">
           <Button
-            className="btn-default btn-cancel-edit-post"
+            className="btn-default btn-cancel-edit"
             onClick={::this._handleCancel}>
 
             Cancel
           </Button>
           &nbsp;
-          <Button type="submit" className="btn-primary btn-send-post">
+          <Button type="submit" className="btn-primary btn-submit">
             Send
           </Button>
         </FormGroup>
@@ -48,4 +45,3 @@ class PostEditForm extends React.Component {
   }
 }
 
-export default connect(() => ({}))(PostEditForm);
