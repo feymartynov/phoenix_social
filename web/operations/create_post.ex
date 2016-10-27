@@ -21,7 +21,7 @@ defmodule PhoenixSocial.Operations.CreatePost do
   defp save_and_notify(changeset) do
     case Repo.insert(changeset) do
       {:ok, post} ->
-        FeedChannel.notify(post, "added")
+        FeedChannel.notify(post, "post:added")
         {:ok, post}
       error ->
         error

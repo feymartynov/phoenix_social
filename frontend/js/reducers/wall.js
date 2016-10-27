@@ -1,65 +1,88 @@
 import Immutable from 'immutable';
 import Constants from '../constants';
 
+const initialState = {
+  posts: Immutable.List([]),
+  fetched: false
+};
+
 function wrap(post) {
   return {...post, comments: Immutable.List(post.comments)};
+}
+
+function setPosts(wall, posts) {
+  if (posts.length === 0) {
+    return wall.posts;
+  } else {
+    return wall.posts.concat(posts.map(wrap));
+  }
 }
 
 function findIndex(items, id) {
   return items.findIndex(item => item.id === id);
 }
 
-function updatePost(posts, id, callback) {
-  const idx = findIndex(posts, id);
+function updatePost(wall, id, callback) {
+  const idx = findIndex(wall.posts, id);
 
   if (idx === -1) {
-    return posts;
+    return wall;
   } else {
-    return posts.set(idx, callback(posts.get(idx)));
+    return {
+      ...wall,
+      posts: wall.posts.set(idx, callback(wall.posts.get(idx)))
+    };
   }
 }
 
-function updateComments(posts, postId, callback) {
-  return updatePost(posts, postId, post => (
+function updateComments(wall, postId, callback) {
+  return updatePost(wall, postId, post => (
     {...post, comments: callback(post.comments)}
   ));
 }
 
-export default function reducer(posts = Immutable.List([]), action = {}) {
+export default function reducer(wall = initialState, action = {}) {
   switch (action.type) {
     case Constants.WALL_RESET:
-      return Immutable.List([]);
+      return initialState;
 
     case Constants.WALL_FETCHED:
-      return posts.concat(action.posts.map(wrap));
+      return {...wall, posts: setPosts(wall, action.posts), fetched: true};
+  }
 
-    case Constants.POST_CREATED:
-      return posts.unshift(wrap(action.post));
+  if (!wall.fetched) return wall;
 
-    case Constants.POST_UPDATED:
-      return updatePost(posts, action.post.id, () => action.post);
+  switch (action.type) {
+    case Constants.POST_ADDED:
+      return {...wall, posts: wall.posts.unshift(wrap(action.post))};
+
+    case Constants.POST_EDITED:
+      return updatePost(wall, action.post.id, () => action.post);
 
     case Constants.POST_DELETED:
-      return posts.remove(findIndex(posts, action.post.id));
+      return {
+        ...wall,
+        posts: wall.posts.remove(findIndex(wall.posts, action.post.id))
+      };
 
-    case Constants.COMMENT_CREATED:
-      return updateComments(posts, action.comment.post_id, comments =>
+    case Constants.COMMENT_ADDED:
+      return updateComments(wall, action.comment.post_id, comments =>
         comments.push(action.comment)
       );
 
-    case Constants.COMMENT_UPDATED:
-      return updateComments(posts, action.comment.post_id, comments =>
+    case Constants.COMMENT_EDITED:
+      return updateComments(wall, action.comment.post_id, comments =>
         comments.set(
           findIndex(comments, action.comment.id),
           action.comment)
       );
 
     case Constants.COMMENT_DELETED:
-      return updateComments(posts, action.comment.post_id, comments =>
+      return updateComments(wall, action.comment.post_id, comments =>
         comments.remove(findIndex(comments, action.comment.id))
       );
 
     default:
-      return posts;
+      return wall;
   }
 }

@@ -8,7 +8,7 @@ defmodule PhoenixSocial.GuardianSerializer do
   def from_token("User:" <> id) do
     user =
       User
-      |> Repo.get(String.to_integer(id))
+      |> Repo.get!(String.to_integer(id))
       |> Repo.preload(:friendships)
 
     {:ok, user}

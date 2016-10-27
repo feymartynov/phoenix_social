@@ -8,8 +8,6 @@ const Actions = {
 
       httpGet(`/api/v1/users/${user.id}/posts?${params}`)
         .then(json => {
-          if (json.posts.length === 0) return;
-
           dispatch({
             type: Constants.WALL_FETCHED,
             user: user,
@@ -29,7 +27,7 @@ const Actions = {
       httpPost(`/api/v1/users/${user.id}/posts`, {post: {text: text}})
         .then(json => {
           dispatch({
-            type: Constants.POST_CREATED,
+            type: Constants.POST_ADDED,
             post: json.post
           });
         })
@@ -41,7 +39,7 @@ const Actions = {
       httpPut(`/api/v1/posts/${post.id}`, {post: {text: text}})
         .then(json => {
           dispatch({
-            type: Constants.POST_UPDATED,
+            type: Constants.POST_EDITED,
             post: json.post
           });
         })

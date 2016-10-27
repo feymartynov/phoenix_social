@@ -37,12 +37,11 @@ defmodule PhoenixSocial.PostController do
   end
 
   def update(conn, %{"post" => post_params}) do
-    conn = assign(conn, :post, conn.assigns.post |> Repo.preload(:author))
     changeset = Post.changeset(conn.assigns[:post], post_params)
 
     case Repo.update(changeset) do
       {:ok, post} ->
-        FeedChannel.notify(post, "edited")
+        FeedChannel.notify(post, "post:edited")
         conn |> put_status(:ok) |> json(%{post: PostView.render(post)})
       {:error, changeset} ->
         error = Post.error_messages(changeset)
@@ -53,7 +52,7 @@ defmodule PhoenixSocial.PostController do
   def delete(conn, _params) do
     case Repo.delete(conn.assigns[:post]) do
       {:ok, _} ->
-        FeedChannel.notify(conn.assigns[:post], "deleted")
+        FeedChannel.notify(conn.assigns[:post], "post:deleted")
         conn |> put_status(:ok) |> json(%{result: :ok})
       {:error, changeset} ->
         error = Post.error_messages(changeset)
@@ -72,7 +71,7 @@ defmodule PhoenixSocial.PostController do
         |> halt
       conn.assigns[:current_user].id in [post.user_id, post.author_id] ->
         conn
-        |> assign(:post, post)
+        |> assign(:post, post |> Repo.preload(:author))
       true ->
         conn
         |> put_status(:forbidden)

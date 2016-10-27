@@ -6,8 +6,6 @@ const Actions = {
     return dispatch => {
       return httpGet(`/api/v1/feed?offset=${offset}&limit=${limit}`)
         .then(json => {
-          if (json.posts.length === 0) return;
-
           dispatch({
             type: Constants.FEED_FETCHED,
             posts: json.posts
@@ -22,22 +20,43 @@ const Actions = {
 
       channel.on('post:added', json => {
         return dispatch({
-          type: Constants.FEED_POST_ADDED,
+          type: Constants.POST_ADDED,
           post: json.post
         });
       });
 
       channel.on('post:edited', json => {
         return dispatch({
-          type: Constants.FEED_POST_EDITED,
+          type: Constants.POST_EDITED,
           post: json.post
         });
       });
 
       channel.on('post:deleted', json => {
         return dispatch({
-          type: Constants.FEED_POST_DELETED,
-          id: json.id
+          type: Constants.POST_DELETED,
+          post: json.post
+        });
+      });
+
+      channel.on('comment:added', json => {
+        return dispatch({
+          type: Constants.COMMENT_ADDED,
+          comment: json.comment
+        });
+      });
+
+      channel.on('comment:edited', json => {
+        return dispatch({
+          type: Constants.COMMENT_EDITED,
+          comment: json.comment
+        });
+      });
+
+      channel.on('comment:deleted', json => {
+        return dispatch({
+          type: Constants.COMMENT_DELETED,
+          comment: json.comment
         });
       });
 

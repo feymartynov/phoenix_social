@@ -47,7 +47,7 @@ class PostsList extends React.Component {
 const mapStateToProps = (state, ownProps) => ({
   user: ownProps.user,
   currentUser: state.currentUser,
-  posts: state.wall
+  posts: state.wall.posts
 });
 
 export default connect(mapStateToProps)(PostsList);
