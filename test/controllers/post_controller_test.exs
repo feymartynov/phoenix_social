@@ -72,6 +72,17 @@ defmodule PhoenixSocial.PostControllerTest do
     assert json["error"]["offset"] |> List.first == "must be greater than or equal to 0"
   end
 
+  test "Show comments" do
+    comment = insert(:comment)
+    url = "/users/#{comment.post.user.id}/posts"
+    assert {200, json} = api_call(:get, url, as: comment.post.user)
+    first_post = json["posts"] |> List.first
+    first_comment = first_post |> Map.fetch!("comments") |> List.first
+    assert first_comment["id"] == comment.id
+    assert first_comment["text"] == comment.text
+    assert first_comment["author"]["id"] == comment.author.id
+  end
+
   test "Create a post" do
     user = insert(:user)
     url = "/users/#{user.id}/posts"

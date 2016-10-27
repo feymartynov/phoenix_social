@@ -39,7 +39,7 @@ defmodule PhoenixSocial.AvatarControllerTest do
     assert {200, json} = api_call(:delete, "/avatar", as: user)
     assert json["user"]["avatar"] == nil
 
-    assert !File.exists?(avatar_path)
+    refute File.exists?(avatar_path)
     user = Repo.get(PhoenixSocial.User, user.id)
     assert is_nil(user.avatar)
   end

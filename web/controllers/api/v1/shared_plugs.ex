@@ -5,7 +5,7 @@ defmodule PhoenixSocial.SharedPlugs do
         id = conn.params["user_id"] || conn.params["id"]
 
         cond do
-          id == "current" ->
+          id in ["current", to_string(conn.assigns[:current_user].id)] ->
             conn |> assign(:user, conn.assigns[:current_user])
           user = PhoenixSocial.Repo.get(PhoenixSocial.User, id) ->
             conn |> assign(:user, user)

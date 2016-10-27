@@ -17,7 +17,7 @@ defmodule PhoenixSocial.Queries.FeedTest do
   end
 
   test "Forbids unrelated post to the feed" do
-    assert !Feed.belongs_to_feed?(insert(:post), insert(:user))
+    refute Feed.belongs_to_feed?(insert(:post), insert(:user))
   end
 
   test "Allows a friend's post on his wall to the feed" do
@@ -37,7 +37,7 @@ defmodule PhoenixSocial.Queries.FeedTest do
     insert(:friendship, user1: friend, user2: user, state: "confirmed")
     user = user |> Repo.preload(:friendships)
     post = insert(:post, user: friend, author: friend)
-    assert !Feed.belongs_to_feed?(post, user)
+    refute Feed.belongs_to_feed?(post, user)
   end
 
   test "Forbids a friend's post on someone else's wall to the feed" do
@@ -47,6 +47,6 @@ defmodule PhoenixSocial.Queries.FeedTest do
     insert(:friendship, user1: friend, user2: user, state: "confirmed")
     user = user |> Repo.preload(:friendships)
     post = insert(:post, user: insert(:user), author: friend)
-    assert !Feed.belongs_to_feed?(post, user)
+    refute Feed.belongs_to_feed?(post, user)
   end
 end

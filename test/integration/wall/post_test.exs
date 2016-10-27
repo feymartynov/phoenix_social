@@ -1,4 +1,4 @@
-defmodule PhoenixSocial.Integration.WallTest do
+defmodule PhoenixSocial.Integration.Wall.PostTest do
   use PhoenixSocial.IntegrationCase
 
   @tag :integration
@@ -34,22 +34,22 @@ defmodule PhoenixSocial.Integration.WallTest do
     user = insert(:user) |> sign_in
 
     navigate_to "/user#{user.id}"
-    wall = find_element(:id, "wall")
+    form = find_element(:id, "create_post_form")
 
     # expand post form
-    wall
+    form
     |> find_within_element(:css, "input[type=text]")
     |> click
 
-    wall
+    form
     |> find_within_element(:css, "textarea[name=text]")
     |> fill_field("hello world")
 
-    wall
-    |> find_within_element(:class, "btn-send-post")
+    form
+    |> find_within_element(:class, "btn-submit")
     |> click
 
-    posts_list = wall |> find_within_element(:css, "ul")
+    posts_list = find_element(:css, "#wall ul")
     assert posts_list |> inner_text =~ "hello world"
   end
 
@@ -61,22 +61,22 @@ defmodule PhoenixSocial.Integration.WallTest do
     insert(:friendship, user1: friend, user2: user, state: "confirmed")
 
     navigate_to "/user#{friend.id}"
-    wall = find_element(:id, "wall")
+    form = find_element(:id, "create_post_form")
 
     # expand post form
-    wall
+    form
     |> find_within_element(:css, "input[type=text]")
     |> click
 
-    wall
+    form
     |> find_within_element(:css, "textarea[name=text]")
     |> fill_field("hello world")
 
-    wall
-    |> find_within_element(:class, "btn-send-post")
+    form
+    |> find_within_element(:class, "btn-submit")
     |> click
 
-    posts_list = wall |> find_within_element(:css, "ul")
+    posts_list = find_element(:css, "#wall ul")
     assert posts_list |> inner_text =~ "John Lennon"
     assert posts_list |> inner_text =~ "hello world"
   end
@@ -94,7 +94,7 @@ defmodule PhoenixSocial.Integration.WallTest do
     # should not see post form
     assert(
       {:error, _} =
-        wall |> search_within_element(:css, "input[type=text]", 1))
+        wall |> search_within_element(:id, "create_post_form", 1))
 
     posts_list = wall |> find_within_element(:css, "ul")
     assert posts_list |> inner_text =~ "John Lennon"
@@ -112,7 +112,7 @@ defmodule PhoenixSocial.Integration.WallTest do
     assert post_li |> inner_text =~ "Edit me"
 
     post_li
-    |> find_within_element(:class, "btn-edit-post")
+    |> find_within_element(:class, "btn-edit")
     |> click
 
     edit_form = post_li |> find_within_element(:class, "post-edit-form")
@@ -122,7 +122,7 @@ defmodule PhoenixSocial.Integration.WallTest do
     |> fill_field("Edited")
 
     edit_form
-    |> find_within_element(:class, "btn-send-post")
+    |> find_within_element(:class, "btn-submit")
     |> click
 
     assert {:error, _} = post_li |> search_within_element(:class, "post-edit-form", 0)
@@ -143,13 +143,13 @@ defmodule PhoenixSocial.Integration.WallTest do
     assert post_li |> inner_text =~ "Delete me"
 
     post_li
-    |> find_within_element(:class, "btn-delete-post")
+    |> find_within_element(:class, "btn-delete")
     |> click
 
-    assert !(find_element(:id, "wall") |> inner_text =~ "Delete me")
+    refute find_element(:id, "wall") |> inner_text =~ "Delete me"
     assert {:error, _} = search_element(:css, "#wall li[data-post-id='#{post.id}']", 0)
 
     refresh_page
-    assert !(find_element(:id, "wall") |> inner_text =~ "Delete me")
+    refute find_element(:id, "wall") |> inner_text =~ "Delete me"
   end
 end

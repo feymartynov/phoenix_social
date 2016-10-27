@@ -1,12 +1,11 @@
-defmodule PhoenixSocial.Post do
+defmodule PhoenixSocial.Comment do
   use PhoenixSocial.Web, :model
 
-  schema "posts" do
+  schema "comments" do
     field :text, :string
-    belongs_to :author, PhoenixSocial.User
-    belongs_to :user, PhoenixSocial.User
-    has_many :comments, PhoenixSocial.Comment
     timestamps
+    belongs_to :author, PhoenixSocial.User
+    belongs_to :post, PhoenixSocial.Post
   end
 
   def changeset(struct, params \\ %{}) do

@@ -1,5 +1,13 @@
-defmodule PhoenixSocial.Integration.FeedTest do
+defmodule PhoenixSocial.Integration.Feed.PostTest do
   use PhoenixSocial.IntegrationCase
+
+  setup do
+    user = insert(:user)
+    friend = insert(:user)
+    insert(:friendship, user1: user, user2: friend, state: "confirmed")
+    insert(:friendship, user1: friend, user2: user, state: "confirmed")
+    %{user: user, friend: friend}
+  end
 
   @tag :integration
   test "See newsfeed" do
@@ -30,28 +38,19 @@ defmodule PhoenixSocial.Integration.FeedTest do
   end
 
   @tag :integration
-  test "Live feed update" do
-    user = insert(:user)
-    friend = insert(:user)
-    insert(:friendship, user1: user, user2: friend, state: "confirmed")
-    insert(:friendship, user1: friend, user2: user, state: "confirmed")
-
-    # the user logs in, goes to the feed and waits for updates
+  test "Live update: adding a post", %{user: user, friend: friend} do
+    # the user signs in, goes to the feed and waits for updates
     in_browser_session :user_session, fn ->
       user |> sign_in
       navigate_to "/feed"
     end
-
-    #################
-    # Adding a post #
-    #################
 
     # in parallel session the friend goes to his profile and makes a post
     in_browser_session :friend_session, fn ->
       friend |> sign_in
       navigate_to "/user#{friend.id}"
 
-      wall = find_element(:id, "wall")
+      wall = find_element(:id, "create_post_form")
 
       # expand post form
       wall
@@ -63,10 +62,10 @@ defmodule PhoenixSocial.Integration.FeedTest do
       |> fill_field("hello world")
 
       wall
-      |> find_within_element(:class, "btn-send-post")
+      |> find_within_element(:class, "btn-submit")
       |> click
 
-      posts_list = wall |> find_within_element(:css, "ul")
+      posts_list = find_element(:css, "#wall ul")
       assert posts_list |> inner_text =~ "hello world"
     end
 
@@ -76,16 +75,28 @@ defmodule PhoenixSocial.Integration.FeedTest do
       assert post_li |> inner_text =~ "hello world"
     end
 
-    ##################
-    # Editing a post #
-    ##################
+    Hound.end_session
+  end
 
-    # the friend edits the post
+  @tag :integration
+  test "Live update: editing a post", %{user: user, friend: friend} do
+    insert(:post, author: friend, user: friend)
+
+    # the user signs in, goes to the feed and waits for updates
+    in_browser_session :user_session, fn ->
+      user |> sign_in
+      navigate_to "/feed"
+    end
+
+    # the friend signs in and edits the post
     in_browser_session :friend_session, fn ->
+      friend |> sign_in
+      navigate_to "/user#{friend.id}"
+
       post_li = find_element(:css, "#wall li[data-post-id]")
 
       post_li
-      |> find_within_element(:class, "btn-edit-post")
+      |> find_within_element(:class, "btn-edit")
       |> click
 
       edit_form = post_li |> find_within_element(:class, "post-edit-form")
@@ -95,7 +106,7 @@ defmodule PhoenixSocial.Integration.FeedTest do
       |> fill_field("Edited")
 
       edit_form
-      |> find_within_element(:class, "btn-send-post")
+      |> find_within_element(:class, "btn-submit")
       |> click
 
       assert {:error, _} = post_li |> search_within_element(:class, "post-edit-form", 0)
@@ -108,14 +119,26 @@ defmodule PhoenixSocial.Integration.FeedTest do
       assert post_li |> inner_text =~ "Edited"
     end
 
-    ###################
-    # Deleting a post #
-    ###################
+    Hound.end_session
+  end
 
-    # the friend deletes the post
+  @tag :integration
+  test "Live update: deleting a post", %{user: user, friend: friend} do
+    insert(:post, author: friend, user: friend)
+
+    # the user signs in, goes to the feed and waits for updates
+    in_browser_session :user_session, fn ->
+      user |> sign_in
+      navigate_to "/feed"
+    end
+
+    # the friend signs in and deletes the post
     in_browser_session :friend_session, fn ->
-      find_element(:css, "#wall li[data-post-id] .btn-delete-post") |> click
-      assert !(find_element(:id, "wall") |> inner_text =~ "Edited")
+      friend |> sign_in
+      navigate_to "/user#{friend.id}"
+
+      find_element(:css, "#wall li[data-post-id] .btn-delete") |> click
+      refute find_element(:id, "wall") |> inner_text =~ "Edited"
     end
 
     # the post should disappear from user's feed

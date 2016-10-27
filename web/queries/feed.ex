@@ -1,7 +1,7 @@
 defmodule PhoenixSocial.Queries.Feed do
   use PhoenixSocial.Web, :query
 
-  alias PhoenixSocial.{Post, Friendship}
+  alias PhoenixSocial.{Post, Friendship, Comment}
 
   def posts(user, pagination) do
     query =
@@ -19,9 +19,18 @@ defmodule PhoenixSocial.Queries.Feed do
       group_by: p.id,
       offset: ^pagination.offset,
       limit: ^pagination.limit,
-      preload: [:author]
+      preload: [
+        :author,
+        comments: ^comments_query]
 
     Repo.all(query)
+  end
+
+  defp comments_query do
+    from c in Comment,
+    join: a in assoc(c, :author),
+    order_by: :id,
+    preload: [author: a]
   end
 
   # the same logic as in the above SQL where clause

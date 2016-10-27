@@ -27,21 +27,21 @@ defmodule PhoenixSocial.UserTest do
 
   test "Birthday validation: wrong format" do
     changeset = User.profile_changeset(%User{}, %{"birthday" => "12345abcd"})
-    assert !changeset.valid?
+    refute changeset.valid?
     errors = User.error_messages(changeset)
     assert errors[:birthday] |> List.first == "is invalid"
   end
 
   test "Birthday validation: too old" do
     changeset = User.profile_changeset(%User{}, %{"birthday" => "1634-01-14"})
-    assert !changeset.valid?
+    refute changeset.valid?
     errors = User.error_messages(changeset)
     assert errors[:birthday] |> List.first == "too long ago"
   end
 
   test "Birthday validation: in future" do
     changeset = User.profile_changeset(%User{}, %{"birthday" => "2994-11-08"})
-    assert !changeset.valid?
+    refute changeset.valid?
     errors = User.error_messages(changeset)
     assert errors[:birthday] |> List.first == "is in future"
   end

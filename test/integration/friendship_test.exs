@@ -34,7 +34,7 @@ defmodule PhoenixSocial.Integration.FriendshipTest do
 
     # see the friend absent in the list
     find_element(:id, "user_menu_friends_link") |> click
-    assert !(visible_page_text =~ "#{friend.first_name} #{friend.last_name}")
+    refute visible_page_text =~ "#{friend.first_name} #{friend.last_name}"
   end
 
   @tag :integration

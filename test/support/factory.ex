@@ -22,4 +22,11 @@ defmodule PhoenixSocial.Factory do
       author: build(:user),
       text: sequence(:text, &"post ##{&1}")}
   end
+
+  def comment_factory do
+    %PhoenixSocial.Comment{
+      post: build(:post),
+      author: build(:user),
+      text: sequence(:text, &"comment ##{&1}")}
+  end
 end

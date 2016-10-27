@@ -37,6 +37,7 @@ defmodule PhoenixSocial.PostController do
   end
 
   def update(conn, %{"post" => post_params}) do
+    conn = assign(conn, :post, conn.assigns.post |> Repo.preload(:author))
     changeset = Post.changeset(conn.assigns[:post], post_params)
 
     case Repo.update(changeset) do
