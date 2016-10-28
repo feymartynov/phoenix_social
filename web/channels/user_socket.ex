@@ -4,7 +4,8 @@ defmodule PhoenixSocial.UserSocket do
   alias PhoenixSocial.GuardianSerializer
 
   channel "presence", PhoenixSocial.PresenceChannel
-  channel "feed", PhoenixSocial.FeedChannel
+  channel "feed", PhoenixSocial.PostChannel
+  channel "wall:*", PhoenixSocial.PostChannel
 
   transport :websocket, Phoenix.Transports.WebSocket
   transport :longpoll, Phoenix.Transports.LongPoll

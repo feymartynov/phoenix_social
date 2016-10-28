@@ -1,17 +1,13 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import InfiniteScroll from 'redux-infinite-scroll';
-import Actions from '../../../../actions/posts';
+import Actions from '../../../../actions/wall';
 import Post from '../../../shared/post';
 
 class PostsList extends React.Component {
-  componentWillUnmount() {
-    this.props.dispatch(Actions.resetWall());
-  }
-
   _loadPosts() {
     const {dispatch, user, posts} = this.props;
-    dispatch(Actions.fetchWall(user, posts.size));
+    dispatch(Actions.fetch(user, posts.size));
   }
 
   _renderPosts() {
@@ -44,10 +40,10 @@ class PostsList extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  user: ownProps.user,
+const mapStateToProps = state => ({
+  user: state.profile,
   currentUser: state.currentUser,
-  posts: state.wall.posts
+  posts: state.wall.posts,
 });
 
 export default connect(mapStateToProps)(PostsList);

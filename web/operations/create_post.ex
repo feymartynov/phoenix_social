@@ -1,5 +1,5 @@
 defmodule PhoenixSocial.Operations.CreatePost do
-  alias PhoenixSocial.{Repo, Post, FeedChannel}
+  alias PhoenixSocial.{Repo, Post, PostChannel}
   import PhoenixSocial.Friendship, only: [friend_of?: 2]
 
   def call(user, author, text) do
@@ -21,7 +21,7 @@ defmodule PhoenixSocial.Operations.CreatePost do
   defp save_and_notify(changeset) do
     case Repo.insert(changeset) do
       {:ok, post} ->
-        FeedChannel.notify(post, "post:added")
+        PostChannel.notify(post, "post:added")
         {:ok, post}
       error ->
         error

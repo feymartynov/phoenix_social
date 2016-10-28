@@ -19,7 +19,7 @@ class Feed extends React.Component {
 
   _loadPosts() {
     const {dispatch, posts} = this.props;
-    dispatch(Actions.fetchFeed(posts.length));
+    dispatch(Actions.fetch(posts.length));
   }
 
   _renderPosts() {

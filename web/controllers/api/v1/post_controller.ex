@@ -2,7 +2,7 @@ defmodule PhoenixSocial.PostController do
   use PhoenixSocial.Web, :controller
   use PhoenixSocial.SharedPlugs
 
-  alias PhoenixSocial.{Repo, Post, PostView, FeedChannel}
+  alias PhoenixSocial.{Repo, Post, PostView, PostChannel}
   alias PhoenixSocial.Params.Pagination
   alias PhoenixSocial.Queries.Wall
   alias PhoenixSocial.Operations.CreatePost
@@ -41,7 +41,7 @@ defmodule PhoenixSocial.PostController do
 
     case Repo.update(changeset) do
       {:ok, post} ->
-        FeedChannel.notify(post, "post:edited")
+        PostChannel.notify(post, "post:edited")
         conn |> put_status(:ok) |> json(%{post: PostView.render(post)})
       {:error, changeset} ->
         error = Post.error_messages(changeset)
@@ -52,7 +52,7 @@ defmodule PhoenixSocial.PostController do
   def delete(conn, _params) do
     case Repo.delete(conn.assigns[:post]) do
       {:ok, _} ->
-        FeedChannel.notify(conn.assigns[:post], "post:deleted")
+        PostChannel.notify(conn.assigns[:post], "post:deleted")
         conn |> put_status(:ok) |> json(%{result: :ok})
       {:error, changeset} ->
         error = Post.error_messages(changeset)
@@ -70,8 +70,8 @@ defmodule PhoenixSocial.PostController do
         |> json(%{error: "Post not found"})
         |> halt
       conn.assigns[:current_user].id in [post.user_id, post.author_id] ->
-        conn
-        |> assign(:post, post |> Repo.preload(:author))
+        post = post |> Repo.preload([:author, :comments])
+        conn |> assign(:post, post)
       true ->
         conn
         |> put_status(:forbidden)

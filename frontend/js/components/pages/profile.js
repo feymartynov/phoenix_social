@@ -66,7 +66,7 @@ class Profile extends React.Component {
         <div className="col-sm-7">
           <h1>{fullName}</h1>
           <ProfileFields user={user} editable={editable}/>
-          <Wall user={user}/>
+          <Wall/>
         </div>
       </div>
     );

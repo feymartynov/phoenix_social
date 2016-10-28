@@ -3,7 +3,8 @@ import Constants from '../constants';
 
 const initialState = {
   posts: Immutable.List([]),
-  fetched: false
+  fetched: false,
+  channel: null
 };
 
 function wrap(post) {
@@ -45,6 +46,9 @@ export default function reducer(wall = initialState, action = {}) {
   switch (action.type) {
     case Constants.WALL_RESET:
       return initialState;
+
+    case Constants.WALL_CONNECTED_TO_CHANNEL:
+      return {...wall, channel: action.channel};
 
     case Constants.WALL_FETCHED:
       return {...wall, posts: setPosts(wall, action.posts), fetched: true};

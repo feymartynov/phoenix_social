@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import CreateForm from '../../shared/post/create_form';
 import PostsList from './wall/posts_list';
+import LiveUpdate from './wall/live_update';
 import Actions from '../../../actions/posts';
 
 class Wall extends React.Component {
@@ -9,7 +10,7 @@ class Wall extends React.Component {
     const {user, currentUser} = this.props;
     if (user.id === currentUser.id) return true;
 
-    const friendship = currentUser.friends.get(user.id);
+    const friendship = user.friends.get(currentUser.id);
     return friendship && friendship.state === 'confirmed';
   }
 
@@ -34,20 +35,20 @@ class Wall extends React.Component {
   }
 
   render() {
-    const {user} = this.props;
     const postForm = this._allowPostForm() ? this._renderPostForm() : false;
 
     return (
       <div id="wall">
         {postForm}
-        <PostsList user={user}/>
+        <PostsList />
+        <LiveUpdate />
       </div>
     );
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  user: ownProps.user,
+const mapStateToProps = state => ({
+  user: state.profile,
   currentUser: state.currentUser
 });
 

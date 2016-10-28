@@ -1,7 +1,7 @@
 defmodule PhoenixSocial.CommentController do
   use PhoenixSocial.Web, :controller
 
-  alias PhoenixSocial.{Repo, Comment, Post, CommentView, FeedChannel}
+  alias PhoenixSocial.{Repo, Comment, Post, CommentView, PostChannel}
 
   plug Guardian.Plug.EnsureAuthenticated
   plug :scrub_params, "comment" when action in [:create, :update]
@@ -20,7 +20,7 @@ defmodule PhoenixSocial.CommentController do
 
     case Repo.insert(changeset) do
       {:ok, comment} ->
-        FeedChannel.notify(comment, "comment:added")
+        PostChannel.notify(comment, "comment:added")
         comment_view = CommentView.render(comment)
         conn |> put_status(:created) |> json(%{comment: comment_view})
       {:error, changeset} ->
@@ -34,7 +34,7 @@ defmodule PhoenixSocial.CommentController do
 
     case Repo.update(changeset) do
       {:ok, comment} ->
-        FeedChannel.notify(comment, "comment:edited")
+        PostChannel.notify(comment, "comment:edited")
         comment_view = CommentView.render(comment)
         conn |> put_status(:ok) |> json(%{comment: comment_view})
       {:error, changeset} ->
@@ -57,7 +57,7 @@ defmodule PhoenixSocial.CommentController do
   def delete(conn, _params) do
     case Repo.delete(conn.assigns[:comment]) do
       {:ok, _} ->
-        FeedChannel.notify(conn.assigns[:comment], "comment:deleted")
+        PostChannel.notify(conn.assigns[:comment], "comment:deleted")
         conn |> put_status(:ok) |> json(%{result: :ok})
       {:error, changeset} ->
         error = Comment.error_messages(changeset)
