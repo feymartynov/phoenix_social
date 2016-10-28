@@ -16,7 +16,8 @@ __Note:__ this instruction is for macOS only.
 
   * Install Selenium and ChromeDriver with `brew install selenium-server-standalone chromedriver`
   * Start Selenium server with `brew services start selenium-server-standalone`
-  * Run tests with `mix test`
+  * Run new tests with `mix espec`
+  * Run old tests with `mix test`
 
   
   

@@ -10,7 +10,8 @@ defmodule PhoenixSocial.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
-     deps: deps()]
+     deps: deps(),
+     preferred_cli_env: [espec: :test]]
   end
 
   # Configuration for the OTP application.
@@ -43,6 +44,7 @@ defmodule PhoenixSocial.Mixfile do
      {:arc_ecto, "~> 0.4.4"},
      {:timex, "~> 3.0"},
      {:timex_ecto, "~> 3.0"},
+     {:espec_phoenix, "~> 0.6.1", only: :test, app: false},
      {:hound, "~> 1.0", only: :test},
      {:ex_machina, "~> 1.0", only: :test}]
   end
