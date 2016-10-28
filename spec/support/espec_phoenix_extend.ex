@@ -1,3 +1,5 @@
+Code.require_file("#{__DIR__}/api_call.ex")
+
 defmodule ESpec.Phoenix.Extend do
   def model do
     quote do
@@ -8,16 +10,12 @@ defmodule ESpec.Phoenix.Extend do
 
   def controller do
     quote do
-      alias PhoenixSocial
+      alias PhoenixSocial.Repo
       import PhoenixSocial.Router.Helpers
       import PhoenixSocial.Factory
       import PhoenixSocial.Support.ApiCall
 
       @endpoint PhoenixSocial.Endpoint
-
-      setup do
-        {:ok, conn: Phoenix.ConnTest.build_conn()}
-      end
     end
   end
 

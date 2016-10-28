@@ -1,4 +1,4 @@
-Code.require_file("#{__DIR__}/phoenix_helper.exs")
+Code.require_file("#{__DIR__}/support/phoenix_helper.exs")
 
 {:ok, _} = Application.ensure_all_started(:hound)
 {:ok, _} = Application.ensure_all_started(:ex_machina)

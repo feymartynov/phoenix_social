@@ -1,5 +1,5 @@
 defmodule PhoenixSocial.Queries.FeedSpec do
-  use ESpec.Phoenix, model: Feed, async: true
+  use ESpec.Phoenix, model: Feed
   
   alias PhoenixSocial.Repo
   alias PhoenixSocial.Queries.Feed
