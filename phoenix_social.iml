@@ -13,7 +13,7 @@
       <excludeFolder url="file://$MODULE_DIR$/deps" />
       <excludeFolder url="file://$MODULE_DIR$/priv/static" />
       <excludeFolder url="file://$MODULE_DIR$/priv/uploads" />
-      <excludeFolder url="file://$MODULE_DIR$/test/files" />
+      <excludeFolder url="file://$MODULE_DIR$/spec/files" />
       <excludeFolder url="file://$MODULE_DIR$/uploads" />
     </content>
     <orderEntry type="inheritedJdk" />

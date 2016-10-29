@@ -1,8 +1,10 @@
-defmodule PhoenixSocial.Integration.Feed.PostTest do
-  use PhoenixSocial.IntegrationCase
+Code.require_file("#{__DIR__}/../steps/post.ex")
 
-  @tag :integration
-  test "See newsfeed" do
+defmodule PhoenixSocial.Integration.Feed.PostSpec do
+  use ESpec.Phoenix.Extend, :integration
+  import PhoenixSocial.Integration.Steps.Post
+
+  it "shows the newsfeed" do
     user = insert(:user) |> sign_in
     posts = insert_list(30, :post, user: user, author: user)
 
@@ -23,9 +25,7 @@ defmodule PhoenixSocial.Integration.Feed.PostTest do
 
     # there should be all posts' texts
     for post <- posts do
-      selector = "li[data-post-id='#{post.id}']"
-      post_li = feed |> find_within_element(:css, selector)
-      assert post_li |> inner_text =~ post.text
+      assert find_post(post.id) |> inner_text =~ post.text
     end
   end
 end

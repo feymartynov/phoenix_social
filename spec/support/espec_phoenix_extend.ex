@@ -1,4 +1,6 @@
+Code.require_file("#{__DIR__}/factory.ex")
 Code.require_file("#{__DIR__}/api_call.ex")
+Code.require_file("#{__DIR__}/../integration/steps/global.ex")
 
 defmodule ESpec.Phoenix.Extend do
   def model do
@@ -25,6 +27,30 @@ defmodule ESpec.Phoenix.Extend do
       import PhoenixSocial.Factory
 
       @endpoint PhoenixSocial.Endpoint
+    end
+  end
+
+  def integration do
+    quote do
+      use ESpec
+      use Hound.Helpers
+
+      import Ecto, only: [build_assoc: 2]
+      import Ecto.Model
+      import Ecto.Query, only: [from: 2]
+
+      import PhoenixSocial.Router.Helpers
+      import PhoenixSocial.Factory
+      import PhoenixSocial.Integration.Steps.Global
+
+      alias PhoenixSocial.Repo
+
+      @endpoint PhoenixSocial.Endpoint
+
+      before do
+        Hound.start_session
+        current_window_handle |> set_window_size(1280, 1024)
+      end
     end
   end
 

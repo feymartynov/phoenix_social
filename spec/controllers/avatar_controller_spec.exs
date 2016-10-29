@@ -17,7 +17,7 @@ defmodule PhoenixSocial.AvatarControllerSpec do
       body = %{
         avatar: %Plug.Upload{
           filename: "avatar.jpg",
-          path: "test/files/avatar.jpg"}}
+          path: "spec/files/avatar.jpg"}}
 
       response =
         build_conn
@@ -47,7 +47,7 @@ defmodule PhoenixSocial.AvatarControllerSpec do
 
     it "removes avatar" do
       Path.dirname(avatar_path) |> File.mkdir_p!
-      File.cp!("test/files/avatar.jpg", avatar_path)
+      File.cp!("spec/files/avatar.jpg", avatar_path)
 
       assert {200, json} = api_call(:delete, "/avatar", as: user)
       assert json["user"]["avatar"] == nil

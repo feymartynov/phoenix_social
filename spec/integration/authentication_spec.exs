@@ -1,8 +1,7 @@
-defmodule PhoenixSocial.Integration.AuthenticationTest do
-  use PhoenixSocial.IntegrationCase
+defmodule PhoenixSocial.Integration.AuthenticationSpec do
+  use ESpec.Phoenix.Extend, :integration
 
-  @tag :integration
-  test "Sign in" do
+  it "signs in" do
     navigate_to "/sign_in"
 
     user = insert(:user)
@@ -20,12 +19,11 @@ defmodule PhoenixSocial.Integration.AuthenticationTest do
     |> find_within_element(:id, "sign_in_button")
     |> click
 
-    assert find_element(:id, "sign_out_link")
-    assert visible_page_text =~ "#{user.first_name} #{user.last_name}"
+    user_menu = find_element(:id, "user_menu")
+    assert user_menu |> inner_text =~ "#{user.first_name} #{user.last_name}"
   end
 
-  @tag :integration
-  test "Sign out" do
+  it "signs out" do
     insert(:user) |> sign_in
 
     navigate_to "/"
@@ -35,8 +33,7 @@ defmodule PhoenixSocial.Integration.AuthenticationTest do
     assert find_element(:id, "sign_in_button")
   end
 
-  @tag :integration
-  test "Sign up" do
+  it "signs up" do
     navigate_to "/sign_up"
 
     user = build(:user)
@@ -66,7 +63,7 @@ defmodule PhoenixSocial.Integration.AuthenticationTest do
     |> find_within_element(:id, "sign_up_button")
     |> click
 
-    assert find_element(:id, "sign_out_link")
-    assert visible_page_text =~ "#{user.first_name} #{user.last_name}"
+    user_menu = find_element(:id, "user_menu")
+    assert user_menu |> inner_text =~ "#{user.first_name} #{user.last_name}"
   end
 end

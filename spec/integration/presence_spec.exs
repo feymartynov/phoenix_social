@@ -1,13 +1,15 @@
-defmodule PhoenixSocial.Integration.PresenceTest do
-  use PhoenixSocial.IntegrationCase
+defmodule PhoenixSocial.Integration.PresenceSpec do
+  use ESpec.Phoenix.Extend, :integration
 
-  @tag :integration
-  test "Monitor friend's online presence" do
-    user = insert(:user)
-    friend = insert(:user, first_name: "Elvis", last_name: "Presley")
+  let :user, do: insert(:user)
+  let :friend, do: insert(:user, first_name: "Elvis", last_name: "Presley")
+
+  before do
     insert(:friendship, user1: user, user2: friend, state: "confirmed")
     insert(:friendship, user1: friend, user2: user, state: "confirmed")
+  end
 
+  it "monitors friend's online presence" do
     in_browser_session :user_session, fn ->
       user |> sign_in
       navigate_to "/user#{user.id}"

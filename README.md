@@ -1,6 +1,6 @@
 # PhoenixSocial
 
-A playground for studying Elixir, Phoenix, ES6, React and Redux by implementing a typical social network.
+A playground for studying Elixir, Phoenix, ES6, React and Redux by implementing typical social network functionality inspired by [vk.com]().
 
 ## Running
 
@@ -16,8 +16,7 @@ __Note:__ this instruction is for macOS only.
 
   * Install Selenium and ChromeDriver with `brew install selenium-server-standalone chromedriver`
   * Start Selenium server with `brew services start selenium-server-standalone`
-  * Run new tests with `mix espec`
-  * Run old tests with `mix test`
+  * Run tests with `mix espec`
 
   
   
