@@ -1,5 +1,3 @@
-Code.require_file("#{__DIR__}/../steps/post.ex")
-
 defmodule PhoenixSocial.Integration.Wall.PostSpec do
   use ESpec.Phoenix.Extend, :integration
   import PhoenixSocial.Integration.Steps.Post

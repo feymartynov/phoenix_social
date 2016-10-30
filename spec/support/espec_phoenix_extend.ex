@@ -1,7 +1,3 @@
-Code.require_file("#{__DIR__}/factory.ex")
-Code.require_file("#{__DIR__}/api_call.ex")
-Code.require_file("#{__DIR__}/../integration/steps/global.ex")
-
 defmodule ESpec.Phoenix.Extend do
   def model do
     quote do

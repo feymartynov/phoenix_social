@@ -24,7 +24,7 @@ defmodule PhoenixSocial.Mixfile do
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "web", "test/support"]
+  defp elixirc_paths(:test), do: ["lib", "web", "spec/support", "spec/integration/steps"]
   defp elixirc_paths(_),     do: ["lib", "web"]
 
   # Specifies your project dependencies.
@@ -58,6 +58,6 @@ defmodule PhoenixSocial.Mixfile do
   defp aliases do
     ["ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
      "ecto.reset": ["ecto.drop", "ecto.setup"],
-     "test": ["ecto.create --quiet", "ecto.migrate", "test"]]
+     "test": ["ecto.create --quiet", "ecto.migrate", "espec"]]
   end
 end
