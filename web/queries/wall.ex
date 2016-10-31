@@ -6,14 +6,13 @@ defmodule PhoenixSocial.Queries.Wall do
   def posts(profile, pagination) do
     query =
       from p in Post,
-        join: pa  in assoc(p, :author),
-        join: pap in assoc(pa, :profile),
+        join: pa in assoc(p, :author),
         where: [profile_id: ^profile.id],
         order_by: [desc: :id],
         offset: ^pagination.offset,
         limit: ^pagination.limit,
         preload: [
-          author: {pa, profile: pap},
+          author: pa,
           comments: ^comments_query]
 
     Repo.all(query)
@@ -22,8 +21,7 @@ defmodule PhoenixSocial.Queries.Wall do
   defp comments_query do
     from c in Comment,
       join: ca  in assoc(c, :author),
-      join: cap in assoc(ca, :profile),
       order_by: :id,
-      preload: [author: {ca, profile: cap}]
+      preload: [author: ca]
   end
 end

@@ -4,8 +4,14 @@ defmodule PhoenixSocial.Integration.Feed.CommentSpec do
 
   let! :user, do: insert(:user)
   let! :friend, do: insert(:user)
-  let! :post, do: insert(:post, author: friend, profile: friend.profile)
-  let! :comment, do: insert(:comment, author: user, post: post, text: "hi!")
+
+  let! :post do
+    insert(:post, author: friend.profile, profile: friend.profile)
+  end
+
+  let! :comment do
+    insert(:comment, author: user.profile, post: post, text: "hi!")
+  end
 
   before do
     insert(:friendship, user1: user, user2: friend, state: "confirmed")

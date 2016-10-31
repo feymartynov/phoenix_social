@@ -11,10 +11,10 @@ class PostsList extends React.Component {
   }
 
   _renderPosts() {
-    const {currentUser, currentProfile} = this.props;
+    const {currentProfile} = this.props;
 
     return this.props.posts.toArray().map(post => {
-      const isAuthor = currentUser.id === post.author.id;
+      const isAuthor = currentProfile.id === post.author.id;
       const isWallOwner = currentProfile.id === post.profile_id;
 
       return (
@@ -41,7 +41,6 @@ class PostsList extends React.Component {
 
 const mapStateToProps = state => ({
   profile: state.profile,
-  currentUser: state.currentUser,
   currentProfile: state.currentProfile,
   posts: state.wall.posts,
 });

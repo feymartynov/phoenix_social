@@ -54,12 +54,12 @@ class Post extends React.Component {
   }
 
   _renderComments() {
-    const {post, currentUser, currentProfile} = this.props;
+    const {post, currentProfile} = this.props;
     if (!post.comments || post.comments.size === 0) return false;
 
     const comments = post.comments.map(comment => {
-      const isAuthor = currentUser.id === comment.author.id;
       const isWallOwner = currentProfile.id === post.profile_id;
+      const isAuthor = currentProfile.id === comment.author.id;
 
       return (
         <Comment
@@ -121,7 +121,6 @@ class Post extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  currentUser: state.currentUser,
   currentProfile: state.currentProfile
 });
 

@@ -4,7 +4,7 @@ defmodule PhoenixSocial.Integration.Feed.PostSpec do
 
   it "shows the newsfeed" do
     user = insert(:user) |> sign_in
-    posts = insert_list(30, :post, profile: user.profile, author: user)
+    posts = insert_list(30, :post, profile: user.profile, author: user.profile)
 
     navigate_to "/feed"
     feed = find_element(:id, "feed")

@@ -12,7 +12,7 @@ defmodule PhoenixSocial.CommentControllerSpec do
       assert {201, json} = api_call(:post, url, body: body, as: user)
       assert json["comment"]["text"] == "Hello world"
       assert json["comment"]["post_id"] == post.id
-      assert json["comment"]["author"]["id"] == user.id
+      assert json["comment"]["author"]["id"] == user.profile.id
     end
 
     it "doesn't create a post with wrong params" do
@@ -24,7 +24,7 @@ defmodule PhoenixSocial.CommentControllerSpec do
 
   describe "#update" do
     it "updates a comment" do
-      comment = insert(:comment, text: "old text", author: user)
+      comment = insert(:comment, text: "old text", author: user.profile)
 
       url = "/comments/#{comment.id}"
       body = %{"comment" => %{"text" => "new text"}}
@@ -33,7 +33,7 @@ defmodule PhoenixSocial.CommentControllerSpec do
     end
 
     it "doesn't update a comment with wrong params" do
-      comment = insert(:comment, text: "old text", author: user)
+      comment = insert(:comment, text: "old text", author: user.profile)
 
       url = "/comments/#{comment.id}"
       body = %{"comment" => %{"text" => ""}}
@@ -53,7 +53,7 @@ defmodule PhoenixSocial.CommentControllerSpec do
 
   describe "#delete" do
     it "deletes a comment" do
-      comment = insert(:comment, author: user)
+      comment = insert(:comment, author: user.profile)
 
       url = "/comments/#{comment.id}"
       assert {200, json} = api_call(:delete, url, as: user)
@@ -70,7 +70,7 @@ defmodule PhoenixSocial.CommentControllerSpec do
 
     it "deletes someone else's post on own wall" do
       post = insert(:post, profile: user.profile)
-      comment = insert(:comment, post: post, author: insert(:user))
+      comment = insert(:comment, post: post)
 
       url = "/comments/#{comment.id}"
       assert {200, json} = api_call(:delete, url, as: user)

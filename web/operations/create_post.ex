@@ -16,6 +16,6 @@ defmodule PhoenixSocial.Operations.CreatePost do
   end
 
   defp authorized?(user, author) do
-    user.id == author.id || author |> friend_of?(user)
+    user.id == author.user_id || author.user |> friend_of?(user)
   end
 end

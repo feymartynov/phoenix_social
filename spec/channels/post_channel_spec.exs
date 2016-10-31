@@ -8,13 +8,12 @@ defmodule PhoenixSocial.PostChannelSpec do
 
   context "with feed" do
     let :post do
-      insert(:post, profile: user.profile, author: user)
-      |> Repo.preload([:comments, author: :profile])
+      insert(:post, profile: user.profile, author: user.profile)
+      |> Repo.preload([:comments, :author])
     end
 
     let :comment do
-      insert(:comment, post: post)
-      |> Repo.preload(author: :profile)
+      insert(:comment, post: post) |> Repo.preload(:author)
     end
 
     before do
@@ -73,13 +72,13 @@ defmodule PhoenixSocial.PostChannelSpec do
     let :other_user, do: insert(:user) |> Repo.preload(:profile)
 
     let :post do
-      insert(:post, profile: user.profile, author: other_user)
-      |> Repo.preload([:comments, author: :profile])
+      insert(:post, profile: user.profile, author: other_user.profile)
+      |> Repo.preload([:comments, :author])
     end
 
     let :comment do
-      insert(:comment, post: post, author: other_user)
-      |> Repo.preload(author: :profile)
+      insert(:comment, post: post, author: other_user.profile)
+      |> Repo.preload(:author)
     end
 
     before do

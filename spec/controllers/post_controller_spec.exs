@@ -11,7 +11,7 @@ defmodule PhoenixSocial.PostControllerSpec do
 
   describe "#index" do
     it "shows user's posts'" do
-      posts = insert_list(2, :post, profile: user.profile, author: user)
+      posts = insert_list(2, :post, profile: user.profile, author: user.profile)
       _unrelated_post = insert(:post)
 
       url = "/profiles/#{user.profile.id}/posts"
@@ -27,10 +27,10 @@ defmodule PhoenixSocial.PostControllerSpec do
     end
   
     it "shows another user's posts" do
-      _unrelated_post = insert(:post, profile: user.profile, author: user)
+      _unrelated_post = insert(:post, profile: user.profile, author: user.profile)
 
       posts =
-        insert_list(2, :post, profile: other_user.profile, author: other_user)
+        insert_list(2, :post, profile: other_user.profile, author: other_user.profile)
   
       url = "/profiles/#{other_user.profile.id}/posts"
       assert {200, json} = api_call(:get, url, as: user)
@@ -53,7 +53,7 @@ defmodule PhoenixSocial.PostControllerSpec do
     end
   
     it "shows posts with pagination" do
-      posts = insert_list(3, :post, profile: user.profile, author: user)
+      posts = insert_list(3, :post, profile: user.profile, author: user.profile)
 
       url = "/profiles/#{user.profile.id}/posts?offset=1&limit=1"
       assert {200, json} = api_call(:get, url, as: user)
@@ -95,7 +95,7 @@ defmodule PhoenixSocial.PostControllerSpec do
       assert {201, json} = api_call(:post, url, body: body, as: user)
       assert json["post"]["text"] == "Hello world"
       assert json["post"]["profile_id"] == user.profile.id
-      assert json["post"]["author"]["id"] == user.id
+      assert json["post"]["author"]["id"] == user.profile.id
     end
   
     it "fails to create a post with wrong params" do
@@ -134,7 +134,7 @@ defmodule PhoenixSocial.PostControllerSpec do
 
   describe "#update" do
     it "updates a post" do
-      post = insert(:post, text: "old text", profile: user.profile, author: user)
+      post = insert(:post, text: "old text", profile: user.profile, author: user.profile)
 
       url = "/posts/#{post.id}"
       body = %{"post" => %{"text" => "new text"}}
@@ -143,7 +143,7 @@ defmodule PhoenixSocial.PostControllerSpec do
     end
   
     it "fails to update a post with wrong params" do
-      post = insert(:post, text: "old text", profile: user.profile, author: user)
+      post = insert(:post, text: "old text", profile: user.profile, author: user.profile)
 
       url = "/posts/#{post.id}"
       body = %{"post" => %{"text" => ""}}
@@ -163,7 +163,7 @@ defmodule PhoenixSocial.PostControllerSpec do
   
   describe "#delete" do
     it "deletes a post" do
-      post = insert(:post, profile: user.profile, author: user)
+      post = insert(:post, profile: user.profile, author: user.profile)
 
       url = "/posts/#{post.id}"
       assert {200, json} = api_call(:delete, url, as: user)

@@ -24,14 +24,14 @@ defmodule PhoenixSocial.Factory do
   def post_factory do
     %PhoenixSocial.Post{
       profile: insert(:user).profile,
-      author: build(:user),
+      author: insert(:user).profile,
       text: sequence(:text, &"post ##{&1}")}
   end
 
   def comment_factory do
     %PhoenixSocial.Comment{
       post: build(:post),
-      author: build(:user),
+      author: insert(:user).profile,
       text: sequence(:text, &"comment ##{&1}")}
   end
 end

@@ -13,7 +13,7 @@ defmodule PhoenixSocial.Integration.Wall.PostSpec do
   end
 
   it "shows user's wall" do
-    posts = insert_list(15, :post, profile: user.profile, author: user)
+    posts = insert_list(15, :post, profile: user.profile, author: user.profile)
 
     navigate_to "/user#{user.profile.id}"
     wall = find_element(:id, "wall")
@@ -65,12 +65,16 @@ defmodule PhoenixSocial.Integration.Wall.PostSpec do
   it "shows someone's wall" do
     other_user = insert(:user)
 
-    author =
+    author_user =
       insert(
         :user,
         profile: build(:profile, first_name: "Ringo", last_name: "Starr"))
 
-    insert(:post, profile: other_user.profile, author: author, text: "hello world")
+    insert(
+      :post,
+      profile: other_user.profile,
+      author: author_user.profile,
+      text: "hello world")
 
     navigate_to "/user#{other_user.profile.id}"
     wall = find_element(:id, "wall")
@@ -85,7 +89,9 @@ defmodule PhoenixSocial.Integration.Wall.PostSpec do
   end
 
   context "with own post" do
-    let! :post, do: insert(:post, text: "hello", profile: user.profile, author: user)
+    let! :post do
+      insert(:post, text: "hello", profile: user.profile, author: user.profile)
+    end
 
     before do
       navigate_to "/user#{post.profile.id}"

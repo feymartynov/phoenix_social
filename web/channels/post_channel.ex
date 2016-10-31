@@ -8,12 +8,12 @@ defmodule PhoenixSocial.PostChannel do
   def join("wall:" <> _, _params, socket), do: {:ok, socket}
 
   def notify(post, event = "post:" <> _) do
-    post = post |> Repo.preload(author: :profile)
+    post = post |> Repo.preload(:author)
     Endpoint.broadcast "wall:#{post.profile_id}", event, post
     Endpoint.broadcast "feed", event, post
   end
   def notify(comment, event = "comment:" <> _) do
-    comment = comment |> Repo.preload(post: [author: :profile])
+    comment = comment |> Repo.preload(post: :author)
     Endpoint.broadcast "wall:#{comment.post.profile_id}", event, comment
     Endpoint.broadcast "feed", event, comment
   end

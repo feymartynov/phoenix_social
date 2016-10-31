@@ -13,14 +13,14 @@ defmodule PhoenixSocial.CommentController do
   def create(conn, %{"comment" => comment_params}) do
     comment =
       %Comment{
-        post: conn.assigns[:post],
-        author: conn.assigns.current_user}
+        post: conn.assigns.post,
+        author: conn.assigns.current_user.profile}
 
     changeset = Comment.changeset(comment, comment_params)
 
     case Repo.insert(changeset) do
       {:ok, comment} ->
-        comment = comment |> Repo.preload(author: :profile)
+        comment = comment |> Repo.preload(:author)
         PostChannel.notify(comment, "comment:added")
         comment_view = CommentView.render(comment)
         conn |> put_status(:created) |> json(%{comment: comment_view})
@@ -35,7 +35,7 @@ defmodule PhoenixSocial.CommentController do
 
     case Repo.update(changeset) do
       {:ok, comment} ->
-        comment = comment |> Repo.preload(author: :profile)
+        comment = comment |> Repo.preload(:author)
         PostChannel.notify(comment, "comment:edited")
         comment_view = CommentView.render(comment)
         conn |> put_status(:ok) |> json(%{comment: comment_view})
@@ -46,7 +46,7 @@ defmodule PhoenixSocial.CommentController do
   end
 
   defp authorize_update(conn, _) do
-    if conn.assigns.current_user.id == conn.assigns.comment.author_id do
+    if conn.assigns.current_user.profile.id == conn.assigns.comment.author_id do
       conn
     else
       conn
@@ -59,7 +59,7 @@ defmodule PhoenixSocial.CommentController do
   def delete(conn, _params) do
     case Repo.delete(conn.assigns.comment) do
       {:ok, _} ->
-        comment = conn.assigns.comment |> Repo.preload(author: :profile)
+        comment = conn.assigns.comment |> Repo.preload(:author)
         PostChannel.notify(comment, "comment:deleted")
         conn |> put_status(:ok) |> json(%{result: :ok})
       {:error, changeset} ->
@@ -71,11 +71,9 @@ defmodule PhoenixSocial.CommentController do
   defp authorize_deletion(conn, _) do
     comment = conn.assigns.comment |> Repo.preload(:post)
     current_user = conn.assigns.current_user
+    authorized_profiles = [comment.author_id, comment.post.profile_id]
 
-    comment_author? = current_user.id == comment.author_id
-    wall_owner? = current_user.profile.id == comment.post.profile_id
-
-    if comment_author? || wall_owner? do
+    if current_user.profile.id in authorized_profiles do
       conn
     else
       conn

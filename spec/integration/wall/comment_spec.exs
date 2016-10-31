@@ -17,8 +17,16 @@ defmodule PhoenixSocial.Integration.Wall.CommentSpec do
 
   context "with a comment" do
     let :user, do: insert(:user)
+    let :commenter, do: insert(:user)
     let :post, do: insert(:post, profile: user.profile)
-    let! :comment, do: insert(:comment, post: post, text: "hello world")
+
+    let! :comment do
+      insert(
+        :comment,
+        post: post,
+        author: commenter.profile,
+        text: "hello world")
+    end
 
     it "shows post comments" do
       user |> sign_in
@@ -28,7 +36,7 @@ defmodule PhoenixSocial.Integration.Wall.CommentSpec do
     end
 
     it "edits a comment" do
-      comment.author |> sign_in
+      commenter |> sign_in
       navigate_to "/user#{comment.post.profile.id}"
 
       new_text = "edited"

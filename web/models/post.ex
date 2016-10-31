@@ -3,7 +3,7 @@ defmodule PhoenixSocial.Post do
 
   schema "posts" do
     field :text, :string
-    belongs_to :author, PhoenixSocial.User
+    belongs_to :author, PhoenixSocial.Profile
     belongs_to :profile, PhoenixSocial.Profile
     has_many :comments, PhoenixSocial.Comment
     timestamps

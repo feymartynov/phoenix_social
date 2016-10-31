@@ -6,6 +6,6 @@ defmodule PhoenixSocial.CommentView do
   def render(comment) do
     comment
     |> Map.take(@fields)
-    |> Map.put(:author, comment.author.profile |> AuthorView.render)
+    |> Map.put(:author, comment.author |> AuthorView.render)
   end
 end

@@ -4,7 +4,10 @@ defmodule PhoenixSocial.Integration.Feed.PostLiveUpdateSpec do
 
   let! :user, do: insert(:user)
   let! :friend, do: insert(:user)
-  let! :post, do: insert(:post, author: friend, profile: friend.profile)
+
+  let! :post do
+    insert(:post, author: friend.profile, profile: friend.profile)
+  end
 
   before do
     insert(:friendship, user1: user, user2: friend, state: "confirmed")

@@ -24,7 +24,7 @@ defmodule PhoenixSocial.PostController do
 
   def create(conn, %{"post" => %{"text" => text}}) do
     profile = conn.assigns.profile
-    author = conn.assigns.current_user
+    author = conn.assigns.current_user.profile |> Repo.preload(:user)
 
     case CreatePost.call(profile, author, text) do
       {:ok, post} ->
@@ -82,8 +82,7 @@ defmodule PhoenixSocial.PostController do
   end
 
   defp handle_success(post, event) do
-    assocs = [comments: [author: :profile], author: :profile]
-    post = post |> Repo.preload(assocs)
+    post = post |> Repo.preload([:author, comments: :author])
     PostChannel.notify(post, event)
     PostView.render(post)
   end

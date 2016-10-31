@@ -4,7 +4,7 @@ defmodule PhoenixSocial.Comment do
   schema "comments" do
     field :text, :string
     timestamps
-    belongs_to :author, PhoenixSocial.User
+    belongs_to :author, PhoenixSocial.Profile
     belongs_to :post, PhoenixSocial.Post
   end
 

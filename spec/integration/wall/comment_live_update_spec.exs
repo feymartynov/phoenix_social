@@ -4,8 +4,14 @@ defmodule PhoenixSocial.Integration.Wall.CommentLiveUpdateSpec do
 
   let! :user, do: insert(:user)
   let! :friend, do: insert(:user)
-  let! :post, do: insert(:post, profile: friend.profile, author: friend)
-  let! :comment, do: insert(:comment, post: post, author: friend, text: "hi!")
+
+  let! :post do
+    insert(:post, profile: friend.profile, author: friend.profile)
+  end
+
+  let! :comment do
+    insert(:comment, post: post, author: friend.profile, text: "hi!")
+  end
 
   before do
     insert(:friendship, user1: user, user2: friend, state: "confirmed")

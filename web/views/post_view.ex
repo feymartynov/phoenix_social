@@ -6,7 +6,7 @@ defmodule PhoenixSocial.PostView do
   def render(post) do
     post
     |> Map.take(@fields)
-    |> Map.put(:author, post.author.profile |> AuthorView.render)
+    |> Map.put(:author, post.author |> AuthorView.render)
     |> Map.put(:comments, Enum.map(post.comments, &CommentView.render/1))
   end
 end
