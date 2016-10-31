@@ -18,7 +18,7 @@ defmodule PhoenixSocial.Integration.Feed.CommentLiveUpdateSpec do
 
     in_browser_session :friend_session, fn ->
       friend |> sign_in
-      navigate_to "/user#{friend.id}"
+      navigate_to "/user#{friend.profile.id}"
     end
   end
 
@@ -31,6 +31,7 @@ defmodule PhoenixSocial.Integration.Feed.CommentLiveUpdateSpec do
 
     in_browser_session :friend_session, fn ->
       add_comment(post.id, text)
+      :timer.sleep(1500)
       assert find_comments_list(post.id) |> inner_text =~ text
     end
 
@@ -44,6 +45,7 @@ defmodule PhoenixSocial.Integration.Feed.CommentLiveUpdateSpec do
 
     in_browser_session :friend_session, fn ->
       edit_comment(comment.id, new_text)
+      :timer.sleep(1500)
       assert find_comments_list(post.id) |> inner_text =~ new_text
     end
 
@@ -59,6 +61,7 @@ defmodule PhoenixSocial.Integration.Feed.CommentLiveUpdateSpec do
 
     in_browser_session :friend_session, fn ->
       delete_comment(comment.id)
+      :timer.sleep(1000)
       refute find_element(:id, "wall") |> inner_text =~ comment.text
     end
 

@@ -20,7 +20,7 @@ defmodule PhoenixSocial.Queries.Feed do
       offset: ^pagination.offset,
       limit: ^pagination.limit,
       preload: [
-        :author,
+        author: :profile,
         comments: ^comments_query]
 
     Repo.all(query)
@@ -28,9 +28,8 @@ defmodule PhoenixSocial.Queries.Feed do
 
   defp comments_query do
     from c in Comment,
-    join: a in assoc(c, :author),
     order_by: :id,
-    preload: [author: a]
+    preload: [author: :profile]
   end
 
   # the same logic as in the above SQL where clause

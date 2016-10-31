@@ -15,7 +15,7 @@ defmodule PhoenixSocial.Integration.ProfileSpec do
 
   context "with own profile" do
     before do
-      navigate_to "/user#{current_user.id}"
+      navigate_to "/user#{current_user.profile.id}"
     end
 
     it "changes a profile field" do
@@ -35,10 +35,11 @@ defmodule PhoenixSocial.Integration.ProfileSpec do
   end
 
   context "with someone else's profile" do
-    let! :user, do: insert(:user, city: "Moscow", occupation: "dvlpr")
+    let :profile, do: build(:profile, city: "Moscow", occupation: "dvlpr")
+    let! :user, do: insert(:user, profile: profile)
 
     it "shows user's profile fields" do
-      navigate_to "/user#{user.id}"
+      navigate_to "/user#{user.profile.id}"
 
       assert visible_page_text =~ "City\nMoscow"
       assert visible_page_text =~ "Occupation\ndvlpr"

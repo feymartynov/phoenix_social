@@ -4,7 +4,8 @@ import {push} from 'react-router-redux';
 
 class AuthenticatedIndexRedirect extends React.Component {
   componentDidMount() {
-    this.props.dispatch(push(`/user${this.props.currentUser.id}`));
+    const {dispatch, profile} = this.props;
+    dispatch(push(`/${profile.slug}`));
   }
 
   render() {
@@ -13,7 +14,7 @@ class AuthenticatedIndexRedirect extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  currentUser: state.currentUser
+  profile: state.currentProfile
 });
 
 export default connect(mapStateToProps)(AuthenticatedIndexRedirect);

@@ -4,13 +4,13 @@ import {Link} from 'react-router';
 
 class Sidebar extends React.Component {
   render() {
-    const userSlug = `user${this.props.currentUser.id}`;
+    const {profile} = this.props;
 
     return (
       <aside className="col-md-2">
         <nav className="list-group">
           <Link
-            to={`/${userSlug}`}
+            to={`/${profile.slug}`}
             className="list-group-item"
             id="user_menu_profile_link">
 
@@ -26,7 +26,7 @@ class Sidebar extends React.Component {
           </Link>
 
           <Link
-            to={`/${userSlug}/friends`}
+            to={`/${profile.slug}/friends`}
             className="list-group-item"
             id="user_menu_friends_link">
 
@@ -39,7 +39,7 @@ class Sidebar extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  currentUser: state.currentUser
+  profile: state.currentProfile
 });
 
 export default connect(mapStateToProps)(Sidebar);

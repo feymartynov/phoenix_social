@@ -26,7 +26,7 @@ export default function configRoutes(_store) {
       <Route path="/" component={AuthenticatedLayout} onEnter={ensureAuthenticated}>
         <IndexRoute component={AuthenticatedIndexRedirect}/>
 
-        <Route path="user:userId">
+        <Route path="user:profileId">
           <IndexRoute component={Profile}/>
           <Route path="friends" component={Friends}/>
         </Route>

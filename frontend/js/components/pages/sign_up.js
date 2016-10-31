@@ -16,11 +16,13 @@ class SignUp extends React.Component {
     e.preventDefault();
 
     const userData = {
-      first_name: ReactDOM.findDOMNode(this.refs.firstName).value,
-      last_name: ReactDOM.findDOMNode(this.refs.lastName).value,
       email: ReactDOM.findDOMNode(this.refs.email).value,
       password: ReactDOM.findDOMNode(this.refs.password).value,
-      password_confirmation: ReactDOM.findDOMNode(this.refs.passwordConfirmation).value
+      password_confirmation: ReactDOM.findDOMNode(this.refs.passwordConfirmation).value,
+      profile: {
+        first_name: ReactDOM.findDOMNode(this.refs.firstName).value,
+        last_name: ReactDOM.findDOMNode(this.refs.lastName).value
+      }
     };
 
     this.props.dispatch(Actions.signUp(userData));

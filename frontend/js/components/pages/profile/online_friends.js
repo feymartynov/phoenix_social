@@ -5,9 +5,9 @@ import Friends from './friends';
 class OnlineFriends extends React.Component {
   render() {
     const friends =
-      this.props.user.friends.filter(friend =>
+      this.props.profile.friends.filter(friend =>
         friend.state === "confirmed" &&
-          !!this.props.presences[friend.id]);
+          !!this.props.presences[friend.user_id]);
 
     return (
       <Friends
@@ -19,7 +19,7 @@ class OnlineFriends extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  user: ownProps.user,
+  profile: ownProps.profile,
   presences: state.presence.presences
 });
 

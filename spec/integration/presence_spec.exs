@@ -2,7 +2,12 @@ defmodule PhoenixSocial.Integration.PresenceSpec do
   use ESpec.Phoenix.Extend, :integration
 
   let :user, do: insert(:user)
-  let :friend, do: insert(:user, first_name: "Elvis", last_name: "Presley")
+
+  let :friend do
+    insert(
+      :user,
+      profile: build(:profile, first_name: "Elvis", last_name: "Presley"))
+  end
 
   before do
     insert(:friendship, user1: user, user2: friend, state: "confirmed")
@@ -12,7 +17,7 @@ defmodule PhoenixSocial.Integration.PresenceSpec do
   it "monitors friend's online presence" do
     in_browser_session :user_session, fn ->
       user |> sign_in
-      navigate_to "/user#{user.id}"
+      navigate_to "/user#{user.profile.id}"
 
       # should not see online friends box
       assert {:error, _} = search_element(:id, "sample_online_friends", 1)
@@ -20,7 +25,7 @@ defmodule PhoenixSocial.Integration.PresenceSpec do
 
     in_browser_session :friend_session, fn ->
       friend |> sign_in
-      navigate_to "/user#{friend.id}"
+      navigate_to "/user#{friend.profile.id}"
     end
 
     in_browser_session :user_session, fn ->

@@ -4,7 +4,11 @@ defmodule PhoenixSocial.Integration.AuthenticationSpec do
   it "signs in" do
     navigate_to "/sign_in"
 
-    user = insert(:user)
+    user =
+      insert(
+        :user,
+        profile: build(:profile, first_name: "John", last_name: "Lennon"))
+
     sign_in_form = find_element(:id, "sign_in_form")
 
     sign_in_form
@@ -20,7 +24,7 @@ defmodule PhoenixSocial.Integration.AuthenticationSpec do
     |> click
 
     user_menu = find_element(:id, "user_menu")
-    assert user_menu |> inner_text =~ "#{user.first_name} #{user.last_name}"
+    assert user_menu |> inner_text =~ "John Lennon"
   end
 
   it "signs out" do
@@ -36,20 +40,19 @@ defmodule PhoenixSocial.Integration.AuthenticationSpec do
   it "signs up" do
     navigate_to "/sign_up"
 
-    user = build(:user)
     sign_in_form = find_element(:id, "sign_up_form")
 
     sign_in_form
     |> find_within_element(:name, "first_name")
-    |> fill_field(user.first_name)
+    |> fill_field("John")
 
     sign_in_form
     |> find_within_element(:name, "last_name")
-    |> fill_field(user.last_name)
+    |> fill_field("Lennon")
 
     sign_in_form
     |> find_within_element(:name, "email")
-    |> fill_field(user.email)
+    |> fill_field("john@beatles.com")
 
     sign_in_form
     |> find_within_element(:name, "password")
@@ -64,6 +67,6 @@ defmodule PhoenixSocial.Integration.AuthenticationSpec do
     |> click
 
     user_menu = find_element(:id, "user_menu")
-    assert user_menu |> inner_text =~ "#{user.first_name} #{user.last_name}"
+    assert user_menu |> inner_text =~ "John Lennon"
   end
 end

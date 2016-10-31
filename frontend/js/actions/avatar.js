@@ -2,12 +2,13 @@ import Constants from '../constants';
 import {httpDelete, httpFetch, handleFetchError} from '../utils';
 
 const Actions = {
-  uploadAvatar: (file) => {
+  uploadAvatar: (profile, file) => {
     return dispatch => {
+      const url = `/api/v1/profiles/${profile.id}/avatar`;
       let body = new FormData();
       body.append('avatar', file);
 
-      return httpFetch('/api/v1/avatar', {method: 'post', headers: {}, body: body})
+      return httpFetch(url, {method: 'post', headers: {}, body: body})
         .then(json => {
           dispatch({
             type: Constants.CURRENT_USER_FETCHED,
@@ -17,9 +18,9 @@ const Actions = {
         .catch(error => handleFetchError(dispatch, error));
     };
   },
-  removeAvatar: () => {
+  removeAvatar: (profile) => {
     return dispatch => {
-      return httpDelete('/api/v1/avatar')
+      return httpDelete(`/api/v1/profiles/${profile.id}/avatar`)
         .then(json => {
           dispatch({
             type: Constants.CURRENT_USER_FETCHED,

@@ -12,12 +12,12 @@ defmodule PhoenixSocial.Integration.Wall.PostLiveUpdateSpec do
 
     in_browser_session :user_session, fn ->
       user |> sign_in
-      navigate_to "/user#{friend.id}"
+      navigate_to "/user#{friend.profile.id}"
     end
 
     in_browser_session :friend_session, fn ->
       friend |> sign_in
-      navigate_to "/user#{friend.id}"
+      navigate_to "/user#{friend.profile.id}"
     end
   end
 
@@ -30,6 +30,7 @@ defmodule PhoenixSocial.Integration.Wall.PostLiveUpdateSpec do
 
     in_browser_session :friend_session, fn ->
       add_post(text)
+      :timer.sleep(1500)
       assert find_element(:id, "wall") |> inner_text =~ text
     end
 
@@ -43,6 +44,7 @@ defmodule PhoenixSocial.Integration.Wall.PostLiveUpdateSpec do
 
     in_browser_session :friend_session, fn ->
       edit_post(post.id, new_text)
+      :timer.sleep(1500)
       assert find_post(post.id) |> inner_text =~ new_text
     end
 
@@ -54,6 +56,7 @@ defmodule PhoenixSocial.Integration.Wall.PostLiveUpdateSpec do
   it "deletes a post" do
     in_browser_session :friend_session, fn ->
       delete_post(post.id)
+      :timer.sleep(1000)
       refute find_element(:id, "wall") |> inner_text =~ post.text
     end
 

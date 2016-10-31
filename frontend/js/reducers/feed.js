@@ -24,11 +24,13 @@ function addOrSetPost(posts, post, addEnd = 'tail') {
 }
 
 function setPosts(feed, posts) {
-  if (posts.length === 0) {
-    return feed.posts;
-  } else {
-    return posts.reduce(addOrSetPost, feed.posts)
-  }
+  if (posts.length === 0) return feed;
+
+  return {
+    ...feed,
+    posts: posts.reduce(addOrSetPost, feed.posts),
+    fetched: true
+  };
 }
 
 function deletePost(posts, id) {
@@ -47,7 +49,7 @@ function updateComments(feed, postId, callback) {
 export default function reducer(feed = initialState, action = {}) {
   switch (action.type) {
     case Constants.FEED_FETCHED:
-      return {...feed, posts: setPosts(feed, action.posts), fetched: true};
+      return setPosts(feed, action.posts);
 
     case Constants.FEED_CONNECTED_TO_CHANNEL:
       return {...feed, channel: action.channel};

@@ -6,59 +6,33 @@ defmodule PhoenixSocial.UserControllerSpec do
       body = %{
         "user" => %{
           "email" => "johndoe@example.com",
-          "first_name" => "John",
-          "last_name" => "Doe",
           "password" => "12345",
-          "password_confirmation" => "12345" }}
+          "password_confirmation" => "12345",
+          "profile" => %{
+            "first_name" => "John",
+            "last_name" => "Doe"}}}
 
       assert {201, json} = api_call(:post, "/users", body: body)
       assert json["user"]["id"] |> is_integer
-      assert json["user"]["first_name"] == "John"
-      assert json["user"]["last_name"] == "Doe"
+      assert json["user"]["profile"]["first_name"] == "John"
+      assert json["user"]["profile"]["last_name"] == "Doe"
       assert json["jwt"] |> is_binary
     end
 
     it "fails to sign up registration with wrong params" do
       body = %{
         "user" => %{
-          "first_name" => "John",
-          "last_name" => "Doe",
           "password" => "12345",
-          "password_confirmation" => "12345678" }}
+          "password_confirmation" => "12345678",
+          "profile" => %{
+            "first_name" => "John",
+            "last_name" => "Doe"}}}
 
       assert {422, json} = api_call(:post, "/users", body: body)
       assert json["error"]["email"] |> List.first == "can't be blank"
 
       confirmation_error = json["error"]["password_confirmation"] |> List.first
       assert confirmation_error == "does not match confirmation"
-    end
-  end
-
-  describe "#update" do
-    it "updates the profile" do
-      user = insert(:user, city: "St. Petersburg")
-
-      body = %{"user" => %{"city" => "Moscow"}}
-      assert {200, json} = api_call(:put, "/users/current", body: body, as: user)
-      assert json["user"]["id"] == user.id
-      assert json["user"]["city"] == "Moscow"
-    end
-
-    it "fails to update the profile with wrong params" do
-      user = insert(:user)
-
-      body = %{"user" => %{"birthday" => "0000-12-34"}}
-      assert {422, json} = api_call(:put, "/users/current", body: body, as: user)
-      assert json["error"]["birthday"] |> List.first == "is invalid"
-    end
-
-    it "forbids updating another user's profile" do
-      {user, other_user} = {insert(:user), insert(:user)}
-
-      url = "/users/#{user.id}"
-      body = %{"user" => %{"city" => "Moscow"}}
-      assert {403, json} = api_call(:put, url, body: body, as: other_user)
-      assert json["error"] == "Forbidden"
     end
   end
 

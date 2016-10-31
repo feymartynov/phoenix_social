@@ -5,15 +5,15 @@ import Avatar from '../../shared/avatar';
 
 class Friend extends React.Component {
   render() {
-    const {user} = this.props;
+    const {profile} = this.props;
 
     return (
       <li
         className="text-center pull-left"
         style={{width: '33.3%', marginBottom: '0.5em'}}>
 
-        <Avatar user={user} version="thumb" className="img-circle"/>
-        <Link to={`/user${user.id}`}>{user.first_name}</Link>
+        <Avatar profile={profile} version="thumb" className="img-circle"/>
+        <Link to={`/${profile.slug}`}>{profile.first_name}</Link>
       </li>
     );
   }
@@ -21,8 +21,8 @@ class Friend extends React.Component {
 
 export default class Friends extends React.Component {
   _renderFriends() {
-    return _.sampleSize(this.props.friends, 6).map(user =>
-      <Friend key={`friend_${user.id}`} user={user}/>
+    return _.sampleSize(this.props.friends, 6).map(friend =>
+      <Friend key={`friend_${friend.id}`} profile={friend}/>
     );
   }
 

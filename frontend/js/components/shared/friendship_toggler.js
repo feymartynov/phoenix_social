@@ -5,12 +5,12 @@ import Actions from '../../actions/friendships';
 class FriendshipToggler extends React.Component {
   _handleAddClick(e) {
     e.preventDefault();
-    this.props.dispatch(Actions.addToFriends(this.props.user));
+    this.props.dispatch(Actions.addToFriends(this.props.profile));
   }
 
   _handleRemoveClick(e) {
     e.preventDefault();
-    this.props.dispatch(Actions.removeFromFriends(this.props.user));
+    this.props.dispatch(Actions.removeFromFriends(this.props.profile));
   }
 
   _renderAddButton() {
@@ -34,10 +34,10 @@ class FriendshipToggler extends React.Component {
   }
 
   render() {
-    const {user, currentUser} = this.props;
-    const friendship = currentUser.friends.get(user.id);
+    const {profile, currentUser} = this.props;
+    const friendship = currentUser.friends.get(profile.user_id);
 
-    if (user.id === currentUser.id) {
+    if (profile.user_id === currentUser.id) {
       return false;
     } else if (friendship && friendship.state === "confirmed") {
       return this._renderRemoveButton();
@@ -47,8 +47,7 @@ class FriendshipToggler extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  user: ownProps.user,
+const mapStateToProps = state => ({
   currentUser: state.currentUser
 });
 

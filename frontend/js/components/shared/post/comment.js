@@ -55,13 +55,13 @@ class Comment extends React.Component {
       <li className="media" data-comment-id={comment.id} style={{borderBottom: '1px solid #ddd'}}>
         <div className="media-left">
           <Avatar
-            user={comment.author}
+            profile={comment.author}
             version="thumb"
             className="img-circle"/>
         </div>
         <div className="media-body">
           <div>
-            <strong>{comment.author.first_name} {comment.author.last_name}</strong>
+            <strong>{comment.author.full_name}</strong>
           </div>
           <div>
             <time dateTime={comment.inserted_at} className="small text-muted">

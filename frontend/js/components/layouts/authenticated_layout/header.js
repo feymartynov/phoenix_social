@@ -11,21 +11,20 @@ class Header extends React.Component {
   }
 
   render() {
-    const {currentUser} = this.props;
-    const username = [currentUser.first_name, currentUser.last_name].join(' ');
+    const {profile} = this.props;
 
     return (
       <Navbar>
         <div className="container">
           <Navbar.Header>
             <Navbar.Brand>
-              <Link to={'/user' + currentUser.id}>PhoenixSocial</Link>
+              <Link to={`/${profile.slug}`}>PhoenixSocial</Link>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav pullRight>
-              <NavDropdown title={username} id="user_menu">
+              <NavDropdown title={profile.full_name} id="user_menu">
                 <MenuItem
                   href="#"
                   onClick={::this._handleSignOut}
@@ -42,7 +41,7 @@ class Header extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  currentUser: state.currentUser,
+  profile: state.currentProfile
 });
 
 export default connect(mapStateToProps)(Header);

@@ -1,5 +1,5 @@
 import Constants from '../constants';
-import {httpGet, httpPut, handleFetchError} from '../utils';
+import {httpGet} from '../utils';
 import ErrorActions from './error';
 
 const Actions = {
@@ -21,19 +21,6 @@ const Actions = {
               dispatch(ErrorActions.raise(json.error));
             });
         });
-    };
-  },
-  update: (changeset) => {
-    return dispatch => {
-      return httpPut(`/api/v1/users/current`, {user: changeset})
-        .then(json => {
-          dispatch({
-            type: Constants.CURRENT_USER_FETCHED,
-            current: true,
-            user: json.user
-          });
-        })
-        .catch(error => handleFetchError(dispatch, error));
     };
   }
 };

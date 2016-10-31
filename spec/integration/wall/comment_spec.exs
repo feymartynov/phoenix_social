@@ -4,8 +4,8 @@ defmodule PhoenixSocial.Integration.Wall.CommentSpec do
 
   it "comments a post" do
     post = insert(:post)
-    insert(:user, first_name: "John", last_name: "Lennon") |> sign_in
-    navigate_to "/user#{post.user_id}"
+    insert(:user) |> sign_in
+    navigate_to "/user#{post.user.profile.id}"
 
     text = "hello world"
     add_comment(post.id, text)
@@ -20,14 +20,14 @@ defmodule PhoenixSocial.Integration.Wall.CommentSpec do
 
     it "shows post comments" do
       comment.post.user |> sign_in
-      navigate_to "/user#{comment.post.user_id}"
+      navigate_to "/user#{comment.post.user.profile.id}"
 
       assert find_comments_list(comment.post_id) |> inner_text =~ comment.text
     end
 
     it "edits a comment" do
       comment.author |> sign_in
-      navigate_to "/user#{comment.post.user_id}"
+      navigate_to "/user#{comment.post.user.profile.id}"
 
       new_text = "edited"
       edit_comment(comment.id, new_text)
@@ -39,7 +39,7 @@ defmodule PhoenixSocial.Integration.Wall.CommentSpec do
 
     it "deletes a comment" do
       comment.post.user |> sign_in
-      navigate_to "/user#{comment.post.user_id}"
+      navigate_to "/user#{comment.post.user.profile.id}"
 
       delete_comment(comment.id)
 

@@ -20,6 +20,7 @@ defmodule PhoenixSocial.CommentController do
 
     case Repo.insert(changeset) do
       {:ok, comment} ->
+        comment = comment |> Repo.preload(author: :profile)
         PostChannel.notify(comment, "comment:added")
         comment_view = CommentView.render(comment)
         conn |> put_status(:created) |> json(%{comment: comment_view})
@@ -34,6 +35,7 @@ defmodule PhoenixSocial.CommentController do
 
     case Repo.update(changeset) do
       {:ok, comment} ->
+        comment = comment |> Repo.preload(author: :profile)
         PostChannel.notify(comment, "comment:edited")
         comment_view = CommentView.render(comment)
         conn |> put_status(:ok) |> json(%{comment: comment_view})
@@ -57,7 +59,8 @@ defmodule PhoenixSocial.CommentController do
   def delete(conn, _params) do
     case Repo.delete(conn.assigns[:comment]) do
       {:ok, _} ->
-        PostChannel.notify(conn.assigns[:comment], "comment:deleted")
+        comment = conn.assigns[:comment] |> Repo.preload(author: :profile)
+        PostChannel.notify(comment, "comment:deleted")
         conn |> put_status(:ok) |> json(%{result: :ok})
       {:error, changeset} ->
         error = Comment.error_messages(changeset)

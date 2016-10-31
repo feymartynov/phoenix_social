@@ -3,6 +3,7 @@ defmodule PhoenixSocial.AvatarControllerSpec do
 
   describe "#create" do
     let :user, do: insert(:user)
+    let :profile, do: user.profile
 
     let :jwt do
       {:ok, jwt, _} = Guardian.encode_and_sign(user, :token)
@@ -10,7 +11,7 @@ defmodule PhoenixSocial.AvatarControllerSpec do
     end
 
     finally do
-      File.rm_rf!("uploads/avatars/user#{user.id}")
+      File.rm_rf!("uploads/avatars/user#{profile.id}")
     end
 
     it "uploads avatar" do
@@ -22,23 +23,27 @@ defmodule PhoenixSocial.AvatarControllerSpec do
       response =
         build_conn
         |> put_req_header("authorization", jwt)
-        |> post("/api/v1/avatar", body)
+        |> post("/api/v1/profiles/#{profile.id}/avatar", body)
 
       assert response.status == 201
 
       json = Poison.decode!(response.resp_body)
-      expected_path = "/uploads/avatars/user#{user.id}/user#{user.id}_big.jpg"
-      assert json["user"]["avatar"]["big"] == expected_path
+      expected_path = "/uploads/avatars/profile#{profile.id}/profile#{profile.id}_big.jpg"
+      assert json["profile"]["avatar"]["big"] == expected_path
     end
   end
 
   describe "#delete" do
     let :user do
-      insert(:user, avatar: %{file_name: "avatar.jpg", updated_at: nil})
+      insert(
+        :user,
+        profile: build(:profile, avatar: %{file_name: "avatar.jpg", updated_at: nil}))
     end
 
+    let :profile, do: user.profile
+
     let :avatar_path do
-      "priv/static/uploads/avatars/user#{user.id}/user#{user.id}_big.jpg"
+      "priv/static/uploads/avatars/profile#{profile.id}/profile#{profile.id}_big.jpg"
     end
 
     finally do
@@ -49,11 +54,12 @@ defmodule PhoenixSocial.AvatarControllerSpec do
       Path.dirname(avatar_path) |> File.mkdir_p!
       File.cp!("spec/files/avatar.jpg", avatar_path)
 
-      assert {200, json} = api_call(:delete, "/avatar", as: user)
-      assert json["user"]["avatar"] == nil
+      url = "/profiles/#{profile.id}/avatar"
+      assert {200, json} = api_call(:delete, url, as: user)
+      assert json["profile"]["avatar"] == nil
 
       refute File.exists?(avatar_path)
-      refute Repo.get!(PhoenixSocial.User, user.id).avatar
+      refute Repo.get!(PhoenixSocial.Profile, profile.id).avatar
     end
   end
 end

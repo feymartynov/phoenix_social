@@ -4,39 +4,40 @@ import Constants from '../Constants';
 
 function buildFriendsMap(friendships) {
   return friendships.reduce((acc, friendship) => {
-    return acc.set(friendship.id, friendship);
+    return acc.set(friendship.user_id, friendship);
   }, Immutable.Map({}));
 }
 
-function updateFriends(user, action, callback) {
-  if (user.id === action.friendship.back_friendship.id) {
-    return {...user, friends: callback(user.friends)};
+function updateFriends(profile, action, callback) {
+  if (profile.user_id === action.friendship.back_friendship.user_id) {
+    return {...profile, friends: callback(profile.friends)};
   } else {
-    return user;
+    return profile;
   }
 }
 
-export default function reducer(user = null, action = {}) {
+export default function reducer(profile = null, action = {}) {
   switch(action.type) {
     case Constants.PROFILE_FETCHED:
       return {
-        ..._.omit(action.user, 'friendships'),
-        friends: buildFriendsMap(action.user.friendships)};
+        ..._.omit(action.profile, 'friendships'),
+        friends: buildFriendsMap(action.profile.friendships)
+      };
 
     case Constants.PROFILE_RESET:
       return null;
 
     case Constants.USER_ADDED_TO_FRIENDS:
-      return updateFriends(user, action, friends =>
-        friends.set(action.friendship.id, action.friendship)
+      return updateFriends(profile, action, friends =>
+        friends.set(action.friendship.user_id, action.friendship)
       );
 
     case Constants.USER_REMOVED_FROM_FRIENDS:
-      return updateFriends(user, action, friends =>
-        friends.remove(action.friendship.id)
+      return updateFriends(profile, action, friends =>
+        friends.remove(action.friendship.user_id)
       );
 
     default:
-      return user;
+      return profile;
   }
 }

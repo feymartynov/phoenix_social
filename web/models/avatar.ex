@@ -56,7 +56,7 @@ defmodule PhoenixSocial.Avatar do
     "uploads/avatars/#{scope_name(scope)}#{scope.id}"
   end
 
-  # Elixir.PhoenixSocial.User -> "user"
+  # Elixir.PhoenixSocial.Profile -> "profile"
   defp scope_name(%{__struct__: module}) do
     module |> to_string |> String.split(".") |> List.last |> String.downcase
   end

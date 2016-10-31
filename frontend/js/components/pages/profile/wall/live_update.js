@@ -4,8 +4,8 @@ import Actions from '../../../../actions/wall';
 
 class LiveUpdate extends React.Component {
   componentDidMount() {
-    const {dispatch, socket, user} = this.props;
-    dispatch(Actions.connectToChannel(socket, user));
+    const {dispatch, socket, profile} = this.props;
+    dispatch(Actions.connectToChannel(socket, profile.user_id));
   }
 
   componentWillUnmount() {
@@ -19,7 +19,7 @@ class LiveUpdate extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.profile,
+  profile: state.profile,
   socket: state.socket,
   channel: state.wall.channel
 });

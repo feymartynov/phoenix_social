@@ -1,15 +1,15 @@
 import Constants from '../constants';
-import {httpGet} from '../utils';
+import {httpGet, httpPut, handleFetchError} from '../utils';
 import ErrorActions from './error';
 
 const Actions = {
   fetch: (id) => {
     return dispatch => {
-      return httpGet(`/api/v1/users/${id}`)
+      return httpGet(`/api/v1/profiles/${id}`)
         .then(data => {
           dispatch({
             type: Constants.PROFILE_FETCHED,
-            user: data.user
+            profile: data.profile
           });
         })
         .catch(error => {
@@ -21,6 +21,18 @@ const Actions = {
               dispatch(ErrorActions.raise(json.error));
             });
         });
+    };
+  },
+  update: (profile, changeset) => {
+    return dispatch => {
+      return httpPut(`/api/v1/profiles/${profile.id}`, {profile: changeset})
+        .then(json => {
+          dispatch({
+            type: Constants.CURRENT_PROFILE_FETCHED,
+            profile: json.profile
+          });
+        })
+        .catch(error => handleFetchError(dispatch, error));
     };
   }
 };

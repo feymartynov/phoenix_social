@@ -2,7 +2,12 @@ defmodule PhoenixSocial.PostControllerSpec do
   use ESpec.Phoenix, controller: PostController
 
   let :user, do: insert(:user)
-  let :other_user, do: insert(:user, first_name: "Elvis", last_name: "Presley")
+
+  let :other_user do
+    insert(
+      :user,
+      profile: build(:profile, first_name: "Elvis", last_name: "Presley"))
+  end
 
   describe "#index" do
     it "shows user's posts'" do
@@ -22,7 +27,7 @@ defmodule PhoenixSocial.PostControllerSpec do
   
     it "shows another user's posts" do
       _unrelated_post = insert(:post, user: user, author: user)
-      posts = insert_list(2, :post, user: other_user)
+      posts = insert_list(2, :post, user: other_user, author: other_user)
   
       url = "/users/#{other_user.id}/posts"
       assert {200, json} = api_call(:get, url, as: user)

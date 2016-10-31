@@ -7,12 +7,12 @@ import Tabs from './friends/tabs';
 
 class Friends extends React.Component {
   _renderTitle() {
-    const {currentUser, user} = this.props;
+    const {currentUser, profile} = this.props;
 
-    if (currentUser.id === user.id) {
+    if (currentUser.id === profile.user_id) {
       return "My friends";
     } else {
-      return `Friends of ${user.first_name} ${user.last_name}`;
+      return `Friends of ${profile.full_name}`;
     }
   }
 
@@ -23,27 +23,27 @@ class Friends extends React.Component {
     return (
       <div>
         <h1>{title}</h1>
-        <Tabs friends={this.props.user.friends} />
+        <Tabs friends={this.props.profile.friends} />
       </div>
     );
   }
 
   render() {
-    const {userId, user, error} = this.props;
+    const {profileId, profile, error} = this.props;
 
     return (
       <Loader
-        action={Actions.fetch(userId)}
+        action={Actions.fetch(profileId)}
         onLoaded={::this._renderFriends}
-        loaded={user && user.id === userId}
+        loaded={profile && profile.id === profileId}
         error={error}/>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  userId: parseInt(ownProps.params.userId),
-  user: state.profile,
+  profileId: parseInt(ownProps.params.profileId),
+  profile: state.profile,
   currentUser: state.currentUser,
   error: state.error
 });

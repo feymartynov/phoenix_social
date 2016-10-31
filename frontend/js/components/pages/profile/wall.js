@@ -7,23 +7,23 @@ import Actions from '../../../actions/posts';
 
 class Wall extends React.Component {
   _allowPostForm() {
-    const {user, currentUser} = this.props;
-    if (user.id === currentUser.id) return true;
+    const {profile, currentUser} = this.props;
+    if (profile.user_id === currentUser.id) return true;
 
-    const friendship = user.friends.get(currentUser.id);
+    const friendship = profile.friends.get(currentUser.id);
     return friendship && friendship.state === 'confirmed';
   }
 
   _handlePostSubmit(text) {
-    const {dispatch, user} = this.props;
-    dispatch(Actions.create(user, text));
+    const {dispatch, profile} = this.props;
+    dispatch(Actions.create({id: profile.user_id}, text));
   }
 
   _renderPostForm() {
-    const {user, currentUser} = this.props;
+    const {profile, currentUser} = this.props;
 
     const placeholder =
-      user.id === currentUser.id ? "What's up?" : "Make a post";
+      profile.user_id === currentUser.id ? "What's up?" : "Make a post";
 
     return (
       <div id="create_post_form" style={{marginBottom: '1em'}}>
@@ -48,7 +48,7 @@ class Wall extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.profile,
+  profile: state.profile,
   currentUser: state.currentUser
 });
 

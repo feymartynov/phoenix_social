@@ -32,7 +32,7 @@ defmodule ESpec.Phoenix.Extend do
       use Hound.Helpers
 
       import Ecto, only: [build_assoc: 2]
-      import Ecto.Model
+      import Ecto.Model, except: [build: 2]
       import Ecto.Query, only: [from: 2]
 
       import PhoenixSocial.Router.Helpers

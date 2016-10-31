@@ -6,8 +6,8 @@ import Post from '../../../shared/post';
 
 class PostsList extends React.Component {
   _loadPosts() {
-    const {dispatch, user, posts} = this.props;
-    dispatch(Actions.fetch(user, posts.size));
+    const {dispatch, profile, posts} = this.props;
+    dispatch(Actions.fetch(profile.user_id, posts.size));
   }
 
   _renderPosts() {
@@ -41,7 +41,7 @@ class PostsList extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.profile,
+  profile: state.profile,
   currentUser: state.currentUser,
   posts: state.wall.posts,
 });

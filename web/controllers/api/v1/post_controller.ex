@@ -1,6 +1,6 @@
 defmodule PhoenixSocial.PostController do
   use PhoenixSocial.Web, :controller
-  use PhoenixSocial.SharedPlugs
+  import PhoenixSocial.SharedPlugs, only: [find_user: 2]
 
   alias PhoenixSocial.{Repo, Post, PostView, PostChannel}
   alias PhoenixSocial.Params.Pagination
@@ -28,7 +28,7 @@ defmodule PhoenixSocial.PostController do
 
     case CreatePost.call(user, author, text) do
       {:ok, post} ->
-        post_view = PostView.render(post)
+        post_view = handle_success(post, "post:added")
         conn |> put_status(:created) |> json(%{post: post_view})
       {:error, changeset} ->
         error = Post.error_messages(changeset)
@@ -37,12 +37,12 @@ defmodule PhoenixSocial.PostController do
   end
 
   def update(conn, %{"post" => post_params}) do
-    changeset = Post.changeset(conn.assigns[:post], post_params)
+    changeset = Post.changeset(conn.assigns.post, post_params)
 
     case Repo.update(changeset) do
       {:ok, post} ->
-        PostChannel.notify(post, "post:edited")
-        conn |> put_status(:ok) |> json(%{post: PostView.render(post)})
+        post_view = handle_success(post, "post:edited")
+        conn |> put_status(:ok) |> json(%{post: post_view})
       {:error, changeset} ->
         error = Post.error_messages(changeset)
         conn |> respond_with_error(error)
@@ -50,9 +50,9 @@ defmodule PhoenixSocial.PostController do
   end
 
   def delete(conn, _params) do
-    case Repo.delete(conn.assigns[:post]) do
+    case Repo.delete(conn.assigns.post) do
       {:ok, _} ->
-        PostChannel.notify(conn.assigns[:post], "post:deleted")
+        handle_success(conn.assigns.post, "post:deleted")
         conn |> put_status(:ok) |> json(%{result: :ok})
       {:error, changeset} ->
         error = Post.error_messages(changeset)
@@ -70,7 +70,6 @@ defmodule PhoenixSocial.PostController do
         |> json(%{error: "Post not found"})
         |> halt
       conn.assigns[:current_user].id in [post.user_id, post.author_id] ->
-        post = post |> Repo.preload([:author, :comments])
         conn |> assign(:post, post)
       true ->
         conn
@@ -78,5 +77,12 @@ defmodule PhoenixSocial.PostController do
         |> json(%{error: "Forbidden"})
         |> halt
     end
+  end
+
+  defp handle_success(post, event) do
+    assocs = [comments: [author: :profile], author: :profile]
+    post = post |> Repo.preload(assocs)
+    PostChannel.notify(post, event)
+    PostView.render(post)
   end
 end

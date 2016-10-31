@@ -1,19 +1,21 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import Constants from '../../../constants';
-import Actions from '../../../actions/CURRENT_user';
+import Actions from '../../../actions/profile';
 
 class ProfileFields extends React.Component {
   _handleContentEdit(e) {
+    const {dispatch, profile} = this.props;
+
     const changeset = {
       [e.target.getAttribute('data-field')]: e.target.innerText
     };
 
-    this.props.dispatch(Actions.update(changeset));
+    dispatch(Actions.update(profile, changeset));
   }
 
   _renderField(field, label) {
-    const value = this.props.user[field];
+    const value = this.props.profile[field];
     if (!value && !this.props.editable) return false;
 
     return [
@@ -24,7 +26,7 @@ class ProfileFields extends React.Component {
         suppressContentEditableWarning={true}
         onBlur={::this._handleContentEdit}>
 
-        {this.props.user[field]}
+        {this.props.profile[field]}
       </dd>];
   }
 
@@ -37,4 +39,8 @@ class ProfileFields extends React.Component {
   }
 }
 
-export default connect(() => ({}))(ProfileFields);
+const mapStateToProps = state => ({
+  profile: state.profile
+});
+
+export default connect(mapStateToProps)(ProfileFields);

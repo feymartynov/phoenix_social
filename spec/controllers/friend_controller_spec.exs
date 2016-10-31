@@ -20,7 +20,7 @@ defmodule PhoenixSocial.FriendControllerSpec do
     assert {200, json} = api_call(:get, "/users/current", as: user)
 
     friend_info = json["user"]["friendships"] |> List.first
-    assert friend_info["id"] == friend.id
+    assert friend_info["user_id"] == friend.id
     assert friend_info["state"] == expected_state
   end
 

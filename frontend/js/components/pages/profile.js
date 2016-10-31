@@ -14,58 +14,57 @@ import Wall from './profile/wall';
 
 class Profile extends React.Component {
   _renderOwnerLinks() {
-    const {user, editable} = this.props;
+    const {profile, editable} = this.props;
     if (!editable) return false;
 
     return (
       <ul className="list-unstyled">
         <li>
-          <AvatarUploader user={user}/>
+          <AvatarUploader profile={profile}/>
         </li>
       </ul>
     )
   }
 
   _renderVisitorLinks() {
-    const {user, editable} = this.props;
+    const {profile, editable} = this.props;
     if (editable) return false;
 
     return (
       <ul className="list-unstyled">
         <li>
-          <FriendshipToggler user={user}/>
+          <FriendshipToggler profile={profile}/>
         </li>
       </ul>
     );
   }
 
   _renderFriends() {
-    const {user} = this.props;
-    const friends = user.friends.filter(f => f.state === "confirmed");
-    const title = <Link to={`/user${user.id}/friends`}>Friends</Link>;
+    const {profile} = this.props;
+    const friends = profile.friends.filter(f => f.state === "confirmed");
+    const title = <Link to={`/${profile.slug}/friends`}>Friends</Link>;
     return <Friends friends={friends.toArray()} title={title} id="sample_friends"/>;
   }
 
   _renderProfile() {
-    const {user, editable} = this.props;
-    const fullName = `${user.first_name} ${user.last_name}`.trim();
-    setDocumentTitle(fullName);
+    const {profile, editable} = this.props;
+    setDocumentTitle(profile.full_name);
 
     return (
       <div className="row">
         <div className="col-sm-3">
           <div>
-            <Avatar user={user} version="big" className="img-responsive"/>
+            <Avatar profile={profile} version="big" className="img-responsive"/>
           </div>
           <br />
           {this._renderOwnerLinks()}
           {this._renderVisitorLinks()}
           {this._renderFriends()}
-          <OnlineFriends user={user}/>
+          <OnlineFriends profile={profile}/>
         </div>
         <div className="col-sm-7">
-          <h1>{fullName}</h1>
-          <ProfileFields user={user} editable={editable}/>
+          <h1>{profile.full_name}</h1>
+          <ProfileFields editable={editable}/>
           <Wall/>
         </div>
       </div>
@@ -73,22 +72,22 @@ class Profile extends React.Component {
   }
 
   render() {
-    const {userId, user, error} = this.props;
+    const {profileId, profile, error} = this.props;
 
     return (
       <Loader
-        action={Actions.fetch(userId)}
+        action={Actions.fetch(profileId)}
         onLoaded={::this._renderProfile}
-        loaded={user && user.id == userId}
+        loaded={profile && profile.id == profileId}
         error={error}/>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  userId: parseInt(ownProps.params.userId),
-  user: state.profile,
-  editable: state.profile && state.currentUser.id === state.profile.id,
+  profileId: parseInt(ownProps.params.profileId),
+  profile: state.profile,
+  editable: state.profile && state.currentUser.id === state.profile.user_id,
   error: state.error
 });
 

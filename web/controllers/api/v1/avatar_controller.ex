@@ -1,40 +1,40 @@
 defmodule PhoenixSocial.AvatarController do
   use PhoenixSocial.Web, :controller
+  import PhoenixSocial.SharedPlugs, only: [find_profile: 2]
 
-  alias PhoenixSocial.{User, Avatar, UserView}
+  alias PhoenixSocial.{Profile, Avatar, ProfileView}
 
   plug Guardian.Plug.EnsureAuthenticated
+  plug :find_profile
 
   def create(conn, %{"avatar" => upload}) do
-    changeset =
-      conn.assigns[:current_user]
-      |> User.update_avatar(upload.path)
+    changeset = conn.assigns.profile |> Profile.update_avatar(upload.path)
 
     if changeset.valid? do
-      user = Repo.update!(changeset)
+      profile = Repo.update!(changeset)
 
       conn
       |> put_status(:created)
-      |> json(%{user: UserView.render(user, as: user)})
+      |> json(%{profile: ProfileView.render(profile)})
     else
-      errors = User.error_messages(changeset)
+      errors = Profile.error_messages(changeset)
       conn |> respond_with_error(errors)
     end
   end
 
   def delete(conn, _params) do
-    user = conn.assigns[:current_user]
-    changeset = User.update_avatar(user, nil)
+    profile = conn.assigns.profile
+    changeset = profile |> Profile.update_avatar(nil)
 
     if changeset.valid? do
-      :ok = Avatar.delete({user.avatar.file_name, user})
-      user = Repo.update!(changeset)
+      :ok = Avatar.delete({profile.avatar.file_name, profile})
+      profile = Repo.update!(changeset)
 
       conn
       |> put_status(:ok)
-      |> json(%{user: UserView.render(user, as: user)})
+      |> json(%{profile: ProfileView.render(profile)})
     else
-      errors = User.error_messages(changeset)
+      errors = Profile.error_messages(changeset)
       conn |> respond_with_error(errors)
     end
   end

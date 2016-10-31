@@ -2,14 +2,20 @@ defmodule PhoenixSocial.Integration.Wall.PostSpec do
   use ESpec.Phoenix.Extend, :integration
   import PhoenixSocial.Integration.Steps.Post
 
-  let! :user do
-    insert(:user, first_name: "John", last_name: "Lennon") |> sign_in
+  let :user do
+    insert(
+      :user,
+      profile: build(:profile, first_name: "John", last_name: "Lennon"))
+  end
+
+  before do
+    user |> sign_in
   end
 
   it "shows user's wall" do
     posts = insert_list(15, :post, user: user, author: user)
 
-    navigate_to "/user#{user.id}"
+    navigate_to "/user#{user.profile.id}"
     wall = find_element(:id, "wall")
 
     # should see only 10 posts
@@ -31,7 +37,7 @@ defmodule PhoenixSocial.Integration.Wall.PostSpec do
   end
 
   it "makes a post on own wall" do
-    navigate_to "/user#{user.id}"
+    navigate_to "/user#{user.profile.id}"
     add_post("hello world")
 
     :timer.sleep(1500) # FIXME: doesn't wait for update
@@ -39,11 +45,15 @@ defmodule PhoenixSocial.Integration.Wall.PostSpec do
   end
 
   it "makes a post on a friend's wall" do
-    friend = insert(:user, first_name: "Elvis", last_name: "Presley")
+    friend =
+      insert(
+        :user,
+        profile: build(:profile, first_name: "Elvis", last_name: "Presley"))
+
     insert(:friendship, user1: user, user2: friend, state: "confirmed")
     insert(:friendship, user1: friend, user2: user, state: "confirmed")
 
-    navigate_to "/user#{friend.id}"
+    navigate_to "/user#{friend.profile.id}"
     add_post("hello world")
 
     :timer.sleep(1500) # FIXME: doesn't wait for update
@@ -54,10 +64,15 @@ defmodule PhoenixSocial.Integration.Wall.PostSpec do
 
   it "shows someone's wall" do
     other_user = insert(:user)
-    author = insert(:user, first_name: "Ringo", last_name: "Starr")
+
+    author =
+      insert(
+        :user,
+        profile: build(:profile, first_name: "Ringo", last_name: "Starr"))
+
     insert(:post, user: other_user, author: author, text: "hello world")
 
-    navigate_to "/user#{other_user.id}"
+    navigate_to "/user#{other_user.profile.id}"
     wall = find_element(:id, "wall")
 
     # should not see the post form
@@ -73,7 +88,7 @@ defmodule PhoenixSocial.Integration.Wall.PostSpec do
     let! :post, do: insert(:post, text: "hello", user: user, author: user)
 
     before do
-      navigate_to "/user#{post.user.id}"
+      navigate_to "/user#{post.user.profile.id}"
     end
 
     it "edits the post" do

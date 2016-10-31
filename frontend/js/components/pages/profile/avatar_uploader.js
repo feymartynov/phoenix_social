@@ -20,14 +20,16 @@ class AvatarUploader extends React.Component {
 
   _handleUpload(e) {
     e.preventDefault();
+    const {dispatch, profile} = this.props;
     const input = ReactDOM.findDOMNode(this.refs.avatar);
     if (!input.files[0]) return false;
-    this.props.dispatch(Actions.uploadAvatar(input.files[0]));
+    dispatch(Actions.uploadAvatar(profile, input.files[0]));
   }
 
   _handleRemove(e) {
     e.preventDefault();
-    this.props.dispatch(Actions.removeAvatar());
+    const {dispatch, profile} = this.props;
+    dispatch(Actions.removeAvatar(profile));
   }
 
   render() {
@@ -62,4 +64,8 @@ class AvatarUploader extends React.Component {
   }
 }
 
-export default connect(() => ({}))(AvatarUploader);
+const mapStateToProps = state => ({
+  profile: state.currentProfile
+});
+
+export default connect(mapStateToProps)(AvatarUploader);

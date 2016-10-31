@@ -10,7 +10,7 @@ function setCurrentUser(dispatch, data) {
     user: data.user
   });
 
-  dispatch(push(`/user${data.user.id}`));
+  dispatch(push(`/${data.user.profile.slug}`));
 }
 
 const Actions = {

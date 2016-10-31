@@ -5,6 +5,7 @@ import presence from './presence';
 import error from './error';
 import signUp from './sign_up';
 import currentUser from './current_user';
+import currentProfile from './current_profile';
 import profile from './profile';
 import wall from './wall';
 import feed from './feed';
@@ -16,6 +17,7 @@ export default combineReducers({
   presence,
   signUp,
   currentUser,
+  currentProfile,
   profile,
   wall,
   feed
