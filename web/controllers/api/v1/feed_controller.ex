@@ -10,8 +10,8 @@ defmodule PhoenixSocial.FeedController do
 
   def show(conn, _params) do
     posts =
-      conn.assigns[:current_user]
-      |> Feed.posts(conn.assigns[:pagination])
+      conn.assigns.current_user
+      |> Feed.posts(conn.assigns.pagination)
       |> Enum.map(&PostView.render/1)
 
     conn |> json(%{posts: posts})

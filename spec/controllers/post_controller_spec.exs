@@ -11,10 +11,11 @@ defmodule PhoenixSocial.PostControllerSpec do
 
   describe "#index" do
     it "shows user's posts'" do
-      posts = insert_list(2, :post, user: user, author: user)
+      posts = insert_list(2, :post, profile: user.profile, author: user)
       _unrelated_post = insert(:post)
-  
-      assert {200, json} = api_call(:get, "/users/#{user.id}/posts", as: user)
+
+      url = "/profiles/#{user.profile.id}/posts"
+      assert {200, json} = api_call(:get, url, as: user)
   
       ids = Enum.map(json["posts"], &(&1["id"]))
       expected_ids = Enum.map(posts, &(&1.id)) |> Enum.reverse
@@ -26,10 +27,12 @@ defmodule PhoenixSocial.PostControllerSpec do
     end
   
     it "shows another user's posts" do
-      _unrelated_post = insert(:post, user: user, author: user)
-      posts = insert_list(2, :post, user: other_user, author: other_user)
+      _unrelated_post = insert(:post, profile: user.profile, author: user)
+
+      posts =
+        insert_list(2, :post, profile: other_user.profile, author: other_user)
   
-      url = "/users/#{other_user.id}/posts"
+      url = "/profiles/#{other_user.profile.id}/posts"
       assert {200, json} = api_call(:get, url, as: user)
   
       ids = Enum.map(json["posts"], &(&1["id"]))
@@ -38,10 +41,10 @@ defmodule PhoenixSocial.PostControllerSpec do
     end
 
     it "shows comments within post" do
-      comment = insert(:comment)
+      comment = insert(:comment) |> Repo.preload(post: [profile: :user])
 
-      url = "/users/#{comment.post.user.id}/posts"
-      assert {200, json} = api_call(:get, url, as: comment.post.user)
+      url = "/profiles/#{comment.post.profile_id}/posts"
+      assert {200, json} = api_call(:get, url, as: comment.post.profile.user)
       first_post = json["posts"] |> List.first
       first_comment = first_post |> Map.fetch!("comments") |> List.first
       assert first_comment["id"] == comment.id
@@ -50,9 +53,9 @@ defmodule PhoenixSocial.PostControllerSpec do
     end
   
     it "shows posts with pagination" do
-      posts = insert_list(3, :post, user: user, author: user)
-  
-      url = "/users/#{user.id}/posts?offset=1&limit=1"
+      posts = insert_list(3, :post, profile: user.profile, author: user)
+
+      url = "/profiles/#{user.profile.id}/posts?offset=1&limit=1"
       assert {200, json} = api_call(:get, url, as: user)
       assert json["posts"] |> length == 1
   
@@ -61,25 +64,25 @@ defmodule PhoenixSocial.PostControllerSpec do
     end
   
     it "fails when specifying a big limit" do
-      url = "/users/#{user.id}/posts?limit=1000"
+      url = "/profiles/#{user.profile.id}/posts?limit=1000"
       assert {422, json} = api_call(:get, url, as: user)
       assert json["error"]["limit"] |> List.first == "must be less than or equal to 100"
     end
   
     it "fails when specifying a zero limit" do
-      url = "/users/#{user.id}/posts?limit=0"
+      url = "/profiles/#{user.profile.id}/posts?limit=0"
       assert {422, json} = api_call(:get, url, as: user)
       assert json["error"]["limit"] |> List.first == "must be greater than or equal to 1"
     end
   
     it "fails when specifying wrong limit" do
-      url = "/users/#{user.id}/posts?limit=abcd"
+      url = "/profiles/#{user.profile.id}/posts?limit=abcd"
       assert {422, json} = api_call(:get, url, as: user)
       assert json["error"]["limit"] |> List.first == "is invalid"
     end
   
     it "fails when specifying wrong offset" do
-      url = "/users/#{user.id}/posts?offset=-5"
+      url = "/profiles/#{user.profile.id}/posts?offset=-5"
       assert {422, json} = api_call(:get, url, as: user)
       assert json["error"]["offset"] |> List.first == "must be greater than or equal to 0"
     end
@@ -87,16 +90,16 @@ defmodule PhoenixSocial.PostControllerSpec do
   
   describe "#create" do
     it "creates a post" do
-      url = "/users/#{user.id}/posts"
+      url = "/profiles/#{user.profile.id}/posts"
       body = %{"post" => %{"text" => "Hello world"}}
       assert {201, json} = api_call(:post, url, body: body, as: user)
       assert json["post"]["text"] == "Hello world"
-      assert json["post"]["user_id"] == user.id
+      assert json["post"]["profile_id"] == user.profile.id
       assert json["post"]["author"]["id"] == user.id
     end
   
     it "fails to create a post with wrong params" do
-      url = "/users/#{user.id}/posts"
+      url = "/profiles/#{user.profile.id}/posts"
       body = %{"post" => %{"text" => ""}}
       assert {422, json} = api_call(:post, url, body: body, as: user)
       assert json["error"]["text"] |> List.first == "can't be blank"
@@ -106,13 +109,13 @@ defmodule PhoenixSocial.PostControllerSpec do
       insert(:friendship, user1: user, user2: other_user, state: "confirmed")
       insert(:friendship, user1: other_user, user2: user, state: "confirmed")
   
-      url = "/users/#{other_user.id}/posts"
+      url = "/profiles/#{other_user.profile.id}/posts"
       body = %{"post" => %{"text" => "Hello world"}}
       assert {201, _} = api_call(:post, url, body: body, as: user)
     end
   
     it "rejects posting to non-friend's wall" do
-      url = "/users/#{other_user.id}/posts"
+      url = "/profiles/#{other_user.profile.id}/posts"
       body = %{"post" => %{"text" => "Hello world"}}
       assert {422, json} = api_call(:post, url, body: body, as: user)
       assert json["error"]["author"] == ["is not a friend of Elvis Presley"]
@@ -122,7 +125,7 @@ defmodule PhoenixSocial.PostControllerSpec do
       insert(:friendship, user1: user, user2: other_user, state: "confirmed")
       insert(:friendship, user1: other_user, user2: user, state: "rejected")
   
-      url = "/users/#{other_user.id}/posts"
+      url = "/profiles/#{other_user.profile.id}/posts"
       body = %{"post" => %{"text" => "Hello world"}}
       assert {422, json} = api_call(:post, url, body: body, as: user)
       assert json["error"]["author"] == ["is not a friend of Elvis Presley"]
@@ -131,7 +134,7 @@ defmodule PhoenixSocial.PostControllerSpec do
 
   describe "#update" do
     it "updates a post" do
-      post = insert(:post, text: "old text", user: user, author: user)
+      post = insert(:post, text: "old text", profile: user.profile, author: user)
 
       url = "/posts/#{post.id}"
       body = %{"post" => %{"text" => "new text"}}
@@ -140,7 +143,7 @@ defmodule PhoenixSocial.PostControllerSpec do
     end
   
     it "fails to update a post with wrong params" do
-      post = insert(:post, text: "old text", user: user, author: user)
+      post = insert(:post, text: "old text", profile: user.profile, author: user)
 
       url = "/posts/#{post.id}"
       body = %{"post" => %{"text" => ""}}
@@ -160,7 +163,7 @@ defmodule PhoenixSocial.PostControllerSpec do
   
   describe "#delete" do
     it "deletes a post" do
-      post = insert(:post, user: user, author: user)
+      post = insert(:post, profile: user.profile, author: user)
 
       url = "/posts/#{post.id}"
       assert {200, json} = api_call(:delete, url, as: user)
@@ -176,7 +179,7 @@ defmodule PhoenixSocial.PostControllerSpec do
     end
   
     it "fails someone else's post on own wall" do
-      post = insert(:post, user: user)
+      post = insert(:post, profile: user.profile)
 
       url = "/posts/#{post.id}"
       assert {200, json} = api_call(:delete, url, as: user)

@@ -54,16 +54,21 @@ class Post extends React.Component {
   }
 
   _renderComments() {
-    const {post, currentUser} = this.props;
+    const {post, currentUser, currentProfile} = this.props;
     if (!post.comments || post.comments.size === 0) return false;
 
-    const comments = post.comments.map(comment =>
-      <Comment
-        key={`comment_${comment.id}`}
-        comment={comment}
-        editable={currentUser.id === comment.author.id}
-        deletable={[comment.author.id, post.user_id].includes(currentUser.id)}/>
-    );
+    const comments = post.comments.map(comment => {
+      const isAuthor = currentUser.id === comment.author.id;
+      const isWallOwner = currentProfile.id === post.profile_id;
+
+      return (
+        <Comment
+          key={`comment_${comment.id}`}
+          comment={comment}
+          editable={isAuthor}
+          deletable={isAuthor || isWallOwner}/>
+      );
+    });
 
     return <ul className="list-unstyled comments-list">{comments}</ul>;
   }
@@ -116,7 +121,8 @@ class Post extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  currentUser: state.currentUser
+  currentUser: state.currentUser,
+  currentProfile: state.currentProfile
 });
 
 export default connect(mapStateToProps)(Post);

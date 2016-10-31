@@ -9,12 +9,12 @@ defmodule PhoenixSocial.Queries.FeedSpec do
     let :friend, do: insert(:user)
 
     it "allows own post to the feed" do
-      post = insert(:post, user: insert(:user), author: user)
+      post = insert(:post, author: user)
       assert Feed.belongs_to_feed?(post, user)
     end
 
     it "allows a post from own wall to the feed" do
-      post = insert(:post, user: user, author: insert(:user))
+      post = insert(:post, profile: user.profile, author: insert(:user))
       assert Feed.belongs_to_feed?(post, user)
     end
 
@@ -29,12 +29,12 @@ defmodule PhoenixSocial.Queries.FeedSpec do
       end
 
       it "allows a friend's post on his wall to the feed" do
-        post = insert(:post, user: friend, author: friend)
+        post = insert(:post, profile: friend.profile, author: friend)
         assert Feed.belongs_to_feed?(post, user |> Repo.preload(:friendships))
       end
 
       it "forbids a friend's post on someone else's wall to the feed" do
-        post = insert(:post, user: insert(:user), author: friend)
+        post = insert(:post, author: friend)
         refute Feed.belongs_to_feed?(post, user |> Repo.preload(:friendships))
       end
     end
@@ -46,7 +46,7 @@ defmodule PhoenixSocial.Queries.FeedSpec do
       end
 
       it "forbids a rejected friend's post on his wall to the feed" do
-        post = insert(:post, user: friend, author: friend)
+        post = insert(:post, profile: friend.profile, author: friend)
         refute Feed.belongs_to_feed?(post, user |> Repo.preload(:friendships))
       end
     end

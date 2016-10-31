@@ -16,7 +16,7 @@ class Wall extends React.Component {
 
   _handlePostSubmit(text) {
     const {dispatch, profile} = this.props;
-    dispatch(Actions.create({id: profile.user_id}, text));
+    dispatch(Actions.create(profile, text));
   }
 
   _renderPostForm() {

@@ -1,18 +1,20 @@
 defmodule PhoenixSocial.PostChannel do
   use PhoenixSocial.Web, :channel
 
-  alias PhoenixSocial.{Endpoint, PostView, CommentView}
+  alias PhoenixSocial.{Endpoint, Repo, PostView, CommentView}
   alias PhoenixSocial.Queries.Feed
 
   def join("feed", _params, socket), do: {:ok, socket}
   def join("wall:" <> _, _params, socket), do: {:ok, socket}
 
   def notify(post, event = "post:" <> _) do
-    Endpoint.broadcast "wall:#{post.user_id}", event, post
+    post = post |> Repo.preload(author: :profile)
+    Endpoint.broadcast "wall:#{post.profile_id}", event, post
     Endpoint.broadcast "feed", event, post
   end
   def notify(comment, event = "comment:" <> _) do
-    Endpoint.broadcast "wall:#{comment.post.user_id}", event, comment
+    comment = comment |> Repo.preload(post: [author: :profile])
+    Endpoint.broadcast "wall:#{comment.post.profile_id}", event, comment
     Endpoint.broadcast "feed", event, comment
   end
 

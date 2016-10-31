@@ -13,7 +13,7 @@ defmodule PhoenixSocial.Integration.Wall.PostSpec do
   end
 
   it "shows user's wall" do
-    posts = insert_list(15, :post, user: user, author: user)
+    posts = insert_list(15, :post, profile: user.profile, author: user)
 
     navigate_to "/user#{user.profile.id}"
     wall = find_element(:id, "wall")
@@ -70,7 +70,7 @@ defmodule PhoenixSocial.Integration.Wall.PostSpec do
         :user,
         profile: build(:profile, first_name: "Ringo", last_name: "Starr"))
 
-    insert(:post, user: other_user, author: author, text: "hello world")
+    insert(:post, profile: other_user.profile, author: author, text: "hello world")
 
     navigate_to "/user#{other_user.profile.id}"
     wall = find_element(:id, "wall")
@@ -85,15 +85,16 @@ defmodule PhoenixSocial.Integration.Wall.PostSpec do
   end
 
   context "with own post" do
-    let! :post, do: insert(:post, text: "hello", user: user, author: user)
+    let! :post, do: insert(:post, text: "hello", profile: user.profile, author: user)
 
     before do
-      navigate_to "/user#{post.user.profile.id}"
+      navigate_to "/user#{post.profile.id}"
     end
 
     it "edits the post" do
       new_text = "edited"
       edit_post(post.id, new_text)
+      :timer.sleep(1500) # FIXME: doesn't wait for update
 
       assert find_post(post.id) |> inner_text =~ new_text
       refresh_page
@@ -102,6 +103,7 @@ defmodule PhoenixSocial.Integration.Wall.PostSpec do
 
     it "deletes the post" do
       delete_post(post.id)
+      :timer.sleep(1000) # FIXME: doesn't wait for update
 
       refute find_element(:id, "wall") |> inner_text =~ post.text
       refresh_page

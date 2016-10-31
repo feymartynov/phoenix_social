@@ -9,7 +9,7 @@ defmodule PhoenixSocial.GuardianSerializer do
     user =
       User
       |> Repo.get!(String.to_integer(id))
-      |> Repo.preload(:friendships)
+      |> Repo.preload([:profile, :friendships])
 
     {:ok, user}
   end

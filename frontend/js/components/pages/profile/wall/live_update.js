@@ -5,7 +5,7 @@ import Actions from '../../../../actions/wall';
 class LiveUpdate extends React.Component {
   componentDidMount() {
     const {dispatch, socket, profile} = this.props;
-    dispatch(Actions.connectToChannel(socket, profile.user_id));
+    dispatch(Actions.connectToChannel(socket, profile));
   }
 
   componentWillUnmount() {

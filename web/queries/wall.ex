@@ -3,12 +3,12 @@ defmodule PhoenixSocial.Queries.Wall do
 
   alias PhoenixSocial.{Post, Comment}
 
-  def posts(user, pagination) do
+  def posts(profile, pagination) do
     query =
       from p in Post,
         join: pa  in assoc(p, :author),
         join: pap in assoc(pa, :profile),
-        where: [user_id: ^user.id],
+        where: [profile_id: ^profile.id],
         order_by: [desc: :id],
         offset: ^pagination.offset,
         limit: ^pagination.limit,

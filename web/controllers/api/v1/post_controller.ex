@@ -1,6 +1,6 @@
 defmodule PhoenixSocial.PostController do
   use PhoenixSocial.Web, :controller
-  import PhoenixSocial.SharedPlugs, only: [find_user: 2]
+  import PhoenixSocial.SharedPlugs, only: [find_profile: 2]
 
   alias PhoenixSocial.{Repo, Post, PostView, PostChannel}
   alias PhoenixSocial.Params.Pagination
@@ -10,23 +10,23 @@ defmodule PhoenixSocial.PostController do
   plug Guardian.Plug.EnsureAuthenticated
   plug Pagination, :pagination when action in [:index]
   plug :scrub_params, "post" when action in [:create, :update]
-  plug :find_user when action in [:index, :create]
+  plug :find_profile, [authorize: false] when action in [:index, :create]
   plug :find_post when action in [:update, :delete]
 
   def index(conn, _params) do
     posts =
-      conn.assigns[:user]
-      |> Wall.posts(conn.assigns[:pagination])
+      conn.assigns.profile
+      |> Wall.posts(conn.assigns.pagination)
       |> Enum.map(&PostView.render/1)
 
     conn |> put_status(:ok) |> json(%{posts: posts})
   end
 
   def create(conn, %{"post" => %{"text" => text}}) do
-    user = conn.assigns[:user]
-    author = conn.assigns[:current_user]
+    profile = conn.assigns.profile
+    author = conn.assigns.current_user
 
-    case CreatePost.call(user, author, text) do
+    case CreatePost.call(profile, author, text) do
       {:ok, post} ->
         post_view = handle_success(post, "post:added")
         conn |> put_status(:created) |> json(%{post: post_view})
@@ -62,6 +62,7 @@ defmodule PhoenixSocial.PostController do
 
   defp find_post(conn, _) do
     post = Repo.get(Post, conn.params["id"])
+    current_user = conn.assigns.current_user
 
     cond do
       is_nil(post) ->
@@ -69,7 +70,8 @@ defmodule PhoenixSocial.PostController do
         |> put_status(:not_found)
         |> json(%{error: "Post not found"})
         |> halt
-      conn.assigns[:current_user].id in [post.user_id, post.author_id] ->
+      post.profile_id == current_user.profile.id ||
+      post.author_id == current_user.id ->
         conn |> assign(:post, post)
       true ->
         conn

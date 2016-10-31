@@ -27,20 +27,30 @@ defmodule PhoenixSocial.FeedControllerSpec do
     end
 
     let! :expected_posts do
-      [insert(:post, user: friend1, author: friend1, text: "1"),
-       insert(:post, user: user, author: friend2, text: "2"),
-       insert(:post, user: user, author: unrelated_user, text: "3"),
-       insert(:post, user: user, author: friend3, text: "4"),
-       insert(:post, user: user, author: user, text: "5"),
-       insert(:post, user: friend2, author: user, text: "6")]
+      [insert(:post, profile: friend1.profile, author: friend1, text: "1"),
+       insert(:post, profile: user.profile, author: friend2, text: "2"),
+       insert(:post, profile: user.profile, author: unrelated_user, text: "3"),
+       insert(:post, profile: user.profile, author: friend3, text: "4"),
+       insert(:post, profile: user.profile, author: user, text: "5"),
+       insert(:post, profile: friend2.profile, author: user, text: "6")]
     end
 
     before do
       # these posts shouldn't appear in the feed
-      insert(:post, user: friend1, author: friend2, text: "7")
-      insert(:post, user: unrelated_user, author: unrelated_user, text: "8")
-      time = Timex.now |> Timex.shift(days: -9)
-      insert(:post, user: user, author: friend2, inserted_at: time, text: "9")
+      insert(:post, profile: friend1.profile, author: friend2, text: "7")
+
+      insert(
+        :post,
+        profile: unrelated_user.profile,
+        author: unrelated_user,
+        text: "8")
+
+      insert(
+        :post,
+        profile: user.profile,
+        author: friend2,
+        inserted_at: Timex.now |> Timex.shift(days: -9),
+        text: "9")
     end
 
     it "shows friends' posts" do

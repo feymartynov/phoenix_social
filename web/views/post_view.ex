@@ -1,7 +1,7 @@
 defmodule PhoenixSocial.PostView do
   alias PhoenixSocial.{CommentView, AuthorView}
 
-  @fields [:id, :user_id, :text, :inserted_at, :updated_at]
+  @fields [:id, :profile_id, :text, :inserted_at, :updated_at]
 
   def render(post) do
     post

@@ -14,7 +14,7 @@ defmodule PhoenixSocial.CommentController do
     comment =
       %Comment{
         post: conn.assigns[:post],
-        author: conn.assigns[:current_user]}
+        author: conn.assigns.current_user}
 
     changeset = Comment.changeset(comment, comment_params)
 
@@ -31,7 +31,7 @@ defmodule PhoenixSocial.CommentController do
   end
 
   def update(conn, %{"comment" => comment_params}) do
-    changeset = Comment.changeset(conn.assigns[:comment], comment_params)
+    changeset = Comment.changeset(conn.assigns.comment, comment_params)
 
     case Repo.update(changeset) do
       {:ok, comment} ->
@@ -46,7 +46,7 @@ defmodule PhoenixSocial.CommentController do
   end
 
   defp authorize_update(conn, _) do
-    if conn.assigns[:current_user].id == conn.assigns[:comment].author_id do
+    if conn.assigns.current_user.id == conn.assigns.comment.author_id do
       conn
     else
       conn
@@ -57,9 +57,9 @@ defmodule PhoenixSocial.CommentController do
   end
 
   def delete(conn, _params) do
-    case Repo.delete(conn.assigns[:comment]) do
+    case Repo.delete(conn.assigns.comment) do
       {:ok, _} ->
-        comment = conn.assigns[:comment] |> Repo.preload(author: :profile)
+        comment = conn.assigns.comment |> Repo.preload(author: :profile)
         PostChannel.notify(comment, "comment:deleted")
         conn |> put_status(:ok) |> json(%{result: :ok})
       {:error, changeset} ->
@@ -69,10 +69,13 @@ defmodule PhoenixSocial.CommentController do
   end
 
   defp authorize_deletion(conn, _) do
-    comment = conn.assigns[:comment] |> Repo.preload(:post)
-    authorized_user_ids = [comment.author_id, comment.post.user_id]
+    comment = conn.assigns.comment |> Repo.preload(:post)
+    current_user = conn.assigns.current_user
 
-    if conn.assigns[:current_user].id in authorized_user_ids do
+    comment_author? = current_user.id == comment.author_id
+    wall_owner? = current_user.profile.id == comment.post.profile_id
+
+    if comment_author? || wall_owner? do
       conn
     else
       conn

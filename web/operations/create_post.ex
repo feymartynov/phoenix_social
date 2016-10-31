@@ -2,15 +2,15 @@ defmodule PhoenixSocial.Operations.CreatePost do
   alias PhoenixSocial.{Repo, Post}
   import PhoenixSocial.Friendship, only: [friend_of?: 2]
 
-  def call(user, author, text) do
-    post = %Post{user: user, author: author}
+  def call(profile, author, text) do
+    user = profile |> Repo.preload(:user) |> Map.fetch!(:user)
+    post = %Post{profile: profile, author: author}
     changeset = Post.changeset(post, %{text: text})
 
     if authorized?(user, author) do
       Repo.insert(changeset)
     else
-      user = user |> Repo.preload(:profile)
-      error = "is not a friend of #{user.profile}"
+      error = "is not a friend of #{profile}"
       {:error, changeset |> Ecto.Changeset.add_error(:author, error)}
     end
   end

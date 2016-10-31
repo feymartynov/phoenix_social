@@ -5,7 +5,7 @@ defmodule PhoenixSocial.Integration.Wall.CommentSpec do
   it "comments a post" do
     post = insert(:post)
     insert(:user) |> sign_in
-    navigate_to "/user#{post.user.profile.id}"
+    navigate_to "/user#{post.profile.id}"
 
     text = "hello world"
     add_comment(post.id, text)
@@ -16,18 +16,20 @@ defmodule PhoenixSocial.Integration.Wall.CommentSpec do
   end
 
   context "with a comment" do
-    let! :comment, do: insert(:comment, text: "hello world")
+    let :user, do: insert(:user)
+    let :post, do: insert(:post, profile: user.profile)
+    let! :comment, do: insert(:comment, post: post, text: "hello world")
 
     it "shows post comments" do
-      comment.post.user |> sign_in
-      navigate_to "/user#{comment.post.user.profile.id}"
+      user |> sign_in
+      navigate_to "/user#{comment.post.profile.id}"
 
       assert find_comments_list(comment.post_id) |> inner_text =~ comment.text
     end
 
     it "edits a comment" do
       comment.author |> sign_in
-      navigate_to "/user#{comment.post.user.profile.id}"
+      navigate_to "/user#{comment.post.profile.id}"
 
       new_text = "edited"
       edit_comment(comment.id, new_text)
@@ -38,8 +40,8 @@ defmodule PhoenixSocial.Integration.Wall.CommentSpec do
     end
 
     it "deletes a comment" do
-      comment.post.user |> sign_in
-      navigate_to "/user#{comment.post.user.profile.id}"
+      user |> sign_in
+      navigate_to "/user#{comment.post.profile.id}"
 
       delete_comment(comment.id)
 

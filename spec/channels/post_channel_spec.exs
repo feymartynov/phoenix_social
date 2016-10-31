@@ -8,7 +8,7 @@ defmodule PhoenixSocial.PostChannelSpec do
 
   context "with feed" do
     let :post do
-      insert(:post, user: user, author: user)
+      insert(:post, profile: user.profile, author: user)
       |> Repo.preload([:comments, author: :profile])
     end
 
@@ -73,7 +73,7 @@ defmodule PhoenixSocial.PostChannelSpec do
     let :other_user, do: insert(:user) |> Repo.preload(:profile)
 
     let :post do
-      insert(:post, user: user, author: other_user)
+      insert(:post, profile: user.profile, author: other_user)
       |> Repo.preload([:comments, author: :profile])
     end
 
@@ -83,7 +83,7 @@ defmodule PhoenixSocial.PostChannelSpec do
     end
 
     before do
-      socket |> subscribe_and_join(PostChannel, "wall:#{post.user_id}")
+      socket |> subscribe_and_join(PostChannel, "wall:#{post.profile_id}")
     end
 
     it "pushes a new post onto the wall" do

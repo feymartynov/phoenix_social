@@ -69,7 +69,7 @@ defmodule PhoenixSocial.CommentControllerSpec do
     end
 
     it "deletes someone else's post on own wall" do
-      post = insert(:post, user: user)
+      post = insert(:post, profile: user.profile)
       comment = insert(:comment, post: post, author: insert(:user))
 
       url = "/comments/#{comment.id}"

@@ -25,9 +25,9 @@ export function setChannelEvents(channel, dispatch) {
 }
 
 const Actions = {
-  create: (user, text) => {
+  create: (profile, text) => {
     return dispatch => {
-      httpPost(`/api/v1/users/${user.id}/posts`, {post: {text: text}})
+      httpPost(`/api/v1/profiles/${profile.id}/posts`, {post: {text: text}})
         .catch(error => handleFetchError(dispatch, error));
     };
   },
